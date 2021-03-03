@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>VIA PONTO - Cadastrar empresa</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+    <link
+            href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+            rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
+
+
+</head>
+
+<body class="bg-gradient-light">
+
+<div class="container">
+
+    <!-- Outer Row -->
+    <div class="row justify-content-center">
+
+        <div class="col-xl-5 col-lg-12 col-md-9">
+
+            <div class="card o-hidden border-0 shadow-lg my-5">
+                <div class="card-body p-0">
+                    <!-- Nested Row within Card Body -->
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="p-5">
+                                <div class="text-center">
+                                    <h1 class="h2 text-gray-900 mb-2"><strong>Cadastrar empresa</strong></h1>
+                                    <br>
+                                </div>
+                                <form class="user" method="post" enctype="multipart/form-data"> {% csrf_token %}
+                                    <div class="form-group row">
+                                        <input type="text" class="form-control form-control-user"
+                                               name="username"
+                                               placeholder="Insira o nome de usuário para acesso" required>
+
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-sm-6 mb-3 mb-sm-0">
+                                            <input type="text" class="form-control form-control-user"
+                                                   name="nome"
+                                                   placeholder="Insira o nome completo">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <input type="text" class="form-control form-control-user"
+                                                   name="email"
+                                                   placeholder="Insira o email">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-sm-6 mb-3 mb-sm-0">
+                                            <input type="text" class="form-control form-control-user"
+                                                   name="cpf"
+                                                   placeholder="Insira o seu CPF">
+
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <input type="date" class="form-control form-control-user"
+                                                   name="datanasc"
+                                                   placeholder="Insira sua data de nascimento">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-sm-6 mb-3 mb-sm-0">
+                                            <input type="text" class="form-control form-control-user"
+                                                   name="telefone"
+                                                   placeholder="Insira seu número de telefone">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <input type="text" class="form-control form-control-user"
+                                                   name="celular"
+                                                   placeholder="Insira o seu número de celular">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-sm-6 mb-3 mb-sm-0">
+                                            <input type="text" class="form-control form-control-user"
+                                                   name="cargo"
+                                                   placeholder="Insira seu cargo na empresa">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <input type="text" class="form-control form-control-user"
+                                                   name="departamento"
+                                                   placeholder="Insira seu departamento na empresa">
+                                        </div>
+                                    </div>
+
+                                    <h4> Dados da empresa</h4>
+
+                                    <div class="form-group row">
+                                        <div class="col-sm-6 mb-3 mb-sm-0">
+                                            <input type="text" class="form-control form-control-user"
+                                                   name="cnpj"
+                                                   placeholder="Insira o CNPJ da empresa">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <input type="text" class="form-control form-control-user"
+                                                   name="cep"
+                                                   placeholder="Insira o CEP da empresa">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-sm-6 mb-3 mb-sm-0">
+                                            <input type="text" class="form-control form-control-user"
+                                                   name="tel_comercial"
+                                                   placeholder="Insira o telefone comercial da emrpesa" required>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <input type="text" class="form-control form-control-user"
+                                                   name="nome_empresa"
+                                                   placeholder="Insira o nome da empresa">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-sm-6 mb-3 mb-sm-0">
+                                            <input type="text" class="form-control form-control-user"
+                                                   name="celular_empresa"
+                                                   placeholder="Insira o celular da empresa">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <input type="email" class="form-control form-control-user"
+                                                   name="email_empresa"
+                                                   placeholder="Insira o email da empresa">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-sm-6 mb-3 mb-sm-0">
+                                            <input type="text" class="form-control form-control-user"
+                                                   name="razaosocial"
+                                                   placeholder="Insira a razão social da empresa">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <input type="text" class="form-control form-control-user"
+                                                   name="atividade"
+                                                   placeholder="Insira a atividade da empresa">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-sm-6 mb-3 mb-sm-0">
+                                            <input type="text" class="form-control form-control-user"
+                                                   name="uf"
+                                                   placeholder="Insira a sigla do estado onde a empresa se localiza">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <input type="text" class="form-control form-control-user"
+                                                   name="ie"
+                                                   placeholder="Insira a inscrição estadual da empresa">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-sm-6 mb-3 mb-sm-0">
+                                            <input type="text" class="form-control form-control-user"
+                                                   name="logradouro"
+                                                   placeholder="Insira a rua/avenida da empresa">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <input type="text" class="form-control form-control-user"
+                                                   name="numero"
+                                                   placeholder="Insira o numer da empresa">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-sm-6 mb-3 mb-sm-0">
+                                            <input type="text" class="form-control form-control-user"
+                                                   name="bairro"
+                                                   placeholder="Insira o nome do bairro onde a empresa se localiza">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <input type="password" class="form-control form-control-user"
+                                                   name="password"
+                                                   placeholder="Insira a senha de acesso do seu usuário">
+                                        </div>
+                                    </div>
+
+
+                                    <button type="submit" class="btn btn-success btn-user btn-block">
+                                        Cadastrar
+                                    </button>
+
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Bootstrap core JavaScript-->
+<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+
+<!-- Custom scripts for all pages-->
+<script src="{% static 'js/sb-admin-2.min.js' %}"></script>
+</body>
+
+</html>

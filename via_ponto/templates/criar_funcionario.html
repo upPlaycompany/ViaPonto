@@ -1,0 +1,66 @@
+{% extends 'index.html' %}
+
+{% block title %}
+Criar funcionario
+{% endblock title %}
+
+{% block content %}
+<h3>Criar funcionário</h3>
+<form method="post" enctype="multipart/form-data"> {% csrf_token %}
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label>Informe o nome de usuário</label>
+            <input type="text" class="form-control" name="username"
+                   placeholder="Digite o número de identificação da tabela">
+        </div>
+        <div class="form-group col-md-4">
+            <label>Nome completo</label>
+            <input type="text" class="form-control" name="nome"
+                   placeholder="Insira o nome do funcionário">
+        </div>
+        <div class="form-group col-md-4">
+            <label>CPF</label>
+            <input type="text" class="form-control" placeholder="Insira o CPF do funcionário" name="cpf">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label>Data de nascimento</label>
+            <input type="date"  class="form-control" name="datanasc"
+                   placeholder="Insira a data de nasc.">
+        </div>
+        <div class="form-group col-md-4">
+            <label>Email</label>
+            <input type="email" class="form-control" name="email" placeholder="Insira o email do funcionario">
+        </div>
+        <div class="form-group col-md-4">
+            <label>Telefone</label>
+            <input type="text" class="form-control" name="telefone" placeholder="Insira o telefone do funcionário">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label>Celular</label>
+            <input type="text"  class="form-control" name="celular"
+                   placeholder="Insira o celular do funcionário">
+        </div>
+        <div class="form-group col-md-4">
+            <label>Cargo</label>
+            <input type="text" class="form-control" name="cargo" placeholder="Insira o cargo do funcionario">
+        </div>
+        <div class="form-group col-md-4">
+            <label>Departamento</label>
+            <input type="text" class="form-control" name="departamento" placeholder="Insira o departamento onde atua o funcionario">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-9">
+            <label>Senha temporária do funcionário</label>
+            <input type="password"  class="form-control" name="password"
+                   placeholder="Insira a senha do funcionário">
+        </div>
+
+    </div>
+    <button type="submit" class="btn btn-primary">Cadastrar funcionário</button>
+</form>
+{% endblock %}
