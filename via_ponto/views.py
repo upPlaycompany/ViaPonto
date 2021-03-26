@@ -20,8 +20,7 @@ def index(request, token):
     conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
         "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
-        "X-Parse-Session-Token": f"{token}"}
-                                   )
+        "X-Parse-Session-Token": f"{token}"})
     abc = conexao.json()
     if str(abc['sessionToken']) != f"{token}":
         return redirect('login')
@@ -29,7 +28,7 @@ def index(request, token):
         return redirect('login')
     else:
         pass
-    key = [{'id': token, 'emp': abc['id_empresa']['objectId']}]
+    key = [{'id': token, 'emp': abc['nome_empresa']}]
     return render(request, 'index.html', {'lista': key})
 
 
@@ -148,6 +147,8 @@ def criar_usuario(request):
                                             "cargo": f"{cargo}",
                                             "departamento": f"{departamento}",
                                             "empresa_confirmacao": bool(True),
+                                            "nome_empresa": f"{nome_empresa}",
+                                            "admin": bool(False),
                                             "id_empresa": {
                                                 '__type': "Pointer",
                                                 "className": "Empresa",
@@ -209,7 +210,8 @@ def criar_funcionario(request, token, empresa):
                                             "cargo": f"{cargo}",
                                             "departamento": f"{departamento}",
                                             "empresa_confirmacao": bool(False),
-                                            "codigo_empresa": empresa,
+                                            "nome_empresa": empresa,
+                                            "admin": bool(False),
                                             "id_empresa": {
                                                 '__type': "Pointer",
                                                 "className": "Empresa",
@@ -231,7 +233,7 @@ def criar_funcionario_sucesso(request, token):
         return redirect('login')
     else:
         pass
-    key = [{'id': token, 'emp': abc['id_empresa']['objectId'], 'user': abc['username']}]
+    key = [{'id': token, 'emp': abc['nome_empresa'], 'user': abc['username']}]
     return render(request, 'criar_funcionario_sucesso.html', {'lista': key})
 
 
@@ -246,9 +248,64 @@ def listar_funcionario(request, token, empresa):
     elif abc['empresa_confirmacao'] == False:
         return redirect('login')
     key = [{'id': token, 'emp': empresa, 'user': abc['username']}]
-    conexao1 = requests.api.request('GET', f"https://parseapi.back4app.com/classes/_User?where=%7B%20%22codigo_empresa%22%3A%20%22{empresa}%22%7D", headers={
-        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
-        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
+    conexao1 = requests.api.request('GET',
+                                    f"https://parseapi.back4app.com/classes/_User?where=%7B%20%22codigo_empresa%22%3A%20%22{empresa}%22%7D",
+                                    headers={
+                                        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
     dop = conexao1.json()
     dap = [x for x in dop['results']]
     return render(request, 'listar_funcionario.html', {'lista': key, 'order': dap})
+
+
+# ÁREA DO ADMINISTRADOR #
+def base_admin(request, token):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
+        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        "X-Parse-Session-Token": f"{token}"})
+    abc = conexao.json()
+    if str(abc['sessionToken']) != f"{token}":
+        return redirect('login')
+    elif abc['admin'] == False:
+        return redirect('login')
+    else:
+        pass
+    key = [{'id': token}]
+    return render(request, 'index_admin.html', {'lista': key})
+
+def index_admin(request, token):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
+        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        "X-Parse-Session-Token": f"{token}"})
+    abc = conexao.json()
+    if str(abc['sessionToken']) != f"{token}":
+        return redirect('login')
+    elif abc['admin'] == False:
+        return redirect('login')
+    else:
+        pass
+    key = [{'id': token}]
+    return render(request, 'base_admin.html', {'lista': key})
+
+
+def listar_empresa(request, token):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
+        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        "X-Parse-Session-Token": f"{token}"})
+    abc = conexao.json()
+    if str(abc['sessionToken']) != f"{token}":
+        return redirect('login')
+    elif abc['admin'] == False:
+        return redirect('login')
+    else:
+        pass
+    conexao1 = requests.api.request('GET', f"https://parseapi.back4app.com/classes/Empresa",
+                                    headers={
+                                        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                        "accept": "application/json"})
+    dop = conexao1.json()
+    return render(request, 'listar_empresa.html', {'lista': key, 'lista2': dop})

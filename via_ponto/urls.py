@@ -26,5 +26,8 @@ urlpatterns = [
     path('criar_usuario_sucesso/', views.criar_usuario_sucesso, name='criar_usuario_sucesso'),
     path('criar_funcionario/<str:token>/<str:empresa>/', views.criar_funcionario, name='criar_funcionario'),
     path('criar_funcionario_sucesso/<str:token>/', views.criar_funcionario_sucesso, name='criar_funcionario_sucesso'),
-    path('listar_funcionario/<str:token>/<str:empresa>/', views.listar_funcionario, name='listar_funcionario')
+    path('listar_funcionario/<str:token>/<str:empresa>/', views.listar_funcionario, name='listar_funcionario'),
+
+    path('base_admin/<str:token>/', views.base_admin, name='base_admin'),
+    path('listar_empresa/<str:token>/', views.listar_empresa, name='listar_empresa')
 ]
