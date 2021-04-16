@@ -74,7 +74,7 @@ def base(request, token):
         return redirect('login')
     else:
         pass
-    key = [{'id': token, 'emp': abc['id_empresa']['objectId'], 'user': abc['username']}]
+    key = [{'id': token, 'emp': abc['nome_empresa'], 'user': abc['username']}]
     return render(request, 'base.html', {'lista': key})
 
 
@@ -181,7 +181,7 @@ def criar_funcionario(request, token, empresa):
         return redirect('login')
     else:
         pass
-    key = [{'id': token, 'emp': abc['id_empresa']['objectId'], 'user': abc['username']}]
+    key = [{'id': token, 'emp': abc['nome_empresa'], 'user': abc['username']}]
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -210,7 +210,7 @@ def criar_funcionario(request, token, empresa):
                                             "cargo": f"{cargo}",
                                             "departamento": f"{departamento}",
                                             "empresa_confirmacao": bool(False),
-                                            "nome_empresa": empresa,
+                                            "nome_empresa": abc['nome_empresa'],
                                             "admin": bool(False),
                                             "id_empresa": {
                                                 '__type': "Pointer",
@@ -249,12 +249,13 @@ def listar_funcionario(request, token, empresa):
         return redirect('login')
     key = [{'id': token, 'emp': empresa, 'user': abc['username']}]
     conexao1 = requests.api.request('GET',
-                                    f"https://parseapi.back4app.com/classes/_User?where=%7B%20%22codigo_empresa%22%3A%20%22{empresa}%22%7D",
+                                    f"https://parseapi.back4app.com/classes/_User?where=%7B%22nome_empresa%22%3A%20%22{empresa}%22%7D",
                                     headers={
                                         "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
                                         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
     dop = conexao1.json()
     dap = [x for x in dop['results']]
+   
     return render(request, 'listar_funcionario.html', {'lista': key, 'order': dap})
 
 
