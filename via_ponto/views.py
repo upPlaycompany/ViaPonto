@@ -161,7 +161,7 @@ def criar_usuario(request):
         else:
             return redirect('login')
 
-    return render(request, 'criar_usuario.html', {'lista': key})
+    return render(request, 'criar_usuario.html', {})
 
 
 def criar_usuario_sucesso(request):
@@ -255,8 +255,32 @@ def listar_funcionario(request, token, empresa):
                                         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
     dop = conexao1.json()
     dap = [x for x in dop['results']]
-   
+    a = len(dap)
+    [dap[x].update({'cod': token}) for x in range(a)]
+    
     return render(request, 'listar_funcionario.html', {'lista': key, 'order': dap})
+
+
+def exibir_perfil(request, token, empresa, cpf):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
+        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        "X-Parse-Session-Token": f"{token}"})
+    abc = conexao.json()
+    if str(abc['sessionToken']) != f"{token}":
+        return redirect('login')
+    elif abc['empresa_confirmacao'] == False:
+        return redirect('login')
+    key = [{'id': token, 'emp': empresa, 'cpf': abc['cpf']}]
+    conexao1 = requests.api.request('GET', 
+                                    f"https://parseapi.back4app.com/classes/_User?where=%7B%22nome_empresa%22%3A%20%22{empresa}%22%7D",
+                                    headers={
+                                        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
+    dop = conexao1.json()
+    dap = [x for x in dop['results']]
+
+    return render(request, 'exibir_perfil.html', {'lista': key, 'order': dap, 'Cpf': cpf})
 
 
 # ÁREA DO ADMINISTRADOR #

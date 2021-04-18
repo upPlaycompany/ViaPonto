@@ -46,7 +46,7 @@ Listar funcionários da empresa
                     <tr>
                         <th>Nome</th>
                         <th>CPF</th>
-                        <th>E-mail</th>
+                        <th>Celular</th>
                         <th>Cargo</th>
                         <th>Departamento</th>
                     </tr>
@@ -55,7 +55,7 @@ Listar funcionários da empresa
                 <tbody>
                     {% for dap in order %}
                         <tr>
-                            <td>{{ dap.nome }}</td>
+                            <td><a href="{% url 'exibir_perfil' token=dap.cod empresa=dap.nome_empresa cpf=dap.cpf %}">{{ dap.nome }}</a></td>
                             <td>{{ dap.cpf }}</td>
                             <td>{{ dap.celular }}</td>
                             <td>{{ dap.cargo }}</td>

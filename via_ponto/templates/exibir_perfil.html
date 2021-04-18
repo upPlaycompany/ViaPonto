@@ -24,27 +24,36 @@ Funcionário da empresa
 
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-success">Funcionário: {{  }}</h6>
+        <h6 class="m-0 font-weight-bold text-success">Funcionário: </h6>
     </div>
     <div class="card-body">
+        <div class="filtropordata"></div>
         <div class="table-responsive">
             <table class="rTable table table-bordered" id="dataTable" width="100%" cellspacing="0" >
                 <thead>
                     <tr>
-                        <th>Data de Criação</th>
+                        <th>Data Registro</th>
+                        <th>Horário</th>
+                        <th>Quantidade</th>
                         <th>Registro</th>
-                        <th>Horario</th>
                         <th>Local do Registro</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    <tr>
-                        <td>{{  }}</td>
-                        <td>{{  }}</td>
-                        <td>{{  }}</td>
-                        <td>{{  }}</td>
-                    </tr>
+                    {% for dap in order %}
+                        {% if dap.cpf == Cpf %}
+                            <tr>
+                                <td>{{ dap.nome }}</td>
+                                <td>{{ dap.data_nasc }}</td>
+                                <td>{{ dap.email }}</td>
+                                <td>{{ dap.createdAt }}</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
