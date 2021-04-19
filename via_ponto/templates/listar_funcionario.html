@@ -55,7 +55,7 @@ Listar funcionários da empresa
                 <tbody>
                     {% for dap in order %}
                         <tr>
-                            <td><a href="{% url 'exibir_perfil' token=dap.cod empresa=dap.nome_empresa cpf=dap.cpf %}">{{ dap.nome }}</a></td>
+                            <td><a href="{% url 'exibir_perfil' token=dap.cod empresa=dap.nome_empresa id_user=dap.objectId %}">{{ dap.nome }}</a></td>
                             <td>{{ dap.cpf }}</td>
                             <td>{{ dap.celular }}</td>
                             <td>{{ dap.cargo }}</td>

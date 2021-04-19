@@ -24,7 +24,11 @@ Funcionário da empresa
 
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-success">Funcionário: </h6>
+        {% for funcionario in funcionarios %}
+            {% if funcionario.objectId == Id_user %}
+                <h6 class="m-0 font-weight-bold text-success">Funcionário: {{ funcionario.nome }}</h6>
+            {% endif %}
+        {% endfor %}
     </div>
     <div class="card-body">
         <div class="filtropordata"></div>
@@ -41,16 +45,14 @@ Funcionário da empresa
                 </thead>
 
                 <tbody>
-                    {% for dap in order %}
-                        {% if dap.cpf == Cpf %}
+                    {% for ponto in pontos %}
+                        {% if ponto.id_funcionario.objectId == Id_user %}
                             <tr>
-                                <td>{{ dap.nome }}</td>
-                                <td>{{ dap.data_nasc }}</td>
-                                <td>{{ dap.email }}</td>
-                                <td>{{ dap.createdAt }}</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                                <td>{{ ponto.createdAt }}</td>
+                                <td>{{ ponto.horario }}</td>
+                                <td>{{ ponto.quantidade }}</td>
+                                <td>{{ ponto.registro }}</td>
+                                <td>{{ ponto.local_registro }}</td>
                             </tr>
                         {% endif %}
                     {% endfor %}

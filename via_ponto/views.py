@@ -261,7 +261,7 @@ def listar_funcionario(request, token, empresa):
     return render(request, 'listar_funcionario.html', {'lista': key, 'order': dap})
 
 
-def exibir_perfil(request, token, empresa, cpf):
+def exibir_perfil(request, token, empresa, id_user):
     conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
         "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
@@ -271,16 +271,25 @@ def exibir_perfil(request, token, empresa, cpf):
         return redirect('login')
     elif abc['empresa_confirmacao'] == False:
         return redirect('login')
-    key = [{'id': token, 'emp': empresa, 'cpf': abc['cpf']}]
+    key = [{'id': token, 'emp': empresa, 'id_user': abc['objectId']}]
     conexao1 = requests.api.request('GET', 
                                     f"https://parseapi.back4app.com/classes/_User?where=%7B%22nome_empresa%22%3A%20%22{empresa}%22%7D",
                                     headers={
                                         "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
                                         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
-    dop = conexao1.json()
-    dap = [x for x in dop['results']]
+    f = conexao1.json()
+    funcionario = [x for x in f['results']]
 
-    return render(request, 'exibir_perfil.html', {'lista': key, 'order': dap, 'Cpf': cpf})
+    conexao2 = requests.api.request('GET',
+                                    f"https://parseapi.back4app.com/classes/Ponto",
+                                    headers={
+                                        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
+    p = conexao2.json()
+    ponto = [x for x in p['results']]
+
+    
+    return render(request, 'exibir_perfil.html', {'lista': key, 'funcionarios': funcionario, 'Id_user': id_user, 'pontos': ponto})
 
 
 # ÁREA DO ADMINISTRADOR #
