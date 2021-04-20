@@ -14,6 +14,9 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db import connections
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
+from dateutil.parser import *
+
+from datetime import timedelta, date
 
 
 def index(request, token):
@@ -289,7 +292,18 @@ def exibir_perfil(request, token, empresa, id_user):
     ponto = [x for x in p['results']]
 
     
-    return render(request, 'exibir_perfil.html', {'lista': key, 'funcionarios': funcionario, 'Id_user': id_user, 'pontos': ponto})
+        
+    date_input = request.GET.get('date_input')
+    conexao3 = requests.api.request('GET',
+                                    f"https://parseapi.back4app.com/classes/Ponto?where=%7B%20%22createdAt%22%3A%20%22{date_input}%22%20%7D",
+                                    headers={
+                                        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
+    p_data = conexao3.json()
+    ponto_por_data = [x for x in p_data['results']]
+    print(ponto_por_data)
+    
+    return render(request, 'exibir_perfil.html', {'lista': key, 'funcionarios': funcionario, 'Id_user': id_user, 'pontos': ponto, 'pontos_data': ponto_por_data})
 
 
 # ÁREA DO ADMINISTRADOR #
