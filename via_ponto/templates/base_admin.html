@@ -6,9 +6,46 @@
 
 {% block content %}
 
-<h2>Seja bem vindo a área de empresa do VIA PONTO!</h2>
+<h2>Dashboard</h2>
 <br>
-<br>
-<h3>Todas as funcionalidades estão na barra de navegação à esquerda!</h3>
 
-{% endblock %}
+<!-- Content Row -->
+<div class="row">
+
+    <!-- Earnings (Monthly) Card Example -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Funcionários cadastrados no sistema
+                        </div>
+                        {% for dip in lista2 %}
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ dip.numero_funcionario }}</div>
+                        {% endfor %}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Empresas cadastradas no sistema
+                        </div>
+                        {% for dup in lista3 %}
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ dup.numero_empresa }}</div>
+                        {% endfor %}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    {% endblock %}

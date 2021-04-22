@@ -29,5 +29,6 @@ urlpatterns = [
     path('listar_funcionario/<str:token>/<str:empresa>/', views.listar_funcionario, name='listar_funcionario'),
 
     path('base_admin/<str:token>/', views.base_admin, name='base_admin'),
-    path('listar_empresa/<str:token>/', views.listar_empresa, name='listar_empresa')
+    path('listar_empresa/<str:token>/', views.listar_empresa, name='listar_empresa'),
+    path('ver_empresa/<str:token>/<str:id>/', views.ver_empresa, name='ver_empresa')
 ]

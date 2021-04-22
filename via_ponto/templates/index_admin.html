@@ -41,7 +41,7 @@
         <hr class="sidebar-divider my-0">
         <li class="nav-item">
             {% for key in lista %}
-            <a class="nav-link collapsed" href="{% url 'base' token=key.id %}"
+            <a class="nav-link collapsed" href="{% url 'base_admin' token=key.id %}"
                style="color: black;">
                 <i class="fas fa-fw fa-paper-plane"></i>
                 <span>Dashboard</span>
@@ -71,16 +71,8 @@
             </div>
         </li>
         <!-- Divider -->
-        <hr class="sidebar-divider my-0">
 
 
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" style="color: black;">
-                <i class="fas fa-fw fa-folder"></i>
-                <span>Relatórios</span>
-            </a>
-
-        </li>
 
 
         <!-- Sidebar Toggler (Sidebar) -->
