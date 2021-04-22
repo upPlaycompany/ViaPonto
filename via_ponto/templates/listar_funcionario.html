@@ -4,8 +4,36 @@
 Listar funcionários da empresa
 {% endblock title %}
 
-{% block content %}
+{% block extra_style %}
+    <style>
+        .rTable {
+            text-align: center;
+        }
 
+        .rTable thead {
+            background-color: #20953B;
+            font-weight: bold;
+            color: white;
+            font-size: 1em;
+        }
+
+        .rTable tbody tr:nth-child(2n){
+            background: #98FB98;
+        }
+
+        .rTable tbody tr .link-func {
+            text-decoration: none;
+            cursor: pointer;
+            transition: ease-in 0.2s;
+        }
+
+        .rTable tbody tr .link-func:hover {
+            color: #7FFF00;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
 
 <div class="card shadow mb-4">
     <div class="card-header py-3">
@@ -13,29 +41,28 @@ Listar funcionários da empresa
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0" >
+            <table class="rTable table table-bordered" id="dataTable" width="100%" cellspacing="0" >
                 <thead>
-                <tr>
-                    <th>Nome</th>
-                    <th>CPF</th>
-                    <th>E-mail</th>
-                    <th>Cargo</th>
-                    <th>Funcionário</th>
-                </tr>
+                    <tr>
+                        <th>Nome</th>
+                        <th>CPF</th>
+                        <th>Celular</th>
+                        <th>Cargo</th>
+                        <th>Departamento</th>
+                    </tr>
                 </thead>
 
                 <tbody>
-                {% for dap in order %}
-                <tr>
-                    <td>{{ dap.nome }}</td>
-                    <td>{{ dap.cpf }}</td>
-                    <td>{{ dap.celular }}</td>
-                    <td>{{ dap.cargo }}</td>
-                    <td>{{ dap.departamento }}</td>
-                </tr>
-                {% endfor %}
+                    {% for dap in order %}
+                        <tr>
+                            <td><a href="{% url 'exibir_perfil' token=dap.cod empresa=dap.nome_empresa id_user=dap.objectId %}">{{ dap.nome }}</a></td>
+                            <td>{{ dap.cpf }}</td>
+                            <td>{{ dap.celular }}</td>
+                            <td>{{ dap.cargo }}</td>
+                            <td>{{ dap.departamento }}</td>
+                        </tr>
+                    {% endfor %}
                 </tbody>
-
             </table>
         </div>
     </div>
