@@ -14,6 +14,9 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db import connections
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
+from dateutil.parser import *
+
+from datetime import timedelta, date
 
 
 def index(request, token):
@@ -79,7 +82,7 @@ def base(request, token):
         return redirect('login')
     else:
         pass
-    key = [{'id': token, 'emp': abc['id_empresa']['objectId'], 'user': abc['username']}]
+    key = [{'id': token, 'emp': abc['nome_empresa'], 'user': abc['username']}]
     return render(request, 'base.html', {'lista': key})
 
 
@@ -166,7 +169,7 @@ def criar_usuario(request):
         else:
             return redirect('login')
 
-    return render(request, 'criar_usuario.html', {'lista': key})
+    return render(request, 'criar_usuario.html', {})
 
 
 def criar_usuario_sucesso(request):
@@ -186,7 +189,7 @@ def criar_funcionario(request, token, empresa):
         return redirect('login')
     else:
         pass
-    key = [{'id': token, 'emp': abc['id_empresa']['objectId'], 'user': abc['username']}]
+    key = [{'id': token, 'emp': abc['nome_empresa'], 'user': abc['username']}]
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -215,7 +218,7 @@ def criar_funcionario(request, token, empresa):
                                             "cargo": f"{cargo}",
                                             "departamento": f"{departamento}",
                                             "empresa_confirmacao": bool(False),
-                                            "nome_empresa": empresa,
+                                            "nome_empresa": abc['nome_empresa'],
                                             "admin": bool(False),
                                             "id_empresa": {
                                                 '__type': "Pointer",
@@ -254,13 +257,60 @@ def listar_funcionario(request, token, empresa):
         return redirect('login')
     key = [{'id': token, 'emp': empresa, 'user': abc['username']}]
     conexao1 = requests.api.request('GET',
-                                    f"https://parseapi.back4app.com/classes/_User?where=%7B%20%22codigo_empresa%22%3A%20%22{empresa}%22%7D",
+                                    f"https://parseapi.back4app.com/classes/_User?where=%7B%22nome_empresa%22%3A%20%22{empresa}%22%7D",
                                     headers={
                                         "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
                                         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
     dop = conexao1.json()
     dap = [x for x in dop['results']]
+    a = len(dap)
+    [dap[x].update({'cod': token}) for x in range(a)]
+    
     return render(request, 'listar_funcionario.html', {'lista': key, 'order': dap})
+
+
+def exibir_perfil(request, token, empresa, id_user):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
+        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        "X-Parse-Session-Token": f"{token}"})
+    abc = conexao.json()
+    if str(abc['sessionToken']) != f"{token}":
+        return redirect('login')
+    elif abc['empresa_confirmacao'] == False:
+        return redirect('login')
+    key = [{'id': token, 'emp': empresa, 'id_user': abc['objectId']}]
+    conexao1 = requests.api.request('GET', 
+                                    f"https://parseapi.back4app.com/classes/_User?where=%7B%22nome_empresa%22%3A%20%22{empresa}%22%7D",
+                                    headers={
+                                        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
+    f = conexao1.json()
+    funcionario = [x for x in f['results']]
+
+    conexao2 = requests.api.request('GET',
+                                    f"https://parseapi.back4app.com/classes/Ponto",
+                                    headers={
+                                        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
+    p = conexao2.json()
+    ponto = [x for x in p['results']]
+
+    
+
+
+
+    date_input = request.GET.get('date_input')
+    conexao3 = requests.api.request('GET',
+                                    f"https://parseapi.back4app.com/classes/Ponto?where=%7B%20%22createdAt%22%3A%20%22{date_input}%22%20%7D",
+                                    headers={
+                                        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
+    p_data = conexao3.json()
+    ponto_por_data = [x for x in p_data['results']]
+    
+    
+    return render(request, 'exibir_perfil.html', {'lista': key, 'funcionarios': funcionario, 'Id_user': id_user, 'pontos': ponto, 'pontos_data': ponto_por_data})
 
 
 # ÁREA DO ADMINISTRADOR #
