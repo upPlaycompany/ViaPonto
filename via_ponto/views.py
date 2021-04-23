@@ -15,8 +15,8 @@ from django.db import connections
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from dateutil.parser import *
-
-from datetime import timedelta, date
+from copy import *
+from datetime import *
 
 
 def index(request, token):
@@ -89,7 +89,6 @@ def criar_usuario(request):
         nome = request.POST['nome']
         datanasc = request.POST['datanasc']
         email = request.POST['email']
-        telefone = request.POST['telefone']
         celular = request.POST['celular']
         cargo = request.POST['cargo']
         departamento = request.POST['departamento']
@@ -145,7 +144,6 @@ def criar_usuario(request):
                                             "nome": f"{nome}",
                                             "data_nasc": f"{datanasc}",
                                             "email": f"{email}",
-                                            "telefone": f"{telefone}",
                                             "celular": f"{celular}",
                                             "cargo": f"{cargo}",
                                             "departamento": f"{departamento}",
@@ -192,10 +190,22 @@ def criar_funcionario(request, token, empresa):
         nome = request.POST['nome']
         datanasc = request.POST['datanasc']
         email = request.POST['email']
-        telefone = request.POST['telefone']
         celular = request.POST['celular']
         cargo = request.POST['cargo']
         departamento = request.POST['departamento']
+        hora_semana_entrada_1 = request.POST['hora_semana_entrada_1']
+        hora_semana_saida_1 = request.POST['hora_semana_saida_1']
+        hora_semana_entrada_2 = request.POST['hora_semana_entrada_2']
+        hora_semana_saida_2 = request.POST['hora_semana_saida_2']
+        hora_sabado_entrada_1 = request.POST['hora_sabado_entrada_1']
+        hora_sabado_saida_1 = request.POST['hora_sabado_saida_1']
+        hora_sabado_entrada_2 = request.POST['hora_sabado_entrada_2']
+        hora_sabado_saida_2 = request.POST['hora_sabado_saida_2']
+        hora_domingo_entrada_1 = request.POST['hora_domingo_entrada_1']
+        hora_domingo_saida_1 = request.POST['hora_domingo_saida_1']
+        hora_domingo_entrada_2 = request.POST['hora_domingo_entrada_2']
+        hora_domingo_saida_2 = request.POST['hora_domingo_saida_2']
+
         conexao1 = requests.api.request('POST', f"https://parseapi.back4app.com/users",
                                         headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
                                                  "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
@@ -208,17 +218,29 @@ def criar_funcionario(request, token, empresa):
                                             "nome": f"{nome}",
                                             "data_nasc": f"{datanasc}",
                                             "email": f"{email}",
-                                            "telefone": f"{telefone}",
+                                            
                                             "celular": f"{celular}",
                                             "cargo": f"{cargo}",
                                             "departamento": f"{departamento}",
+                                            "hora_semana_entrada_1": f"{hora_semana_entrada_1}",
+                                            "hora_semana_saida_1": f"{hora_semana_saida_1}",
+                                            "hora_semana_entrada_2": f"{hora_semana_entrada_2}",
+                                            "hora_semana_saida_2": f"{hora_semana_saida_2}",
+                                            "hora_sabado_entrada_1": f"{hora_sabado_entrada_1}",
+                                            "hora_sabado_saida_1": f"{hora_sabado_saida_1}",
+                                            "hora_sabado_entrada_2": f"{hora_sabado_entrada_2}",
+                                            "hora_sabado_saida_2": f"{hora_sabado_saida_2}",
+                                            "hora_domingo_entrada_1": f"{hora_domingo_entrada_1}",
+                                            "hora_domingo_saida_1": f"{hora_domingo_saida_1}",
+                                            "hora_domingo_entrada_2": f"{hora_domingo_entrada_2}",
+                                            "hora_domingo_saida_2": f"{hora_domingo_saida_2}",
                                             "empresa_confirmacao": bool(False),
                                             "nome_empresa": abc['nome_empresa'],
                                             "admin": bool(False),
                                             "id_empresa": {
                                                 '__type': "Pointer",
                                                 "className": "Empresa",
-                                                "objectId": empresa}
+                                                "objectId": abc['objectId']}
                                         })
         return redirect('criar_funcionario_sucesso', token=token)
     return render(request, 'criar_funcionario.html', {'lista': key})
@@ -291,21 +313,22 @@ def exibir_perfil(request, token, empresa, id_user):
     p = conexao2.json()
     ponto = [x for x in p['results']]
 
+    for x in ponto:
+        data = x['createdAt']
+        data = data[:9]
+        date = datetime.strptime(data, '%Y-%m-%d').date()
+        date = date.strftime('%d/%m/%Y')
+        x['createdAt'] = date
     
 
-
-
-    date_input = request.GET.get('date_input')
-    conexao3 = requests.api.request('GET',
-                                    f"https://parseapi.back4app.com/classes/Ponto?where=%7B%20%22createdAt%22%3A%20%22{date_input}%22%20%7D",
-                                    headers={
-                                        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
-                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
-    p_data = conexao3.json()
-    ponto_por_data = [x for x in p_data['results']]
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+    print(start_date, end_date)
     
-    
-    return render(request, 'exibir_perfil.html', {'lista': key, 'funcionarios': funcionario, 'Id_user': id_user, 'pontos': ponto, 'pontos_data': ponto_por_data})
+        
+        
+        
+    return render(request, 'exibir_perfil.html', {'lista': key, 'funcionarios': funcionario, 'Id_user': id_user, 'pontos': ponto})
 
 
 # ÁREA DO ADMINISTRADOR #
