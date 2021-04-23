@@ -323,12 +323,23 @@ def exibir_perfil(request, token, empresa, id_user):
 
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
-    print(start_date, end_date)
+
+    if start_date and end_date:
+        start = datetime.strptime(start_date, '%Y-%m-%d').date()
+        end = datetime.strptime(end_date, '%Y-%m-%d').date()
+        dia_start = start.day
+        mes_start = start.month
+        ano_start = start.year
+        dia_end = end.day
+        lista = list(range(dia_start, dia_end + 1))
+        a = len(lista)
+        datas = tuple([f"0{lista[x]}" + '/' + f"0{mes_start}" + '/' + f"{ano_start}" if x < 10 else f"{lista[x]}" + '/' + f"{mes_start}" + '/' + f"{ano_start}" for x in range(a)])
+        teste = [{'createdAt': x['createdAt'], 'id_funcionario': {'objectId': x['id_funcionario']['objectId']}, 'horario': x['horario'], 'registro': x['registro'], 'local_registro': x['local_registro']} if str(x['createdAt']) in datas else {'createdAt': 'sem registro', 'id_funcionario': {'objectId': x['id_funcionario']['objectId']}, 'horario': 'sem registro', 'registro': 'sem registro', 'local_registro': 'sem registro'} for x in ponto]
+    else:
+        teste = ponto
     
-        
-        
-        
-    return render(request, 'exibir_perfil.html', {'lista': key, 'funcionarios': funcionario, 'Id_user': id_user, 'pontos': ponto})
+    
+    return render(request, 'exibir_perfil.html', {'lista': key, 'funcionarios': funcionario, 'Id_user': id_user, 'pontos': teste})
 
 
 # ÁREA DO ADMINISTRADOR #

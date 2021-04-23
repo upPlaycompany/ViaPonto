@@ -6,6 +6,10 @@ Funcionário da empresa
 
 {% block extra_style %}
     <style>
+        .card-body .row {
+            margin-bottom: 30px;
+        }
+        
         .rTable {
             text-align: center;
         }
@@ -22,8 +26,6 @@ Funcionário da empresa
         }
     </style>
 {% endblock %}
-
-
 
 {% block content %}
 
@@ -61,7 +63,6 @@ Funcionário da empresa
                 <tbody>
                     {% for ponto in pontos %}
                         {% if ponto.id_funcionario.objectId == Id_user %}
-                        
                             <tr>
                                 <td>{{ ponto.createdAt }}</td>
                                 <td>{{ ponto.horario }}</td>
@@ -75,7 +76,5 @@ Funcionário da empresa
         </div>
     </div>
 </div>
-
-<!-- /.container-fluid -->
 
 {% endblock %}
