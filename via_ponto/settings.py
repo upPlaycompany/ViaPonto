@@ -23,7 +23,8 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 SECRET_KEY = 'j_)iv&7*nb2c7ppeuymr8%vb33-a_h1^u_fm^htuke8*=q!ng^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
+
 
 ALLOWED_HOSTS = ['*']
 
@@ -50,6 +51,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+SESSION_COOKIE_SECURE = 'True'
+
+CSRF_COOKIE_SECURE = 'True'
 
 ROOT_URLCONF = 'via_ponto.urls'
 
