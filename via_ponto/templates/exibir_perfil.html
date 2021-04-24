@@ -6,6 +6,10 @@ Funcionário da empresa
 
 {% block extra_style %}
     <style>
+        .card-body .row {
+            margin-bottom: 30px;
+        }
+        
         .rTable {
             text-align: center;
         }
@@ -23,8 +27,6 @@ Funcionário da empresa
     </style>
 {% endblock %}
 
-
-
 {% block content %}
 
 <div class="card shadow mb-4">
@@ -40,8 +42,9 @@ Funcionário da empresa
             <div class="col-md-8">
                 <form class="form-inline my-2 my-lg-0 pull-right">
                     <label>Data Inicial</label>
-                    <input class="form-control ml-sm-2 mr-sm-2" name="date_input" type="date" />
-                    
+                    <input class="form-control ml-sm-2 mr-sm-2" name="start_date" type="date" />
+                    <label>Data Final</label>
+                    <input class="form-control ml-sm-2 mr-sm-2" name="end_date" type="date" />
                     <button class="btn btn-primary my-2 my-sm-0" type="submit">Atualizar</button>
                 </form>
             </div>
@@ -60,7 +63,6 @@ Funcionário da empresa
                 <tbody>
                     {% for ponto in pontos %}
                         {% if ponto.id_funcionario.objectId == Id_user %}
-                        
                             <tr>
                                 <td>{{ ponto.createdAt }}</td>
                                 <td>{{ ponto.horario }}</td>
@@ -74,7 +76,5 @@ Funcionário da empresa
         </div>
     </div>
 </div>
-
-<!-- /.container-fluid -->
 
 {% endblock %}
