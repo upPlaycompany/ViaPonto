@@ -1,0 +1,13 @@
+{% extends 'index.html' %}
+
+{% block title %}
+Criação de funcionário
+{% endblock title %}
+
+{% block content %}
+
+<h3>Funcionário criado com sucesso</h3>
+{% for key in lista %}
+<a href="{% url 'base' token=key.id %}"><button type="button" class="btn btn-success">Clique para voltar a página inicial</button></a>
+{% endfor %}
+{% endblock %}
