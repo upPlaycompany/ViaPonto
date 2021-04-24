@@ -14,7 +14,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db import connections
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
-
+from datetime import *
 
 def index(request, token):
     conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
