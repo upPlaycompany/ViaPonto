@@ -54,6 +54,7 @@ MIDDLEWARE = [
 
 
 
+
 ROOT_URLCONF = 'via_ponto.urls'
 
 TEMPLATES = [
