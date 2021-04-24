@@ -52,8 +52,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+SESSION_COOKIE_SECURE = True
 
+SECURE_SSL_REDIRECT = True
 
+CSRF_COOKIE_SECURE = True
 
 ROOT_URLCONF = 'via_ponto.urls'
 
