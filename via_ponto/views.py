@@ -408,3 +408,5 @@ def ver_empresa(request, token, id):
     dop = conexao1.json()
     dap = [x for x in dop['results']]
     return render(request, 'ver_empresa.html', {'lista': key, 'lista2': dap})
+
+
