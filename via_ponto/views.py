@@ -14,9 +14,6 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db import connections
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
-from dateutil.parser import *
-from copy import *
-from datetime import *
 
 
 def index(request, token):
