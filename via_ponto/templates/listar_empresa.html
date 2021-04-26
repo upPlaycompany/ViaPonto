@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends 'index_admin.html' %}
 
 {% block title %}
@@ -65,3 +66,43 @@ Listar empresas empresa
 
 
                    </td> --->
+=======
+{% extends 'base.html' %}
+
+{% block title %} Listar Empresas {% endblock title %}
+
+{% block content %}
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-success">Listagem de Empresas</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0" >
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>CNPJ</th>
+                            <th>CEP da empresa</th>
+                            <th>Celular</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for dop in lista2 %}
+                            <tr>
+                                <td>{{ dop.nome_empresa }}</td>
+                                <td>{{ dop.cnpj }}</td>
+                                <td>{{ dop.cep }}</td>
+                                <td>{{ dop.celular_empresa }}</td>
+                                <td>{{ dop.email_empresa }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+>>>>>>> 661115b9c3666533cb2bd0dcbfe8c8ff5c9295b8
