@@ -50,7 +50,7 @@ def login(request):
         abc = conexao.json()
         abp = str(conexao.status_code)
         if abp == '200' and abc['empresa_confirmacao'] == True:
-            return redirect('base', token=abc['sessionToken'])
+            return redirect('dashboard', token=abc['sessionToken'])
         elif abp == '200' and abc['admin'] == True:
             return redirect('base_admin', token=abc['sessionToken'])
         else:
