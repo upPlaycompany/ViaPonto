@@ -32,7 +32,6 @@ def index(request, token):
     else:
         pass
     key = [{'id': token, 'emp': usuario['nome_empresa'], 'user': usuario['username']}]
-
     return render(request, 'index.html', {'lista': key})
 
 
