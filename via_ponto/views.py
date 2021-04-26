@@ -27,7 +27,7 @@ def index(request, token):
         return redirect('login')
     elif usuario['empresa_confirmacao'] == False:
         return redirect('login')
-    elif abc['admin'] == True:
+    elif usuario['admin'] == True:
         return redirect('login')
     else:
         pass
