@@ -1,13 +1,13 @@
-{% extends 'index.html' %}
+{% extends 'base.html' %}
 
-{% block title %}
-Criação de funcionário
-{% endblock title %}
+{% block title %} Funcionário Criado {% endblock title %}
 
 {% block content %}
+    <h3>Funcionário Criado com Sucesso!</h3>
 
-<h3>Funcionário criado com sucesso</h3>
-{% for key in lista %}
-<a href="{% url 'base' token=key.id %}"><button type="button" class="btn btn-success">Clique para voltar a página inicial</button></a>
-{% endfor %}
+    {% for key in lista %}
+        <a href="{% url 'dashboard' token=key.id %}">
+            <button type="button" class="btn btn-success">Clique para voltar a Página Inicial</button>
+        </a>
+    {% endfor %}
 {% endblock %}

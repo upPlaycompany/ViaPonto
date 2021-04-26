@@ -14,8 +14,6 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db import connections
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
-from dateutil.parser import *
-from copy import *
 from datetime import *
 
 
@@ -23,15 +21,17 @@ def index(request, token):
     conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
         "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
-        "X-Parse-Session-Token": f"{token}"})
-    abc = conexao.json()
-    if str(abc['sessionToken']) != f"{token}":
+        "X-Parse-Session-Token": f"{token}"}
+                                   )
+    usuario = conexao.json()
+    if str(usuario['sessionToken']) != f"{token}":
         return redirect('login')
-    elif abc['empresa_confirmacao'] == False:
+    elif usuario['empresa_confirmacao'] == False:
         return redirect('login')
     else:
         pass
-    key = [{'id': token, 'emp': abc['nome_empresa']}]
+    key = [{'id': token, 'emp': usuario['nome_empresa'], 'user': usuario['username']}]
+
     return render(request, 'index.html', {'lista': key})
 
 
@@ -49,9 +49,10 @@ def login(request):
         abc = conexao.json()
         abp = str(conexao.status_code)
         if abp == '200' and abc['empresa_confirmacao'] == True:
-            return redirect('base', token=abc['sessionToken'])
+            return redirect('dashboard', token=abc['sessionToken'])
         else:
             return redirect('login')
+
     return render(request, 'login.html')
 
 
@@ -61,24 +62,15 @@ def deslogar(request, token):
         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
         "X-Parse-Session-Token": f"{token}"})
     logout(request)
+
     return redirect('login')
 
 
-def base(request, token):
-    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
+def redefinir_senha(request, token):
+    requests.api.request('POST', 'https://parseapi.back4app.com/logout', headers={
         "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
-        "X-Parse-Session-Token": f"{token}"}
-                                   )
-    abc = conexao.json()
-    if str(abc['sessionToken']) != f"{token}":
-        return redirect('login')
-    elif abc['empresa_confirmacao'] == False:
-        return redirect('login')
-    else:
-        pass
-    key = [{'id': token, 'emp': abc['nome_empresa'], 'user': abc['username']}]
-    return render(request, 'base.html', {'lista': key})
+        "X-Parse-Session-Token": f"{token}"}))
 
 
 def criar_usuario(request):
@@ -126,10 +118,11 @@ def criar_usuario(request):
                                             "numero": f"{numero}",
                                             "bairro": f"{bairro}",
                                         })
-        abc = conexao1.json()
-        aaa = str(conexao1.status_code)
-        dee = abc['objectId']
-        if aaa != '201':
+        empresa = conexao1.json()
+        status = str(conexao1.status_code)
+        empresa_id = empresa['objectId']
+
+        if status != '201':
             return redirect('login')
 
         conexao2 = requests.api.request('POST', f"https://parseapi.back4app.com/users",
@@ -153,7 +146,7 @@ def criar_usuario(request):
                                             "id_empresa": {
                                                 '__type': "Pointer",
                                                 "className": "Empresa",
-                                                "objectId": dee}
+                                                "objectId": empresa_id}
                                         })
         ppp = conexao2.json()
         ppa = str(conexao2.status_code)
@@ -182,7 +175,10 @@ def criar_funcionario(request, token, empresa):
         return redirect('login')
     else:
         pass
+
     key = [{'id': token, 'emp': abc['nome_empresa'], 'user': abc['username']}]
+    empresa_id = abc['id_empresa']['objectId']
+
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -240,7 +236,7 @@ def criar_funcionario(request, token, empresa):
                                             "id_empresa": {
                                                 '__type': "Pointer",
                                                 "className": "Empresa",
-                                                "objectId": abc['objectId']}
+                                                "objectId": empresa_id}
                                         })
         return redirect('criar_funcionario_sucesso', token=token)
     return render(request, 'criar_funcionario.html', {'lista': key})
@@ -319,11 +315,10 @@ def exibir_perfil(request, token, empresa, id_user):
         date = datetime.strptime(data, '%Y-%m-%d').date()
         date = date.strftime('%d/%m/%Y')
         x['createdAt'] = date
-    
 
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
-
+    
     if start_date and end_date:
         start = datetime.strptime(start_date, '%Y-%m-%d').date()
         end = datetime.strptime(end_date, '%Y-%m-%d').date()
@@ -331,15 +326,22 @@ def exibir_perfil(request, token, empresa, id_user):
         mes_start = start.month
         ano_start = start.year
         dia_end = end.day
+        mes_end = end.month
+        ano_end = end.year
+
         lista = list(range(dia_start, dia_end + 1))
         a = len(lista)
+        
         datas = tuple([f"0{lista[x]}" + '/' + f"0{mes_start}" + '/' + f"{ano_start}" if x < 10 else f"{lista[x]}" + '/' + f"{mes_start}" + '/' + f"{ano_start}" for x in range(a)])
-        teste = [{'createdAt': x['createdAt'], 'id_funcionario': {'objectId': x['id_funcionario']['objectId']}, 'horario': x['horario'], 'registro': x['registro'], 'local_registro': x['local_registro']} if str(x['createdAt']) in datas else {'createdAt': 'sem registro', 'id_funcionario': {'objectId': x['id_funcionario']['objectId']}, 'horario': 'sem registro', 'registro': 'sem registro', 'local_registro': 'sem registro'} for x in ponto]
+        ponto_date = [{'createdAt': x['createdAt'], 'id_funcionario': {'objectId': x['id_funcionario']['objectId']}, 'horario': x['horario'], 'registro': x['registro'], 'local_registro': x['local_registro']} if str(x['createdAt']) in datas else {'createdAt': 'sem registro', 'id_funcionario': {'objectId': x['id_funcionario']['objectId']}, 'horario': 'sem registro', 'registro': 'sem registro', 'local_registro': 'sem registro'} for x in ponto]
     else:
-        teste = ponto
+        ponto_date = ponto
     
-    
-    return render(request, 'exibir_perfil.html', {'lista': key, 'funcionarios': funcionario, 'Id_user': id_user, 'pontos': teste})
+    return render(request, 'exibir_perfil.html', {'lista': key, 'funcionarios': funcionario, 'Id_user': id_user, 'pontos': ponto_date})
+
+
+
+
 
 
 # ÁREA DO ADMINISTRADOR #

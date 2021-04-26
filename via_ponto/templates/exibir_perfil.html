@@ -1,8 +1,6 @@
-{% extends 'index.html' %}
+{% extends 'base.html' %}
 
-{% block title %}
-Funcionário da empresa
-{% endblock title %}
+{% block title %} Pontos do Funcionário {% endblock title %}
 
 {% block extra_style %}
     <style>
@@ -28,53 +26,51 @@ Funcionário da empresa
 {% endblock %}
 
 {% block content %}
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            {% for funcionario in funcionarios %}
+                {% if funcionario.objectId == Id_user %}
+                    <h6 class="m-0 font-weight-bold text-success">Funcionário: {{ funcionario.nome }}</h6>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <form class="form-inline my-2 my-lg-0 pull-right">
+                        <label>Data Inicial</label>
+                        <input class="form-control ml-sm-2 mr-sm-2" name="start_date" type="date" />
+                        <label>Data Final</label>
+                        <input class="form-control ml-sm-2 mr-sm-2" name="end_date" type="date" />
+                        <button class="btn btn-primary my-2 my-sm-0" type="submit">Atualizar</button>
+                    </form>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="rTable table table-bordered" id="dataTable" width="100%" cellspacing="0" >
+                    <thead>
+                        <tr>
+                            <th>Data Registro</th>
+                            <th>Horário</th>
+                            <th>Registro</th>
+                            <th>Local do Registro</th>
+                        </tr>
+                    </thead>
 
-<div class="card shadow mb-4">
-    <div class="card-header py-3">
-        {% for funcionario in funcionarios %}
-            {% if funcionario.objectId == Id_user %}
-                <h6 class="m-0 font-weight-bold text-success">Funcionário: {{ funcionario.nome }}</h6>
-            {% endif %}
-        {% endfor %}
-    </div>
-    <div class="card-body">
-        <div class="row">
-            <div class="col-md-8">
-                <form class="form-inline my-2 my-lg-0 pull-right">
-                    <label>Data Inicial</label>
-                    <input class="form-control ml-sm-2 mr-sm-2" name="start_date" type="date" />
-                    <label>Data Final</label>
-                    <input class="form-control ml-sm-2 mr-sm-2" name="end_date" type="date" />
-                    <button class="btn btn-primary my-2 my-sm-0" type="submit">Atualizar</button>
-                </form>
+                    <tbody>
+                        {% for ponto in pontos %}
+                            {% if ponto.id_funcionario.objectId == Id_user %}
+                                <tr>
+                                    <td>{{ ponto.createdAt }}</td>
+                                    <td>{{ ponto.horario }}</td>
+                                    <td>{{ ponto.registro }}</td>
+                                    <td>{{ ponto.local_registro }}</td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
-        <div class="table-responsive">
-            <table class="rTable table table-bordered" id="dataTable" width="100%" cellspacing="0" >
-                <thead>
-                    <tr>
-                        <th>Data Registro</th>
-                        <th>Horário</th>
-                        <th>Registro</th>
-                        <th>Local do Registro</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {% for ponto in pontos %}
-                        {% if ponto.id_funcionario.objectId == Id_user %}
-                            <tr>
-                                <td>{{ ponto.createdAt }}</td>
-                                <td>{{ ponto.horario }}</td>
-                                <td>{{ ponto.registro }}</td>
-                                <td>{{ ponto.local_registro }}</td>
-                            </tr>
-                        {% endif %}
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
     </div>
-</div>
-
 {% endblock %}
