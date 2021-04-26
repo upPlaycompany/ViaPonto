@@ -66,11 +66,7 @@ def deslogar(request, token):
     return redirect('login')
 
 
-def redefinir_senha(request, token):
-    requests.api.request('POST', 'https://parseapi.back4app.com/logout', headers={
-        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
-        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
-        "X-Parse-Session-Token": f"{token}"}))
+
 
 
 def criar_usuario(request):
