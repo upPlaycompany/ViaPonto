@@ -16,6 +16,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from datetime import *
 
+
 def index(request, token):
     conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
         "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
@@ -50,13 +51,9 @@ def login(request):
         abc = conexao.json()
         abp = str(conexao.status_code)
         if abp == '200' and abc['empresa_confirmacao'] == True:
-<<<<<<< HEAD
             return redirect('base', token=abc['sessionToken'])
         elif abp == '200' and abc['admin'] == True:
-            return redirect('base_admin', token=abc['sessionToken'])
-=======
             return redirect('dashboard', token=abc['sessionToken'])
->>>>>>> 661115b9c3666533cb2bd0dcbfe8c8ff5c9295b8
         else:
             return redirect('login')
 
@@ -77,7 +74,6 @@ def redefinir_senha(request, token):
     requests.api.request('POST', 'https://parseapi.back4app.com/logout', headers={
         "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
-<<<<<<< HEAD
         "X-Parse-Session-Token": f"{token}"})
     abc = conexao.json()
     if str(abc['sessionToken']) != f"{token}":
@@ -90,9 +86,7 @@ def redefinir_senha(request, token):
         pass
     key = [{'id': token, 'emp': abc['nome_empresa'], 'user': abc['username']}]
     return render(request, 'base.html', {'lista': key})
-=======
-        "X-Parse-Session-Token": f"{token}"}))
->>>>>>> 661115b9c3666533cb2bd0dcbfe8c8ff5c9295b8
+
 
 
 def criar_usuario(request):
@@ -236,7 +230,7 @@ def criar_funcionario(request, token, empresa):
                                             "nome": f"{nome}",
                                             "data_nasc": f"{datanasc}",
                                             "email": f"{email}",
-                                            
+
                                             "celular": f"{celular}",
                                             "cargo": f"{cargo}",
                                             "departamento": f"{departamento}",
@@ -300,7 +294,7 @@ def listar_funcionario(request, token, empresa):
     dap = [x for x in dop['results']]
     a = len(dap)
     [dap[x].update({'cod': token}) for x in range(a)]
-    
+
     return render(request, 'listar_funcionario.html', {'lista': key, 'order': dap})
 
 
@@ -315,7 +309,7 @@ def exibir_perfil(request, token, empresa, id_user):
     elif abc['empresa_confirmacao'] == False:
         return redirect('login')
     key = [{'id': token, 'emp': empresa, 'id_user': abc['objectId']}]
-    conexao1 = requests.api.request('GET', 
+    conexao1 = requests.api.request('GET',
                                     f"https://parseapi.back4app.com/classes/_User?where=%7B%22nome_empresa%22%3A%20%22{empresa}%22%7D",
                                     headers={
                                         "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
@@ -340,7 +334,7 @@ def exibir_perfil(request, token, empresa, id_user):
 
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
-    
+
     if start_date and end_date:
         start = datetime.strptime(start_date, '%Y-%m-%d').date()
         end = datetime.strptime(end_date, '%Y-%m-%d').date()
@@ -353,17 +347,20 @@ def exibir_perfil(request, token, empresa, id_user):
 
         lista = list(range(dia_start, dia_end + 1))
         a = len(lista)
-        
-        datas = tuple([f"0{lista[x]}" + '/' + f"0{mes_start}" + '/' + f"{ano_start}" if x < 10 else f"{lista[x]}" + '/' + f"{mes_start}" + '/' + f"{ano_start}" for x in range(a)])
-        ponto_date = [{'createdAt': x['createdAt'], 'id_funcionario': {'objectId': x['id_funcionario']['objectId']}, 'horario': x['horario'], 'registro': x['registro'], 'local_registro': x['local_registro']} if str(x['createdAt']) in datas else {'createdAt': 'sem registro', 'id_funcionario': {'objectId': x['id_funcionario']['objectId']}, 'horario': 'sem registro', 'registro': 'sem registro', 'local_registro': 'sem registro'} for x in ponto]
+
+        datas = tuple([
+            f"0{lista[x]}" + '/' + f"0{mes_start}" + '/' + f"{ano_start}" if x < 10 else f"{lista[x]}" + '/' + f"{mes_start}" + '/' + f"{ano_start}"
+            for x in range(a)])
+        ponto_date = [{'createdAt': x['createdAt'], 'id_funcionario': {'objectId': x['id_funcionario']['objectId']},
+                       'horario': x['horario'], 'registro': x['registro'],
+                       'local_registro': x['local_registro']} if str(x['createdAt']) in datas else {
+            'createdAt': 'sem registro', 'id_funcionario': {'objectId': x['id_funcionario']['objectId']},
+            'horario': 'sem registro', 'registro': 'sem registro', 'local_registro': 'sem registro'} for x in ponto]
     else:
         ponto_date = ponto
-    
-    return render(request, 'exibir_perfil.html', {'lista': key, 'funcionarios': funcionario, 'Id_user': id_user, 'pontos': ponto_date})
 
-
-
-
+    return render(request, 'exibir_perfil.html',
+                  {'lista': key, 'funcionarios': funcionario, 'Id_user': id_user, 'pontos': ponto_date})
 
 
 # ÁREA DO ADMINISTRADOR #
@@ -397,6 +394,7 @@ def base_admin(request, token):
     dup = [{'numero_empresa': len(dep)}]
     key = [{'id': token, 'user': abc['username']}]
     return render(request, 'base_admin.html', {'lista': key, 'lista2': dip, 'lista3': dup})
+
 
 def index_admin(request, token):
     conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
@@ -432,13 +430,13 @@ def listar_empresa(request, token):
                                         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
                                         "accept": "application/json"})
 
-
     key = [{'id': token, 'user': abc['username']}]
     dop = conexao1.json()
     dap = [x for x in dop['results']]
     a = len(dap)
     [dap[x].update({'token': token}) for x in range(a)]
     return render(request, 'listar_empresa.html', {'lista': key, 'lista2': dap})
+
 
 def ver_empresa(request, token, id):
     conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
@@ -452,7 +450,8 @@ def ver_empresa(request, token, id):
         return redirect('login')
     else:
         pass
-    conexao1 = requests.api.request('GET', f"https://parseapi.back4app.com/classes/Empresa?where=%7B%22objectId%22%3A%20%22{id}%22%7D",
+    conexao1 = requests.api.request('GET',
+                                    f"https://parseapi.back4app.com/classes/Empresa?where=%7B%22objectId%22%3A%20%22{id}%22%7D",
                                     headers={
                                         "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
                                         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
@@ -461,5 +460,3 @@ def ver_empresa(request, token, id):
     dop = conexao1.json()
     dap = [x for x in dop['results']]
     return render(request, 'ver_empresa.html', {'lista': key, 'lista2': dap})
-
-
