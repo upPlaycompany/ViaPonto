@@ -56,7 +56,6 @@ def login(request):
             return redirect('dashboard', token=abc['sessionToken'])
         else:
             return redirect('login')
-
     return render(request, 'login.html')
 
 
