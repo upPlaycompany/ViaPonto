@@ -186,17 +186,52 @@ def criar_funcionario(request, token, empresa):
         cargo = request.POST['cargo']
         departamento = request.POST['departamento']
         hora_semana_entrada_1 = request.POST['hora_semana_entrada_1']
+        if hora_semana_entrada_1 == "":
+            hora_semana_entrada_1 = "nao definido"
+
         hora_semana_saida_1 = request.POST['hora_semana_saida_1']
+        if hora_semana_saida_1 == "":
+            hora_semana_saida_1 = "nao definido"
+
         hora_semana_entrada_2 = request.POST['hora_semana_entrada_2']
+        if hora_semana_entrada_2 == "":
+            hora_semana_entrada_2 = "nao definido"
+
         hora_semana_saida_2 = request.POST['hora_semana_saida_2']
+        if hora_semana_saida_2 == "":
+            hora_semana_saida_2 = "nao definido"
+
         hora_sabado_entrada_1 = request.POST['hora_sabado_entrada_1']
+        if hora_sabado_entrada_1 == "":
+            hora_sabado_entrada_1 = "nao definido"
+
         hora_sabado_saida_1 = request.POST['hora_sabado_saida_1']
+        if hora_sabado_saida_1 == "":
+            hora_sabado_saida_1 = "nao definido"
+
         hora_sabado_entrada_2 = request.POST['hora_sabado_entrada_2']
+        if hora_sabado_entrada_2 == "":
+            hora_sabado_entrada_2 = "nao definido"
+
         hora_sabado_saida_2 = request.POST['hora_sabado_saida_2']
+        if hora_sabado_saida_2 == "":
+            hora_sabado_saida_2 = "nao definido"
+
         hora_domingo_entrada_1 = request.POST['hora_domingo_entrada_1']
+        if hora_domingo_entrada_1 == "":
+            hora_domingo_entrada_1 = "nao definido"
+
         hora_domingo_saida_1 = request.POST['hora_domingo_saida_1']
+        if hora_domingo_saida_1 == "":
+            hora_domingo_saida_1 = "nao definido"
+
         hora_domingo_entrada_2 = request.POST['hora_domingo_entrada_2']
+        if hora_domingo_entrada_2 == "":
+            hora_domingo_entrada_2 = "nao definido"
+
         hora_domingo_saida_2 = request.POST['hora_domingo_saida_2']
+        if hora_domingo_saida_2 == "":
+            hora_domingo_saida_2 = "nao definido"
 
         conexao1 = requests.api.request('POST', f"https://parseapi.back4app.com/users",
                                         headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
