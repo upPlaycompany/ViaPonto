@@ -19,10 +19,9 @@ from datetime import *
 
 def index(request, token):
     conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
-        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
-        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
-        "X-Parse-Session-Token": f"{token}"}
-                                   )
+                                    "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                    "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                    "X-Parse-Session-Token": f"{token}"})
     usuario = conexao.json()
     if str(usuario['sessionToken']) != f"{token}":
         return redirect('login')
@@ -68,19 +67,35 @@ def deslogar(request, token):
     return redirect('login')
 
 
-def restaurar_senha(request):
+def redefinir_senha(request):
     if request.method == 'POST':
         email = request.POST['email']
+        
+        conexao = requests.api.request('POST', f"https://parseapi.back4app.com/requestPasswordReset",
+                                        headers={
+                                                "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                                "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                                "Content-Type": "application/json"},
+                                        json={
+                                                "email": f"{email}",
+                                        })
+        response = conexao.json()
+        status = str(conexao.status_code)
+        print(status)
+        if status == '200':
+            return redirect('redefinir_senha_sucesso')
+        else:
+            return redirect('redefinir_senha_erro')
 
-    conexao = requests.api.request('POST', 'https://parseapi.back4app.com/requestPasswordReset',
-                                    headers={
-                                            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
-                                            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
-                                            "Context-Type": "application/json"},
-                                    json={
-                                            "email": f"{email}",
-                                    })
-    
+    return render(request, 'redefinir_senha.html')
+
+
+def redefinir_senha_sucesso(request):
+    return render(request, 'redefinir_senha_sucesso.html')
+
+
+def redefinir_senha_erro(request):
+    return render(request, 'redefinir_senha_erro.html')
 
 
 def criar_usuario(request):
@@ -174,9 +189,9 @@ def criar_usuario_sucesso(request):
 
 def criar_funcionario(request, token, empresa):
     conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
-        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
-        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
-        "X-Parse-Session-Token": f"{token}"})
+                                        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                        "X-Parse-Session-Token": f"{token}"})
 
     abc = conexao.json()
     if str(abc['sessionToken']) != f"{token}":
