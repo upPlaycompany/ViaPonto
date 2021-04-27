@@ -1,0 +1,54 @@
+{% extends 'index_admin.html' %}
+
+{% block title %} Dados da Empresa {% endblock title %}
+
+{% block content %}
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-success">Dados da Empresa</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0" >
+                    <thead>
+                        <tr>
+                            <th>Nome da empresa</th>
+                            <th>CNPJ</th>
+                            <th>CEP da empresa</th>
+                            <th>Celular</th>
+                            <th>Email</th>
+                            <th>Telefone comercial</th>
+                            <th>Logradouro</th>
+                            <th>Número</th>
+                            <th>Bairro</th>
+                            <th>Estado</th>
+                            <th>IE</th>
+                            <th>Razão Social</th>
+                            <th>Atividade</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for dap in lista2 %}
+                            <tr>
+                                <td>{{ dap.nome_empresa }}</td>
+                                <td>{{ dap.cnpj }}</td>
+                                <td>{{ dap.cep }}</td>
+                                <td>{{ dap.celular_empresa }}</td>
+                                <td>{{ dap.email_empresa }}</td>
+                                <td>{{ dap.tel_comercial }}</td>
+                                <td>{{ dap.logradouro }}</td>
+                                <td>{{ dap.numero }}</td>
+                                <td>{{ dap.bairro }}</td>
+                                <td>{{ dap.uf }}</td>
+                                <td>{{ dap.ie }}</td>
+                                <td>{{ dap.razaosocial }}</td>
+                                <td>{{ dap.atividade }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

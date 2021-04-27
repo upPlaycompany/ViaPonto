@@ -1,33 +1,39 @@
-{% extends 'base.html' %}
+{% extends 'index_admin.html' %}
 
-{% block title %} Listar Empresas {% endblock title %}
+{% block title %} Lista de Empresas {% endblock title %}
 
 {% block content %}
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-success">Listagem de Empresas</h6>
+            <h6 class="m-0 font-weight-bold text-success">Lista de Empresas</h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0" >
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
                             <th>Nome</th>
                             <th>CNPJ</th>
-                            <th>CEP da empresa</th>
+                            <th>CEP</th>
                             <th>Celular</th>
                             <th>Email</th>
+                            <th>Ações</th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        {% for dop in lista2 %}
+                        {% for dap in lista2 %}
                             <tr>
-                                <td>{{ dop.nome_empresa }}</td>
-                                <td>{{ dop.cnpj }}</td>
-                                <td>{{ dop.cep }}</td>
-                                <td>{{ dop.celular_empresa }}</td>
-                                <td>{{ dop.email_empresa }}</td>
+                                <td>{{ dap.nome_empresa }}</td>
+                                <td>{{ dap.cnpj }}</td>
+                                <td>{{ dap.cep }}</td>
+                                <td>{{ dap.celular_empresa }}</td>
+                                <td>{{ dap.email_empresa }}</td>
+                                <td>
+                                    <a href="{% url 'ver_empresa' token=dap.token id=dap.objectId %}">
+                                        <button type="button" class="btn btn-success">Dados Empresa</button>
+                                    </a>
+                                </td>
                             </tr>
                         {% endfor %}
                     </tbody>

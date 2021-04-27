@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
-<html lang="en">
+<html lang="pt-br">
 
 <head>
 
@@ -63,8 +63,7 @@
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Ações</h6>
                     {% for key in lista %}
-                    <a class="collapse-item" href="{% url 'listar_empresa' token=key.id %}">Listar
-                        empresas</a>
+                    <a class="collapse-item" href="{% url 'listar_empresa' token=key.id %}">Listar Empresas</a>
                     {% endfor %}
 
                 </div>
@@ -98,7 +97,7 @@
         <div id="content">
 
             <!-- Topbar -->
-            <nav class="navbar navbar-expand navbar-light topbar mb-4 static-top shadow"
+            <nav class="navbar navbar-expand navbar-light topbar mb-5 static-top shadow"
                  style="background-color: #1dbf73; opacity: 70%">
 
                 <!-- Sidebar Toggle (Topbar) -->
@@ -150,7 +149,7 @@
 
             </nav>
             <!-- End of Topbar -->
-            <div class="container-fluid">
+            <div class="container-fluid mb-5">
                 {% block content %}
                 {% endblock %}
             </div>
