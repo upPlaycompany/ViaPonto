@@ -61,6 +61,11 @@
                         {% endfor %}
                     </tbody>
                 </table>
+                {% for key in lista %}
+                    <a href="{% url 'gerar_relatorio_func' token=key.id %}">
+                        <button class="btn btn-success" type="button">Gerar Relatório</button>
+                    </a>
+                {% endfor %}
             </div>
         </div>
     </div>
