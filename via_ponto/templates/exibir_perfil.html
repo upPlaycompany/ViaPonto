@@ -71,7 +71,7 @@
                     </tbody>
                 </table>
                 {% for key in lista %}
-                    <a href="{% url 'gerar_relatorio_ponto' token=key.id %}">
+                    <a href="{% url 'gerar_relatorio_ponto' token=key.id empresa=key.emp id_user=Id_user start_date=start_data end_date=end_data %}" target="_blank">
                         <button class="btn btn-success" type="button">Gerar Relatório</button>
                     </a>
                 {% endfor %}

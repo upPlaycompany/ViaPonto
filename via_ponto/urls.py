@@ -18,7 +18,7 @@ urlpatterns = [
     path('listar_funcionario/<str:token>/<str:empresa>/', views.listar_funcionario, name='listar_funcionario'),
     path('exibir_perfil/<str:token>/<str:empresa>/<str:id_user>/', views.exibir_perfil, name='exibir_perfil'),
     path('gerar_relatorio_func/<str:token>/', views.gerar_relatorio_func, name='gerar_relatorio_func'),
-    path('gerar_relatorio_ponto/<str:token>/', views.gerar_relatorio_ponto, name='gerar_relatorio_ponto'),
+    path('gerar_relatorio_ponto/<str:token>/<str:empresa>/<str:id_user>/<str:start_date>/<str:end_date>/', views.gerar_relatorio_ponto, name='gerar_relatorio_ponto'),
 
     # ÁREA ADMINSTRATIVA
     path('base_admin/<str:token>/', views.base_admin, name='base_admin'),

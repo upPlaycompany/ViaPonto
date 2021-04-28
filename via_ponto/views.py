@@ -405,8 +405,10 @@ def exibir_perfil(request, token, empresa, id_user):
         ponto_date = [{'createdAt': x['createdAt'], 'id_funcionario': {'objectId': x['id_funcionario']['objectId']}, 'horario': x['horario'], 'registro': x['registro'], 'local_registro': x['local_registro']} if str(x['createdAt']) in datas else {'createdAt': 'sem registro', 'id_funcionario': {'objectId': x['id_funcionario']['objectId']}, 'horario': 'sem registro', 'registro': 'sem registro', 'local_registro': 'sem registro'} for x in ponto]
     else:
         ponto_date = ponto
+        start = "0"
+        end = "0"
     
-    return render(request, 'exibir_perfil.html', {'lista': key, 'funcionarios': funcionario, 'Id_user': id_user, 'pontos': ponto_date})
+    return render(request, 'exibir_perfil.html', {'lista': key, 'funcionarios': funcionario, 'Id_user': id_user, 'pontos': ponto_date, 'start_data': start, 'end_data': end})
 
 
 def gerar_relatorio_func(request, token):
@@ -434,7 +436,7 @@ def gerar_relatorio_func(request, token):
                                             encoding='utf-8')
 
 
-def gerar_relatorio_ponto(request, token):
+def gerar_relatorio_ponto(request, token, empresa, id_user, start_date, end_date):
     conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
         "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
@@ -444,14 +446,14 @@ def gerar_relatorio_ponto(request, token):
         return redirect('login')
     elif abc['empresa_confirmacao'] == False:
         return redirect('login')
-    empresa = abc['nome_empresa']
-    conexao1 = requests.api.request('GET',
+
+    conexao1 = requests.api.request('GET', 
                                     f"https://parseapi.back4app.com/classes/_User?where=%7B%22nome_empresa%22%3A%20%22{empresa}%22%7D",
                                     headers={
                                         "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
                                         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
-    dop = conexao1.json()
-    dap = [x for x in dop['results']]
+    f = conexao1.json()
+    funcionario = [x for x in f['results']]
 
     conexao2 = requests.api.request('GET',
                                     f"https://parseapi.back4app.com/classes/Ponto",
@@ -468,10 +470,7 @@ def gerar_relatorio_ponto(request, token):
         date = date.strftime('%d/%m/%Y')
         x['createdAt'] = date
 
-    start_date = request.GET.get('start_date')
-    end_date = request.GET.get('end_date')
-    
-    if start_date and end_date:
+    if start_date != "0" and end_date != "0":
         start = datetime.strptime(start_date, '%Y-%m-%d').date()
         end = datetime.strptime(end_date, '%Y-%m-%d').date()
         dia_start = start.day
@@ -488,9 +487,10 @@ def gerar_relatorio_ponto(request, token):
         ponto_date = [{'createdAt': x['createdAt'], 'id_funcionario': {'objectId': x['id_funcionario']['objectId']}, 'horario': x['horario'], 'registro': x['registro'], 'local_registro': x['local_registro']} if str(x['createdAt']) in datas else {'createdAt': 'sem registro', 'id_funcionario': {'objectId': x['id_funcionario']['objectId']}, 'horario': 'sem registro', 'registro': 'sem registro', 'local_registro': 'sem registro'} for x in ponto]
     else:
         ponto_date = ponto
+        
 
     return rendering.render_to_pdf_response(request=request,
-                                            context={'funcionarios': dap, 'pontos': ponto_date},
+                                            context={'funcionarios': funcionario, 'Id_user': id_user, 'pontos': ponto_date},
                                             template='relatorio-pontos.html',
                                             encoding='utf-8')
 
