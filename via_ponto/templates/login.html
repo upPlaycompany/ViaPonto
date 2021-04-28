@@ -32,19 +32,18 @@
                                     <img src="{% static 'img/logo_inicial.png' %}" width="70%;">
                                     <br> <br>
                                 </div>
-                                <form class="user" method="post" enctype="multipart/form-data">
-                                    {% csrf_token %}
-                                    <div class="form-group">
-                                        <input type="text" class="form-control form-control-user"
-                                               name="username"
-                                               placeholder="Insira o nome do usuário">
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="password" class="form-control form-control-user"
-                                               name="password" placeholder="Insira sua senha">
-                                    </div>
+                                   <form class="user" method="post" enctype="multipart/form-data">{% csrf_token %}
+                                       <div class="form-group">
+                                            <input type="text" class="form-control form-control-user"
+                                                name="username"
+                                                placeholder="Insira o nome do usuário">
+                                       </div>
+                                       <div class="form-group">
+                                            <input type="password" class="form-control form-control-user"
+                                                name="password" placeholder="Insira sua senha">
+                                       </div>
 
-                                    <button type="submit" class="btn btn-success btn-user btn-block">Entrar</button>
+                                       <button type="submit" class="btn btn-success btn-user btn-block">Entrar</button>
                                 </form>
                                 <br>
                                 <div class="text-center">
@@ -53,8 +52,9 @@
                                                 <button class="btn btn-primary">Criar usuário</button>
                                             </a>
                                         </span>
-                                    <span>
-                                            <a href="">
+
+                                        <span>
+                                            <a href="{% url 'redefinir_senha' %}">
                                                 <button class="btn btn-danger">Esqueceu a senha?</button>
                                             </a>
                                         </span>
