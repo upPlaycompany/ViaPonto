@@ -1,0 +1,119 @@
+{% extends 'index.html' %}
+
+{% block title %}
+Criar funcionario
+{% endblock title %}
+
+{% block content %}
+<h3>Criar funcionário</h3>
+<form method="post" enctype="multipart/form-data"> {% csrf_token %}
+    <div class="form-row">
+        <div class="form-group col-md-3">
+            <label>Informe o nome de usuário</label>
+            <input type="text" class="form-control" name="username"
+                   placeholder="Digite o nome de usuário">
+        </div>
+        <div class="form-group col-md-3">
+            <label>Nome completo</label>
+            <input type="text" class="form-control" name="nome"
+                   placeholder="Insira o nome do funcionário">
+        </div>
+        <div class="form-group col-md-3">
+            <label>CPF</label>
+            <input type="text" class="form-control" placeholder="Insira o CPF do funcionário" name="cpf">
+        </div>
+        <div class="form-group col-md-3">
+            <label>Data de nascimento</label>
+            <input type="date"  class="form-control" name="datanasc"
+                   placeholder="Insira a data de nasc.">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-3">
+            <label>Email</label>
+            <input type="email" class="form-control" name="email" placeholder="Insira o email do funcionario">
+        </div>
+        <div class="form-group col-md-3">
+            <label>Celular</label>
+            <input type="text"  class="form-control" name="celular"
+                   placeholder="Insira o celular do funcionário">
+        </div>
+        <div class="form-group col-md-3">
+            <label>Cargo</label>
+            <input type="text" class="form-control" name="cargo" placeholder="Insira o cargo do funcionario">
+        </div>
+        <div class="form-group col-md-3">
+            <label>Departamento</label>
+            <input type="text" class="form-control" name="departamento" placeholder="Insira o departamento do funcionario">
+        </div>
+    </div>
+
+    <h4>Hora de Jornada</h4>
+    <h5>Segunda à Sexta</h5>
+    <div class="form-row">
+        <div class="form-group col-md-3">
+            <label>1° Entrada</label>
+            <input type="text" class="form-control" name="hora_semana_entrada_1" placeholder="Ex. 08:00">
+        </div>
+        <div class="form-group col-md-3">
+            <label>1° Saída</label>
+            <input type="text" class="form-control" name="hora_semana_saida_1" placeholder="Ex. 12:00">
+        </div>
+        <div class="form-group col-md-3">
+            <label>2° Entrada</label>
+            <input type="text" class="form-control" name="hora_semana_entrada_2" placeholder="Ex. 14:00">
+        </div>
+        <div class="form-group col-md-3">
+            <label>2° Saída</label>
+            <input type="text" class="form-control" name="hora_semana_saida_2" placeholder="Ex. 18:00">
+        </div>
+    </div>
+    <h5>Sábado</h5>
+    <div class="form-row">
+        <div class="form-group col-md-3">
+            <label>1° Entrada</label>
+            <input type="text" class="form-control" name="hora_sabado_entrada_1" placeholder="Ex. 08:00">
+        </div>
+        <div class="form-group col-md-3">
+            <label>1° Saída</label>
+            <input type="text" class="form-control" name="hora_sabado_saida_1" placeholder="Ex. 12:00">
+        </div>
+        <div class="form-group col-md-3">
+            <label>2° Entrada</label>
+            <input type="text" class="form-control" name="hora_sabado_entrada_2" placeholder="Ex. 14:00">
+        </div>
+        <div class="form-group col-md-3">
+            <label>2° Saída</label>
+            <input type="text" class="form-control" name="hora_sabado_saida_2" placeholder="Ex. 18:00">
+        </div>
+    </div>
+    <h5>Domingo (se houver)</h5>
+    <div class="form-row">
+        <div class="form-group col-md-3">
+            <label>1° Entrada</label>
+            <input type="text" class="form-control" name="hora_domingo_entrada_1" placeholder="Ex. 08:00">
+        </div>
+        <div class="form-group col-md-3">
+            <label>1° Saída</label>
+            <input type="text" class="form-control" name="hora_domingo_saida_1" placeholder="Ex. 12:00">
+        </div>
+        <div class="form-group col-md-3">
+            <label>2° Entrada</label>
+            <input type="text" class="form-control" name="hora_domingo_entrada_2" placeholder="Ex. 14:00">
+        </div>
+        <div class="form-group col-md-3">
+            <label>2° Saída</label>
+            <input type="text" class="form-control" name="hora_domingo_saida_2" placeholder="Ex. 18:00">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-3">
+            <label>Senha temporária do funcionário</label>
+            <input type="password"  class="form-control" name="password"
+                   placeholder="Insira a senha do funcionário">
+        </div>
+
+    </div>
+    <button type="submit" class="btn btn-primary">Cadastrar funcionário</button>
+</form>
+{% endblock %}

@@ -25,6 +25,7 @@ SECRET_KEY = 'j_)iv&7*nb2c7ppeuymr8%vb33-a_h1^u_fm^htuke8*=q!ng^'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+
 ALLOWED_HOSTS = ['*']
 
 # Application definition
@@ -50,6 +51,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+
 
 ROOT_URLCONF = 'via_ponto.urls'
 
@@ -116,9 +119,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'via_ponto/static')
 STATICFILES_DIRS = [
-    BASE_DIR, 'via_ponto/staticfiles'
+    BASE_DIR, 'via_ponto/static'
 ]
 STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 

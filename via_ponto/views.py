@@ -18,7 +18,6 @@ from datetime import *
 from easy_pdf import rendering
 from django.utils.six import BytesIO
 
-
 def index(request, token):
     conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
                                     "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
@@ -28,6 +27,8 @@ def index(request, token):
     if str(usuario['sessionToken']) != f"{token}":
         return redirect('login')
     elif usuario['empresa_confirmacao'] == False:
+        return redirect('login')
+    elif usuario['admin'] == True:
         return redirect('login')
     else:
         pass
@@ -54,6 +55,8 @@ def login(request):
             return redirect('base_admin', token=abc['sessionToken'])
         elif abp == '200' and abc['empresa_confirmacao'] == True:
             return redirect('dashboard', token=abc['sessionToken'])
+        elif abp == '200' and abc['admin'] == True:
+            return redirect('base_admin', token=abc['sessionToken'])
         else:
             return redirect('login')
 
@@ -98,6 +101,7 @@ def redefinir_senha_sucesso(request):
 
 def redefinir_senha_erro(request):
     return render(request, 'redefinir_senha_erro.html')
+
 
 
 def criar_usuario(request):
@@ -525,7 +529,7 @@ def base_admin(request, token):
     key = [{'id': token, 'user': abc['username']}]
     return render(request, 'base_admin.html', {'lista': key, 'lista2': dip, 'lista3': dup})
 
-
+  
 def index_admin(request, token):
     conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
         "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
@@ -590,3 +594,4 @@ def ver_empresa(request, token, id):
     dop = conexao1.json()
     dap = [x for x in dop['results']]
     return render(request, 'ver_empresa.html', {'lista': key, 'lista2': dap})
+
