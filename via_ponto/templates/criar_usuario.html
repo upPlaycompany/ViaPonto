@@ -46,20 +46,15 @@
                                                 placeholder="Insira o nome completo" required>
                                         </div>
                                         <div class="form-group col-md-4">
-                                            <label>E-mail</label>
+                                            <label>CPF</label>
                                             <input type="text" class="form-control"
-                                                name="email"
-                                                placeholder="Insira o email" required>
+                                                name="cpf"
+                                                id="id_cpf"
+                                                placeholder="Insira o seu CPF" required>
                                         </div>
                                     </div>
                                         
                                     <div class="form-row">
-                                        <div class="form-group col-md-4">
-                                            <label>CPF</label>
-                                            <input type="text" class="form-control"
-                                                name="cpf"
-                                                placeholder="Insira o seu CPF" required>
-                                        </div>
                                         <div class="form-group col-md-4">
                                             <label>Nascimento</label>
                                             <input type="date" class="form-control"
@@ -67,25 +62,38 @@
                                                 placeholder="Insira sua data de nascimento" required>
                                         </div>
                                         <div class="form-group col-md-4">
+                                            <label>E-mail</label>
+                                            <input type="text" class="form-control"
+                                                name="email"
+                                                placeholder="Insira o email" required>
+                                        </div>
+                                        <div class="form-group col-md-4">
                                             <label>Celular</label>
                                             <input type="text" class="form-control"
                                                 name="celular"
+                                                id="phone"
                                                 placeholder="Insira o seu número de celular" required>
                                         </div>
                                     </div>
 
                                     <div class="form-row">
-                                        <div class="form-group col-md-6">
+                                        <div class="form-group col-md-4">
                                             <label>Cargo</label>
                                             <input type="text" class="form-control"
                                                 name="cargo"
                                                 placeholder="Insira seu cargo na empresa" required>
                                         </div>
-                                        <div class="form-group col-md-6">
+                                        <div class="form-group col-md-4">
                                             <label>Departamento</label>
                                             <input type="text" class="form-control"
                                                 name="departamento"
                                                 placeholder="Insira seu departamento na empresa" required>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label>Senha</label>
+                                            <input type="password" class="form-control"
+                                                name="password"
+                                                placeholder="Insira uma senha para acesso" required>
                                         </div>
                                     </div>
 
@@ -95,43 +103,23 @@
                                             <label>CNPJ</label>
                                             <input type="text" class="form-control"
                                                 name="cnpj"
+                                                id="id_cnpj"
                                                 placeholder="Insira o CNPJ da empresa" required>
                                         </div>
                                         <div class="form-group col-md-4">
-                                            <label>CEP</label>
-                                            <input type="text" class="form-control"
-                                                name="cep"
-                                                placeholder="Insira o CEP da empresa" required>
-                                        </div>
-                                        <div class="form-group col-md-4">
-                                            <label>Telefone</label>
-                                            <input type="text" class="form-control"
-                                                name="tel_comercial"
-                                                placeholder="Insira o telefone comercial da emrpesa" required>
-                                        </div>
-                                    </div>
-                                        
-                                    <div class="form-row">
-                                        <div class="form-group col-md-4">
-                                            <label>Nome</label>
+                                            <label>Nome Fantasia</label>
                                             <input type="text" class="form-control"
                                                 name="nome_empresa"
                                                 placeholder="Insira o nome da empresa" required>
                                         </div>
                                         <div class="form-group col-md-4">
-                                            <label>Celular</label>
+                                            <label>Inscrição Estadual</label>
                                             <input type="text" class="form-control"
-                                                name="celular_empresa"
-                                                placeholder="Insira o celular da empresa" required>
-                                        </div>
-                                        <div class="form-group col-md-4">
-                                            <label>E-mail</label>
-                                            <input type="email" class="form-control"
-                                                name="email_empresa"
-                                                placeholder="Insira o email da empresa" required>
+                                                name="ie"
+                                                placeholder="Insira a inscrição estadual da empresa" required>
                                         </div>
                                     </div>
-
+                                        
                                     <div class="form-row">
                                         <div class="form-group col-md-4">
                                             <label>Razão Social</label>
@@ -146,25 +134,69 @@
                                                 placeholder="Insira a atividade da empresa" required>
                                         </div>
                                         <div class="form-group col-md-4">
-                                            <label>UF</label>
+                                            <label>Telefone</label>
                                             <input type="text" class="form-control"
-                                                name="uf"
-                                                placeholder="Insira a sigla do estado onde a empresa se localiza" required>
+                                                name="tel_comercial"
+                                                id="phone2"
+                                                placeholder="Insira o telefone comercial da emrpesa" required>
                                         </div>
                                     </div>
 
                                     <div class="form-row">
                                         <div class="form-group col-md-4">
-                                            <label>Inscrição Estadual</label>
+                                            <label>Celular</label>
                                             <input type="text" class="form-control"
-                                                name="ie"
-                                                placeholder="Insira a inscrição estadual da empresa" required>
+                                                name="celular_empresa"
+                                                id="phone3"
+                                                placeholder="Insira o celular da empresa" required>
                                         </div>
+                                        <div class="form-group col-md-4">
+                                            <label>E-mail</label>
+                                            <input type="email" class="form-control"
+                                                name="email_empresa"
+                                                placeholder="Insira o email da empresa" required>
+                                        </div>
+                                        
+                                    </div>
+
+                                    <h4 class="my-3">Endereço da Empresa</h4>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-4">
+                                            <label>CEP</label>
+                                            <input type="text" class="form-control" name="cep"
+                                                onchange="getAddress()"
+                                                id="id_postal_code"
+                                                placeholder="Insira o CEP da empresa" required>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label>UF</label>
+                                            <input type="text" class="form-control" name="uf"
+                                                id="id_state"
+                                                required>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label>Cidade</label>
+                                            <input type="text" class="form-control"
+                                                name="cidade"
+                                                id="id_city"
+                                                required>
+                                        </div>
+                                    </div>
+                                        
+                                    <div class="form-row">
                                         <div class="form-group col-md-4">
                                             <label>Logradouro</label>
                                             <input type="text" class="form-control"
                                                 name="logradouro"
-                                                placeholder="Insira a rua/avenida da empresa" required>
+                                                id="id_address"
+                                                required>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label>Bairro</label>
+                                            <input type="text" class="form-control"
+                                                name="bairro"
+                                                id="id_district"
+                                                required>
                                         </div>
                                         <div class="form-group col-md-4">
                                             <label>Número</label>
@@ -173,20 +205,9 @@
                                                 placeholder="Insira o numero da empresa" required>
                                         </div>
                                     </div>
-                                        
+
                                     <div class="form-row">
-                                        <div class="form-group col-md-6">
-                                            <label>Bairro</label>
-                                            <input type="text" class="form-control"
-                                                name="bairro"
-                                                placeholder="Insira o nome do bairro onde a empresa se localiza" required>
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                            <label>Senha</label>
-                                            <input type="password" class="form-control"
-                                                name="password"
-                                                placeholder="Insira a senha de acesso do seu usuário" required>
-                                        </div>
+                                        
                                     </div>
                                     <button type="submit" class="btn btn-success btn-user btn-block">Cadastrar</button>
                                 </form>
@@ -207,5 +228,8 @@
 
     <!-- Custom scripts for all pages-->
     <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
+
+    <script src="https://unpkg.com/imask@6.0.7/dist/imask.js"></script>
+    <script src="{% static 'js/api-cep.js' %}"></script>
 </body>
 </html>

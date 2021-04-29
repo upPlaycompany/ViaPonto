@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
-
-{% block title %} Cadastrar Funcionário {% endblock title %}
+{% load static %}
+{% block title %} Cadastrar Funcionário {% endblock title%}
 
 {% block content %}
     <h3>Cadastrar Funcionário</h3>
@@ -19,7 +19,7 @@
             </div>
             <div class="form-group col-md-3">
                 <label>CPF</label>
-                <input type="text" class="form-control" placeholder="Insira o CPF do funcionário" name="cpf" required>
+                <input type="text" class="form-control" placeholder="Insira o CPF do funcionário" name="cpf" id="id_cpf" required>
             </div>
             <div class="form-group col-md-3">
                 <label>Data de Nascimento</label>
@@ -35,7 +35,7 @@
             <div class="form-group col-md-3">
                 <label>Celular</label>
                 <input type="text"  class="form-control" name="celular"
-                    placeholder="Insira o celular do funcionário" required>
+                    placeholder="Insira o celular do funcionário" id="phone" required>
             </div>
             <div class="form-group col-md-3">
                 <label>Cargo</label>
@@ -52,57 +52,57 @@
         <div class="form-row">
             <div class="form-group col-md-3">
                 <label>1° Entrada</label>
-                <input type="text" class="form-control" name="hora_semana_entrada_1" placeholder="Ex. 08:00">
+                <input type="text" class="form-control" name="hora_semana_entrada_1" placeholder="Ex. 08:00" id="id_hour1">
             </div>
             <div class="form-group col-md-3">
                 <label>1° Saída</label>
-                <input type="text" class="form-control" name="hora_semana_saida_1" placeholder="Ex. 12:00">
+                <input type="text" class="form-control" name="hora_semana_saida_1" placeholder="Ex. 12:00" id="id_hour2">
             </div>
             <div class="form-group col-md-3">
                 <label>2° Entrada</label>
-                <input type="text" class="form-control" name="hora_semana_entrada_2" placeholder="Ex. 14:00">
+                <input type="text" class="form-control" name="hora_semana_entrada_2" placeholder="Ex. 14:00" id="id_hour3">
             </div>
             <div class="form-group col-md-3">
                 <label>2° Saída</label>
-                <input type="text" class="form-control" name="hora_semana_saida_2" placeholder="Ex. 18:00">
+                <input type="text" class="form-control" name="hora_semana_saida_2" placeholder="Ex. 18:00" id="id_hour4">
             </div>
         </div>
         <h5>Sábado</h5>
         <div class="form-row">
             <div class="form-group col-md-3">
                 <label>1° Entrada</label>
-                <input type="text" class="form-control" name="hora_sabado_entrada_1" placeholder="Ex. 08:00">
+                <input type="text" class="form-control" name="hora_sabado_entrada_1" id="id_hour5" placeholder="Ex. 08:00">
             </div>
             <div class="form-group col-md-3">
                 <label>1° Saída</label>
-                <input type="text" class="form-control" name="hora_sabado_saida_1" placeholder="Ex. 12:00">
+                <input type="text" class="form-control"  name="hora_sabado_saida_1" id="id_hour6" placeholder="Ex. 12:00">
             </div>
             <div class="form-group col-md-3">
                 <label>2° Entrada</label>
-                <input type="text" class="form-control" name="hora_sabado_entrada_2" placeholder="Ex. 14:00">
+                <input type="text" class="form-control" id="id_hour7" name="hora_sabado_entrada_2" placeholder="Ex. 14:00">
             </div>
             <div class="form-group col-md-3">
                 <label>2° Saída</label>
-                <input type="text" class="form-control" name="hora_sabado_saida_2" placeholder="Ex. 18:00">
+                <input type="text" class="form-control" id="id_hour8" name="hora_sabado_saida_2" placeholder="Ex. 18:00">
             </div>
         </div>
         <h5>Domingo (se houver)</h5>
         <div class="form-row">
             <div class="form-group col-md-3">
                 <label>1° Entrada</label>
-                <input type="text" class="form-control" name="hora_domingo_entrada_1" placeholder="Ex. 08:00">
+                <input type="text" class="form-control" id="id_hour9" name="hora_domingo_entrada_1" placeholder="Ex. 08:00">
             </div>
             <div class="form-group col-md-3">
                 <label>1° Saída</label>
-                <input type="text" class="form-control" name="hora_domingo_saida_1" placeholder="Ex. 12:00">
+                <input type="text" class="form-control" id="id_hour10" name="hora_domingo_saida_1" placeholder="Ex. 12:00">
             </div>
             <div class="form-group col-md-3">
                 <label>2° Entrada</label>
-                <input type="text" class="form-control" name="hora_domingo_entrada_2" placeholder="Ex. 14:00">
+                <input type="text" class="form-control" id="id_hour11" name="hora_domingo_entrada_2" placeholder="Ex. 14:00">
             </div>
             <div class="form-group col-md-3">
                 <label>2° Saída</label>
-                <input type="text" class="form-control" name="hora_domingo_saida_2" placeholder="Ex. 18:00">
+                <input type="text" class="form-control" id="id_hour12" name="hora_domingo_saida_2" placeholder="Ex. 18:00">
             </div>
         </div>
         <div class="form-row">
@@ -115,4 +115,9 @@
         
         <button type="submit" class="btn btn-primary">Salvar Funcionário</button>
     </form>
+{% endblock %}
+
+{% block scripts %}
+    <script src="https://unpkg.com/imask@6.0.7/dist/imask.js"></script>
+    <script src="{% static 'js/mask-func.js' %}"></script>
 {% endblock %}

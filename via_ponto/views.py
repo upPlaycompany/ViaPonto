@@ -515,19 +515,20 @@ def base_admin(request, token):
                                     headers={
                                         "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
                                         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
-    dop = conexao1.json()
-    dap = [x for x in dop['results']]
-    dip = [{'numero_funcionario': len(dap)}]
+    user = conexao1.json()
+    usuario = [x for x in user['results']]
+    num_usuario = [{'numero_usuario': len(usuario) - 1}]
     conexao2 = requests.api.request('GET', f"https://parseapi.back4app.com/classes/Empresa",
                                     headers={
                                         "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
                                         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
                                         "accept": "application/json"})
 
-    dep = conexao2.json()
-    dup = [{'numero_empresa': len(dep)}]
+    emp = conexao2.json()
+    empresa = [x for x in emp['results']]
+    num_empresa = [{'numero_empresa': len(empresa)}]
     key = [{'id': token, 'user': abc['username']}]
-    return render(request, 'base_admin.html', {'lista': key, 'lista2': dip, 'lista3': dup})
+    return render(request, 'base_admin.html', {'lista': key, 'usuarios': num_usuario, 'empresas': num_empresa})
 
   
 def index_admin(request, token):

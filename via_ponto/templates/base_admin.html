@@ -17,10 +17,10 @@ VIA PONTO - Página Inicial
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                            Funcionários cadastrados no sistema
+                            Usuários cadastrados no sistema
                         </div>
-                        {% for dip in lista2 %}
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ dip.numero_funcionario }}</div>
+                        {% for user in usuarios %}
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ user.numero_usuario }}</div>
                         {% endfor %}
                     </div>
 
@@ -36,8 +36,8 @@ VIA PONTO - Página Inicial
                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                             Empresas cadastradas no sistema
                         </div>
-                        {% for dup in lista3 %}
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ dup.numero_empresa }}</div>
+                        {% for emp in empresas %}
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ emp.numero_empresa }}</div>
                         {% endfor %}
                     </div>
 
