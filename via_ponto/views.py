@@ -86,7 +86,7 @@ def redefinir_senha(request):
                                         })
         response = conexao.json()
         status = str(conexao.status_code)
-        print(status)
+        
         if status == '200':
             return redirect('redefinir_senha_sucesso')
         else:
@@ -103,9 +103,9 @@ def redefinir_senha_erro(request):
     return render(request, 'redefinir_senha_erro.html')
 
 
-
 def criar_usuario(request):
     if request.method == 'POST':
+        # Dados do Usuário
         username = request.POST['username']
         password = request.POST['password']
         cpf = request.POST['cpf']
@@ -115,19 +115,23 @@ def criar_usuario(request):
         celular = request.POST['celular']
         cargo = request.POST['cargo']
         departamento = request.POST['departamento']
+        # Dados da Empresa
         cnpj = request.POST['cnpj']
-        cep = request.POST['cep']
-        tel_comercial = request.POST['tel_comercial']
         nome_empresa = request.POST['nome_empresa']
-        celular_empresa = request.POST['celular_empresa']
-        razaosocial = request.POST['razaosocial']
         ie = request.POST['ie']
+        razaosocial = request.POST['razaosocial']
         atividade = request.POST['atividade']
-        uf = request.POST['uf']
+        tel_comercial = request.POST['tel_comercial']
+        celular_empresa = request.POST['celular_empresa']
         email_empresa = request.POST['email_empresa']
+        # Endereço da Empresa
+        cep = request.POST['cep']
+        uf = request.POST['uf']
+        cidade = request.POST['cidade']
         logradouro = request.POST['logradouro']
-        numero = request.POST['numero']
         bairro = request.POST['bairro']
+        numero = request.POST['numero']
+        
         conexao1 = requests.api.request('POST', f"https://parseapi.back4app.com/classes/Empresa/",
 
                                         headers={
@@ -147,6 +151,7 @@ def criar_usuario(request):
                                             "email_empresa": f"{email_empresa}",
                                             "logradouro": f"{logradouro}",
                                             "numero": f"{numero}",
+                                            "cidade": f"{cidade}",
                                             "bairro": f"{bairro}",
                                         })
         empresa = conexao1.json()
@@ -516,6 +521,75 @@ def gerar_relatorio_ponto(request, token, empresa, id_user, start_date, end_date
                                             encoding='utf-8')
 
 
+def editar_empresa(request, token, empresa):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
+        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        "X-Parse-Session-Token": f"{token}"})
+    abc = conexao.json()
+    if str(abc['sessionToken']) != f"{token}":
+        return redirect('login')
+    elif abc['empresa_confirmacao'] == False:
+        return redirect('login')
+
+    key = [{'id': token, 'emp': empresa, 'user': abc['username']}]
+    empresa_id = abc['id_empresa']['objectId']
+    
+    conexao1 = requests.api.request('GET', f"https://parseapi.back4app.com/classes/Empresa/{empresa_id}",
+                                    headers={
+                                        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
+    emp = conexao1.json()
+
+    if request.method == 'POST':
+        # Dados da Empresa
+        cnpj = request.POST['cnpj']
+        nome_empresa = request.POST['nome_empresa']
+        ie = request.POST['ie']
+        razaosocial = request.POST['razaosocial']
+        atividade = request.POST['atividade']
+        tel_comercial = request.POST['tel_comercial']
+        celular_empresa = request.POST['celular_empresa']
+        email_empresa = request.POST['email_empresa']
+        # Endereço da Empresa
+        cep = request.POST['cep']
+        uf = request.POST['uf']
+        cidade = request.POST['cidade']
+        logradouro = request.POST['logradouro']
+        bairro = request.POST['bairro']
+        numero = request.POST['numero']
+        
+        conexao1 = requests.api.request('PUT', f"https://parseapi.back4app.com/classes/Empresa/{empresa_id}",
+                                        headers={
+                                            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                            "Content-Type": "application/json"},
+                                        json={
+                                            "cep": f"{cep}",
+                                            "cnpj": f"{cnpj}",
+                                            "tel_comercial": f"{tel_comercial}",
+                                            "nome_empresa": f"{nome_empresa}",
+                                            "celular_empresa": f"{celular_empresa}",
+                                            "razaosocial": f"{razaosocial}",
+                                            "ie": f"{ie}",
+                                            "atividade": f"{atividade}",
+                                            "uf": f"{uf}",
+                                            "email_empresa": f"{email_empresa}",
+                                            "logradouro": f"{logradouro}",
+                                            "numero": f"{numero}",
+                                            "cidade": f"{cidade}",
+                                            "bairro": f"{bairro}",
+                                        })
+        status = str(conexao.status_code)
+        
+        if status == '200':
+            return redirect('editar_empresa_sucesso')
+        else:
+            return redirect('editar_empresa_erro')
+
+
+    return render(request, 'editar_empresa.html', {'lista': key, 'empresa': emp })
+
 
 # ÁREA ADMINISTRATIVA #
 
@@ -616,4 +690,5 @@ def ver_empresa(request, token, id):
     dop = conexao1.json()
     dap = [x for x in dop['results']]
     return render(request, 'ver_empresa.html', {'lista': key, 'lista2': dap})
+
 

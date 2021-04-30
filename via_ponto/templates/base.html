@@ -43,7 +43,7 @@
                 data-target="#collapseTwo"
                 aria-expanded="true" aria-controls="collapseTwo">
                     <i class="fas fa-fw fa-cog"></i>
-                    <span>Funcionários</span>
+                    <span>Funcionário</span>
                 </a>
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
@@ -57,6 +57,19 @@
                     </div>
                 </div>
             </li>
+
+            <hr class="sidebar-divider my-0">
+
+            <li class="nav-item">
+                {% for key in lista %}
+                    <a class="nav-link collapsed" href="{% url 'editar_empresa' token=key.id empresa=key.emp %}"
+                    style="color: black;">
+                        <i class="fas fa-fw fa-paper-plane"></i>
+                        <span>Editar Empresa</span>
+                    </a>
+                {% endfor %}
+            </li>
+
             <hr class="sidebar-divider my-2">
             
             <div class="text-center d-none d-md-inline">
