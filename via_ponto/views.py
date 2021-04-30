@@ -380,7 +380,7 @@ def exibir_perfil(request, token, empresa, id_user):
 
     for x in ponto:
         data = x['createdAt']
-        data = data[:9]
+        data = data[:10]
         date = datetime.strptime(data, '%Y-%m-%d').date()
         date = date.strftime('%d/%m/%Y')
         x['createdAt'] = date
@@ -391,6 +391,8 @@ def exibir_perfil(request, token, empresa, id_user):
     if start_date and end_date:
         start = datetime.strptime(start_date, '%Y-%m-%d').date()
         end = datetime.strptime(end_date, '%Y-%m-%d').date()
+        start_data = start.strftime('%d/%m/%Y')
+        end_data = end.strftime('%d/%m/%Y')
         dia_start = start.day
         mes_start = start.month
         ano_start = start.year
@@ -398,11 +400,26 @@ def exibir_perfil(request, token, empresa, id_user):
         mes_end = end.month
         ano_end = end.year
 
+        if dia_start <= dia_end:
+            pass
+        else:
+            pass
+
+        if mes_start == mes_end:
+            pass
+        elif mes_start < mes_end:
+            pass
+
+        
+        if mes_start < 10:
+            mes_start = f"0{mes_start}"
+
         lista = list(range(dia_start, dia_end + 1))
         a = len(lista)
         
-        datas = tuple([f"0{lista[x]}" + '/' + f"0{mes_start}" + '/' + f"{ano_start}" if x < 10 else f"{lista[x]}" + '/' + f"{mes_start}" + '/' + f"{ano_start}" for x in range(a)])
-        ponto_date = [{'createdAt': x['createdAt'], 'id_funcionario': {'objectId': x['id_funcionario']['objectId']}, 'horario': x['horario'], 'registro': x['registro'], 'local_registro': x['local_registro']} if str(x['createdAt']) in datas else {'createdAt': 'sem registro', 'id_funcionario': {'objectId': x['id_funcionario']['objectId']}, 'horario': 'sem registro', 'registro': 'sem registro', 'local_registro': 'sem registro'} for x in ponto]
+        datas = tuple([f"0{lista[x]}" + '/' + f"{mes_start}" + '/' + f"{ano_start}" if lista[x] < 10 else f"{lista[x]}" + '/' + f"{mes_start}" + '/' + f"{ano_start}" for x in range(a)])
+        ponto_date = [{'createdAt': x['createdAt'], 'id_funcionario': {'objectId': x['id_funcionario']['objectId']}, 'horario': x['horario'], 'registro': x['registro'], 'local_registro': x['local_registro']} if str(x['createdAt']) in datas else {'createdAt': 'sem registro', 'id_funcionario': {'objectId': 'sem registro'}, 'horario': 'sem registro', 'registro': 'sem registro', 'local_registro': 'sem registro'} for x in ponto]
+     
     else:
         ponto_date = ponto
         start = "0"
@@ -465,7 +482,7 @@ def gerar_relatorio_ponto(request, token, empresa, id_user, start_date, end_date
 
     for x in ponto:
         data = x['createdAt']
-        data = data[:9]
+        data = data[:10]
         date = datetime.strptime(data, '%Y-%m-%d').date()
         date = date.strftime('%d/%m/%Y')
         x['createdAt'] = date
@@ -473,18 +490,22 @@ def gerar_relatorio_ponto(request, token, empresa, id_user, start_date, end_date
     if start_date != "0" and end_date != "0":
         start = datetime.strptime(start_date, '%Y-%m-%d').date()
         end = datetime.strptime(end_date, '%Y-%m-%d').date()
+        start_data = start.strftime('%d/%m/%Y')
+        end_data = end.strftime('%d/%m/%Y')
         dia_start = start.day
         mes_start = start.month
         ano_start = start.year
         dia_end = end.day
-        mes_end = end.month
-        ano_end = end.year
+        
+        if mes_start < 10:
+            mes_start = f"0{mes_start}"
 
         lista = list(range(dia_start, dia_end + 1))
         a = len(lista)
         
-        datas = tuple([f"0{lista[x]}" + '/' + f"0{mes_start}" + '/' + f"{ano_start}" if x < 10 else f"{lista[x]}" + '/' + f"{mes_start}" + '/' + f"{ano_start}" for x in range(a)])
-        ponto_date = [{'createdAt': x['createdAt'], 'id_funcionario': {'objectId': x['id_funcionario']['objectId']}, 'horario': x['horario'], 'registro': x['registro'], 'local_registro': x['local_registro']} if str(x['createdAt']) in datas else {'createdAt': 'sem registro', 'id_funcionario': {'objectId': x['id_funcionario']['objectId']}, 'horario': 'sem registro', 'registro': 'sem registro', 'local_registro': 'sem registro'} for x in ponto]
+        datas = tuple([f"0{lista[x]}" + '/' + f"{mes_start}" + '/' + f"{ano_start}" if lista[x] < 10 else f"{lista[x]}" + '/' + f"{mes_start}" + '/' + f"{ano_start}" for x in range(a)])
+        ponto_date = [{'createdAt': x['createdAt'], 'id_funcionario': {'objectId': x['id_funcionario']['objectId']}, 'horario': x['horario'], 'registro': x['registro'], 'local_registro': x['local_registro']} if str(x['createdAt']) in datas else {'createdAt': 'sem registro', 'id_funcionario': {'objectId': 'sem registro'}, 'horario': 'sem registro', 'registro': 'sem registro', 'local_registro': 'sem registro'} for x in ponto]
+     
     else:
         ponto_date = ponto
         
