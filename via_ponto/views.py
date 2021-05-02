@@ -49,16 +49,16 @@ def login(request):
                                            "X-Parse-Revocable-Session": '1'
                                        })
         abc = conexao.json()
-        abp = str(conexao.status_code)
+        status = str(conexao.status_code)
         
-        if abp == '200' and abc['admin'] == True:
+        if status == '200' and abc['admin'] == True:
             return redirect('base_admin', token=abc['sessionToken'])
-        elif abp == '200' and abc['empresa_confirmacao'] == True:
+        elif status == '200' and abc['empresa_confirmacao'] == True:
             return redirect('dashboard', token=abc['sessionToken'])
-        elif abp == '200' and abc['admin'] == True:
+        elif status == '200' and abc['admin'] == True:
             return redirect('base_admin', token=abc['sessionToken'])
         else:
-            return redirect('login')
+            return get_object_or_404('login_erro')
 
     return render(request, 'login.html')
 
@@ -580,15 +580,49 @@ def editar_empresa(request, token, empresa):
                                             "cidade": f"{cidade}",
                                             "bairro": f"{bairro}",
                                         })
-        status = str(conexao.status_code)
+        status = str(conexao1.status_code)
         
         if status == '200':
-            return redirect('editar_empresa_sucesso')
+            return redirect('editar_empresa_sucesso', token=token)
         else:
-            return redirect('editar_empresa_erro')
-
+            return redirect('editar_empresa_erro', token=token)
 
     return render(request, 'editar_empresa.html', {'lista': key, 'empresa': emp })
+
+
+def editar_empresa_sucesso(request, token):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
+        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        "X-Parse-Session-Token": f"{token}"})
+    abc = conexao.json()
+    if str(abc['sessionToken']) != f"{token}":
+        return redirect('login')
+    elif abc['empresa_confirmacao'] == False:
+        return redirect('login')
+    else:
+        pass
+    key = [{'id': token, 'emp': abc['nome_empresa'], 'user': abc['username']}]
+
+    return render(request, 'editar_empresa_sucesso.html', {'lista': key})
+
+
+def editar_empresa_erro(request, token):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
+        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        "X-Parse-Session-Token": f"{token}"})
+    abc = conexao.json()
+    if str(abc['sessionToken']) != f"{token}":
+        return redirect('login')
+    elif abc['empresa_confirmacao'] == False:
+        return redirect('login')
+    else:
+        pass
+    key = [{'id': token, 'emp': abc['nome_empresa'], 'user': abc['username']}]
+
+    return render(request, 'editar_empresa_erro.html', {'lista': key})
+
 
 
 # ÁREA ADMINISTRATIVA #

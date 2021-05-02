@@ -52,7 +52,7 @@
                 <label>Telefone</label>
                 <input type="text" class="form-control"
                     name="tel_comercial"
-                    id="phone2"
+                    id="phone"
                     value="{{ empresa.tel_comercial }}"
                     placeholder="Insira o telefone comercial da emrpesa">
             </div>
@@ -63,7 +63,7 @@
                 <label>Celular</label>
                 <input type="text" class="form-control"
                     name="celular_empresa"
-                    id="phone3"
+                    id="phone2"
                     value="{{ empresa.celular_empresa }}"
                     placeholder="Insira o celular da empresa">
             </div>
@@ -125,11 +125,12 @@
             </div>
         </div>
         
-        <button type="submit" class="btn btn-primary">Editar</button>
+        <button type="submit" class="btn btn-primary">EDITAR</button>
     </form>
 {% endblock %}
 
 {% block scripts %}
     <script src="https://unpkg.com/imask@6.0.7/dist/imask.js"></script>
+    <script src="{% static 'js/mask-editar-emp.js' %}"></script>
     <script src="{% static 'js/api-cep.js' %}"></script>
 {% endblock %}

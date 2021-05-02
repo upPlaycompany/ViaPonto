@@ -42,7 +42,7 @@
                 <a style="color: black;" class="nav-link collapsed" href="#" data-toggle="collapse"
                 data-target="#collapseTwo"
                 aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
+                    <i class="fas fa-fw fa-user-tie"></i>
                     <span>Funcionário</span>
                 </a>
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -64,7 +64,7 @@
                 {% for key in lista %}
                     <a class="nav-link collapsed" href="{% url 'editar_empresa' token=key.id empresa=key.emp %}"
                     style="color: black;">
-                        <i class="fas fa-fw fa-paper-plane"></i>
+                        <i class="fas fa-fw fa-cog"></i>
                         <span>Editar Empresa</span>
                     </a>
                 {% endfor %}
