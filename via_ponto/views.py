@@ -58,9 +58,13 @@ def login(request):
         elif status == '200' and abc['admin'] == True:
             return redirect('base_admin', token=abc['sessionToken'])
         else:
-            return get_object_or_404('login_erro')
+            return redirect('login_erro')
 
     return render(request, 'login.html')
+
+
+def login_erro(request):
+    return render(request, 'login_erro.html')
 
 
 def deslogar(request, token):
@@ -444,16 +448,25 @@ def gerar_relatorio_func(request, token):
     elif abc['empresa_confirmacao'] == False:
         return redirect('login')
     empresa = abc['nome_empresa']
+    empresa_id = abc['id_empresa']['objectId']
     conexao1 = requests.api.request('GET',
                                     f"https://parseapi.back4app.com/classes/_User?where=%7B%22nome_empresa%22%3A%20%22{empresa}%22%7D",
                                     headers={
                                         "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
                                         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
-    dop = conexao1.json()
-    dap = [x for x in dop['results']]
+    f = conexao1.json()
+    funcionario = [x for x in f['results']]
+
+    conexao2 = requests.api.request('GET', f"https://parseapi.back4app.com/classes/Empresa?where=%7B%22objectId%22%3A%20%22{empresa_id}%22%7D",
+                                    headers={
+                                        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                        "accept": "application/json"})
+    e = conexao2.json()
+    emp = [x for x in e['results']]
 
     return rendering.render_to_pdf_response(request=request,
-                                            context={'funcionarios': dap},
+                                            context={'funcionarios': funcionario, 'empresa': emp},
                                             template='relatorio-funcionarios.html',
                                             encoding='utf-8')
 

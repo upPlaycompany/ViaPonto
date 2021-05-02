@@ -6,6 +6,7 @@ from . import views
 
 urlpatterns = [
     path('', views.login, name='login'),
+    path('login_erro/', views.login_erro, name='login_erro'),
     path('redefinir_senha/', views.redefinir_senha, name='redefinir_senha'),
     path('redefinir_senha_sucesso/', views.redefinir_senha_sucesso, name='redefinir_senha_sucesso'),
     path('redefinir_senha_erro/', views.redefinir_senha_erro, name='redefinir_senha_erro'),
