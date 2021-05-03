@@ -409,26 +409,31 @@ def exibir_perfil(request, token, empresa, id_user):
         mes_end = end.month
         ano_end = end.year
 
-        if dia_start <= dia_end:
-            pass
-        else:
-            pass
-
         if mes_start == mes_end:
-            pass
+            if mes_start < 10:
+                mes_start = f"0{mes_start}"
+
+            lista = list(range(dia_start, dia_end + 1))
+            a = len(lista)
+            
+            datas = tuple([f"0{lista[x]}" + '/' + f"{mes_start}" + '/' + f"{ano_start}" if lista[x] < 10 else f"{lista[x]}" + '/' + f"{mes_start}" + '/' + f"{ano_start}" for x in range(a)])
         elif mes_start < mes_end:
-            pass
+            if mes_start < 10:
+                mes_start = f"0{mes_start}"
+            if mes_end < 10:
+                mes_end = f"0{mes_end}"
 
-        
-        if mes_start < 10:
-            mes_start = f"0{mes_start}"
+            lista = list(range(dia_start, 32))
+            lista2 = list(range(1, dia_end + 1))
+            a = len(lista)
+            a2 = len(lista2)
 
-        lista = list(range(dia_start, dia_end + 1))
-        a = len(lista)
+            datas = tuple([f"0{lista[x]}" + '/' + f"{mes_start}" + '/' + f"{ano_start}" if lista[x] < 10 else f"{lista[x]}" + '/' + f"{mes_start}" + '/' + f"{ano_start}" for x in range(a)])
+            datas2 = tuple([f"0{lista2[x]}" + '/' + f"{mes_end}" + '/' + f"{ano_end}" if lista2[x] < 10 else f"{lista2[x]}" + '/' + f"{mes_end}" + '/' + f"{ano_end}" for x in range(a2)])
+            datas += datas2
+            print(datas)
         
-        datas = tuple([f"0{lista[x]}" + '/' + f"{mes_start}" + '/' + f"{ano_start}" if lista[x] < 10 else f"{lista[x]}" + '/' + f"{mes_start}" + '/' + f"{ano_start}" for x in range(a)])
         ponto_date = [{'createdAt': x['createdAt'], 'id_funcionario': {'objectId': x['id_funcionario']['objectId']}, 'horario': x['horario'], 'registro': x['registro'], 'local_registro': x['local_registro']} if str(x['createdAt']) in datas else {'createdAt': 'sem registro', 'id_funcionario': {'objectId': 'sem registro'}, 'horario': 'sem registro', 'registro': 'sem registro', 'local_registro': 'sem registro'} for x in ponto]
-     
     else:
         ponto_date = ponto
         start = "0"
