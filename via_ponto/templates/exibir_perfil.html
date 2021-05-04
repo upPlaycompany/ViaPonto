@@ -28,9 +28,11 @@
 {% block content %}
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            {% for funcionario in funcionarios %}
-                {% if funcionario.objectId == Id_user %}
-                    <h6 class="m-0 font-weight-bold text-success">Funcionário: {{ funcionario.nome }}</h6>
+            {% for f in funcionarios %}
+                {% if f.id_empresa.objectId == id_emp %}
+                    {% if f.objectId == Id_user %}
+                        <h6 class="m-0 font-weight-bold text-success">Funcionário: {{ f.nome }}</h6>
+                    {% endif %}
                 {% endif %}
             {% endfor %}
         </div>
@@ -71,7 +73,7 @@
                     </tbody>
                 </table>
                 {% for key in lista %}
-                    <a href="{% url 'gerar_relatorio_ponto' token=key.id empresa=key.emp id_user=Id_user start_date=start_data end_date=end_data %}" target="_blank">
+                    <a href="{% url 'gerar_relatorio_ponto' token=key.id id_user=Id_user start_date=start_data end_date=end_data %}" target="_blank">
                         <button class="btn btn-success" type="button">Gerar Relatório</button>
                     </a>
                 {% endfor %}

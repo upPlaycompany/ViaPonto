@@ -92,13 +92,13 @@
             <tbody>
                 {% for emp in empresa %}
                     <tr>
-                        <td colspan="2"><strong>Nome:</strong> {{ emp.nome_empresa }}</td>
+                        <td colspan="2"><strong>Razão Social:</strong> {{ emp.razaosocial }}</td>
                         <td><strong>CNPJ:</strong> {{ emp.cnpj }}</td>
                     </tr>
                     <tr>
-                        <td><strong>Celular:</strong> {{ emp.celular_empresa }}</td>
-                        <td><strong>Telefone:</strong> {{ emp.tel_comercial }}</td>
-                        <td><strong>E-mail:</strong> {{ emp.email_empresa }}</td>
+                        
+                        <td colspan="2"><strong>Atividade:</strong> {{ emp.atividade }}</td>
+                        <td><strong>CEP:</strong> {{ emp.cep}}</td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -119,13 +119,15 @@
 
             <tbody>
                 {% for f in funcionarios %}
-                    <tr>
-                        <td class="tb-1">{{ f.nome }}</td>
-                        <td class="tb-2">{{ f.cpf }}</td>
-                        <td class="tb-3">{{ f.celular }}</td>
-                        <td class="tb-4">{{ f.cargo }}</td>
-                        <td class="tb-5">{{ f.departamento }}</td>
-                    </tr>
+                    {% if f.id_empresa.objectId == id_emp %}
+                        <tr>
+                            <td class="tb-1">{{ f.nome }}</td>
+                            <td class="tb-2">{{ f.cpf }}</td>
+                            <td class="tb-3">{{ f.celular }}</td>
+                            <td class="tb-4">{{ f.cargo }}</td>
+                            <td class="tb-5">{{ f.departamento }}</td>
+                        </tr>
+                    {% endif %}
                 {% endfor %}
             </tbody>
         </table>

@@ -88,16 +88,18 @@
         <table class="rTable">
             <tbody>
                 {% for f in funcionarios %}
-                    {% if f.objectId == Id_user %}
-                        <tr>
-                            <td colspan="2"><strong>Nome:</strong> {{ f.nome }}</td>
-                            <td><strong>CPF:</strong> {{ f.cpf }}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Celular:</strong> {{ f.celular }}</td>
-                            <td><strong>Cargo:</strong> {{ f.cargo }}</td>
-                            <td><strong>Departamento:</strong> {{ f.departamento }}</td>
-                        </tr>
+                    {% if f.id_empresa.objectId == id_emp %}
+                        {% if f.objectId == Id_user %}
+                            <tr>
+                                <td colspan="2"><strong>Nome:</strong> {{ f.nome }}</td>
+                                <td><strong>CPF:</strong> {{ f.cpf }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Celular:</strong> {{ f.celular }}</td>
+                                <td><strong>Cargo:</strong> {{ f.cargo }}</td>
+                                <td><strong>Departamento:</strong> {{ f.departamento }}</td>
+                            </tr>
+                        {% endif %}
                     {% endif %}
                 {% endfor %}
             </tbody>

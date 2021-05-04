@@ -51,13 +51,15 @@
 
                     <tbody>
                         {% for dap in order %}
-                            <tr>
-                                <td><a href="{% url 'exibir_perfil' token=dap.cod empresa=dap.nome_empresa id_user=dap.objectId %}">{{ dap.nome }}</a></td>
-                                <td>{{ dap.cpf }}</td>
-                                <td>{{ dap.celular }}</td>
-                                <td>{{ dap.cargo }}</td>
-                                <td>{{ dap.departamento }}</td>
-                            </tr>
+                            {% if dap.id_empresa.objectId == id_emp %}
+                                <tr>
+                                    <td><a href="{% url 'exibir_perfil' token=dap.cod id_user=dap.objectId %}">{{ dap.nome }}</a></td>
+                                    <td>{{ dap.cpf }}</td>
+                                    <td>{{ dap.celular }}</td>
+                                    <td>{{ dap.cargo }}</td>
+                                    <td>{{ dap.departamento }}</td>
+                                </tr>
+                            {% endif %}
                         {% endfor %}
                     </tbody>
                 </table>

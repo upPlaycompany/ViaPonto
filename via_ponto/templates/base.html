@@ -49,10 +49,10 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Ações</h6>
                         {% for key in lista %}
-                            <a class="collapse-item" href="{% url 'criar_funcionario' token=key.id empresa=key.emp %}">Cadastrar Funcionário</a>
+                            <a class="collapse-item" href="{% url 'criar_funcionario' token=key.id %}">Cadastrar Funcionário</a>
                         {% endfor %}
                         {% for key in lista %}
-                            <a class="collapse-item" href="{% url 'listar_funcionario' token=key.id empresa=key.emp %}">Listar Funcionários</a>
+                            <a class="collapse-item" href="{% url 'listar_funcionario' token=key.id %}">Listar Funcionários</a>
                         {% endfor %}
                     </div>
                 </div>
@@ -62,7 +62,7 @@
 
             <li class="nav-item">
                 {% for key in lista %}
-                    <a class="nav-link collapsed" href="{% url 'editar_empresa' token=key.id empresa=key.emp %}"
+                    <a class="nav-link collapsed" href="{% url 'editar_empresa' token=key.id %}"
                     style="color: black;">
                         <i class="fas fa-fw fa-cog"></i>
                         <span>Editar Empresa</span>
