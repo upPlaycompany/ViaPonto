@@ -2,6 +2,8 @@ asgiref==3.3.4
 certifi==2020.12.5
 chardet==4.0.0
 Django==3.2.0
+django-easy-pdf==0.1.1
+django-utils-six==2.0
 django-admin==2.0.1
 django-excel-base==1.0.4
 django-excel-response2==3.0.2

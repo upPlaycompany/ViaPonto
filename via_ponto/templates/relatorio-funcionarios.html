@@ -16,8 +16,8 @@
         }
         
         .title {
-            margin-top: 50px;
-            margin-bottom: 26px;
+            margin-top: 25px;
+            margin-bottom: 5px;
             font-size: 24px;
             text-align: center;
         }
@@ -40,22 +40,32 @@
 
         .rTable {
             width: 100%;
+            text-align: left;
+        }
+
+        .rTable td {
+            padding-top: 5px;
+            padding-left: 5px;
+        }
+
+        .rTable1 {
+            width: 100%;
             text-align: center;
         }
         
-        .rTable thead {
+        .rTable1 thead {
             font-weight: bold;
             color: white;
         }
         
-        .rTable th, .rTable td {
+        .rTable1 th, .rTable1 td {
             padding-top: 5px;
-            
         }
 
         @media print {
             body {-webkit-print-color-adjust: exact;}
         }
+        
 
         /* Tabela de Funcionários */
         .tb-1 {
@@ -77,10 +87,26 @@
 </head>
 
 <body>
-    <h1 class="title">Funcionários</h1>
-
     <div class="content">
         <table class="rTable">
+            <tbody>
+                {% for emp in empresa %}
+                    <tr>
+                        <td colspan="2"><strong>Razão Social:</strong> {{ emp.razaosocial }}</td>
+                        <td><strong>CNPJ:</strong> {{ emp.cnpj }}</td>
+                    </tr>
+                    <tr>
+                        
+                        <td colspan="2"><strong>Atividade:</strong> {{ emp.atividade }}</td>
+                        <td><strong>CEP:</strong> {{ emp.cep}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h1 class="title">Funcionários</h1>
+
+        <table class="rTable1">
             <thead>
                 <tr style="background-color: black;">
                     <th>Nome</th>
@@ -93,13 +119,15 @@
 
             <tbody>
                 {% for f in funcionarios %}
-                    <tr>
-                        <td class="tb-1">{{ f.nome }}</td>
-                        <td class="tb-2">{{ f.cpf }}</td>
-                        <td class="tb-3">{{ f.celular }}</td>
-                        <td class="tb-4">{{ f.cargo }}</td>
-                        <td class="tb-5">{{ f.departamento }}</td>
-                    </tr>
+                    {% if f.id_empresa.objectId == id_emp %}
+                        <tr>
+                            <td class="tb-1">{{ f.nome }}</td>
+                            <td class="tb-2">{{ f.cpf }}</td>
+                            <td class="tb-3">{{ f.celular }}</td>
+                            <td class="tb-4">{{ f.cargo }}</td>
+                            <td class="tb-5">{{ f.departamento }}</td>
+                        </tr>
+                    {% endif %}
                 {% endfor %}
             </tbody>
         </table>

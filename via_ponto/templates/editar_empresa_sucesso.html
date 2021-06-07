@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title %} Editar Empresa {% endblock title %}
+
+{% block content %}
+    <h3>Dados da Empresa editado com Sucesso!</h3>
+
+    {% for key in lista %}
+        <a href="{% url 'dashboard' token=key.id %}">
+            <button type="button" class="btn btn-success">Clique para voltar a Página Inicial</button>
+        </a>
+    {% endfor %}
+{% endblock %}
