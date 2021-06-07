@@ -1,22 +1,17 @@
-import json
-import requests
-import urllib3
-import datetime
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
-from django.contrib.auth.decorators import login_required
 from django.contrib import auth as autent
 from django.contrib.auth import authenticate, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
-from django.core import paginator
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.db import connections
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
+import datetime
 from datetime import *
 from easy_pdf import rendering
 from django.utils.six import BytesIO
+import requests
+import urllib3
+
 
 def index(request, token):
     conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
@@ -37,6 +32,10 @@ def index(request, token):
     return render(request, 'index.html', {'lista': key})
 
 
+def home(request):
+    return render(request, 'home.html')
+
+
 def login(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -48,23 +47,23 @@ def login(request):
                                            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
                                            "X-Parse-Revocable-Session": '1'
                                        })
-        abc = conexao.json()
+        response = conexao.json()
         status = str(conexao.status_code)
         
-        if status == '200' and abc['admin'] == True:
-            return redirect('base_admin', token=abc['sessionToken'])
-        elif status == '200' and abc['empresa_confirmacao'] == True:
-            return redirect('dashboard', token=abc['sessionToken'])
-        elif status == '200' and abc['admin'] == True:
-            return redirect('base_admin', token=abc['sessionToken'])
+        if status == '200' and response['admin'] == True:
+            return redirect('base_admin', token=response['sessionToken'])
+        elif status == '200' and response['empresa_confirmacao'] == True:
+            return redirect('dashboard', token=response['sessionToken'])
+        elif status == '200' and response['admin'] == True:
+            return redirect('base_admin', token=response['sessionToken'])
         else:
-            return redirect('login_erro')
+            return redirect('login_fail')
 
     return render(request, 'login.html')
 
 
-def login_erro(request):
-    return render(request, 'login_erro.html')
+def login_fail(request):
+    return render(request, 'login_fail.html')
 
 
 def deslogar(request, token):
@@ -72,7 +71,7 @@ def deslogar(request, token):
         "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
         "X-Parse-Session-Token": f"{token}"})
-
+    logout(request)
     return redirect('login')
 
 
@@ -88,41 +87,34 @@ def redefinir_senha(request):
                                         json={
                                                 "email": f"{email}",
                                         })
-        response = conexao.json()
+        conexao.json()
         status = str(conexao.status_code)
         
         if status == '200':
-            return redirect('redefinir_senha_sucesso')
+            return redirect('redefinir_senha_success')
         else:
-            return redirect('redefinir_senha_erro')
+            return redirect('redefinir_senha_fail')
 
     return render(request, 'redefinir_senha.html')
 
 
-def redefinir_senha_sucesso(request):
-    return render(request, 'redefinir_senha_sucesso.html')
+def redefinir_senha_success(request):
+    return render(request, 'redefinir_senha_success.html')
 
 
-def redefinir_senha_erro(request):
-    return render(request, 'redefinir_senha_erro.html')
+def redefinir_senha_fail(request):
+    return render(request, 'redefinir_senha_fail.html')
 
 
-def criar_usuario(request):
+def register(request):
     if request.method == 'POST':
         # Dados do Usuário
         username = request.POST['username']
         password = request.POST['password']
         cpf = request.POST['cpf']
-        nome = request.POST['nome']
-        datanasc = request.POST['datanasc']
-        email = request.POST['email']
-        celular = request.POST['celular']
-        cargo = request.POST['cargo']
-        departamento = request.POST['departamento']
         # Dados da Empresa
         cnpj = request.POST['cnpj']
         razaosocial = request.POST['razaosocial']
-        atividade = request.POST['atividade']
         # Endereço da Empresa
         cep = request.POST['cep']
         uf = request.POST['uf']
@@ -131,36 +123,29 @@ def criar_usuario(request):
         bairro = request.POST['bairro']
         numero = request.POST['numero']
         
-        conexao1 = requests.api.request('POST', f"https://parseapi.back4app.com/classes/Empresa/",
-
+        req_emp = requests.api.request('POST', f"https://parseapi.back4app.com/classes/Empresa/",
                                         headers={
                                             "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
                                             "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
                                             "Context-Type": "application/json"},
                                         json={
-                                            "cep": f"{cep}",
                                             "cnpj": f"{cnpj}",
-                                            "tel_comercial": f"00000000000",
-                                            "nome_empresa": f"nao definido",
-                                            "celular_empresa": f"00000000000",
                                             "razaosocial": f"{razaosocial}",
-                                            "ie": f"nao definido",
-                                            "atividade": f"{atividade}",
+                                            "cep": f"{cep}",
                                             "uf": f"{uf}",
-                                            "email_empresa": f"nao@definido",
                                             "logradouro": f"{logradouro}",
                                             "numero": f"{numero}",
                                             "cidade": f"{cidade}",
                                             "bairro": f"{bairro}",
                                         })
-        empresa = conexao1.json()
-        status = str(conexao1.status_code)
+        empresa = req_emp.json()
+        status = str(req_emp.status_code)
         empresa_id = empresa['objectId']
 
         if status != '201':
             return redirect('login')
 
-        conexao2 = requests.api.request('POST', f"https://parseapi.back4app.com/users",
+        req_user = requests.api.request('POST', f"https://parseapi.back4app.com/users",
                                         headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
                                                  "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
                                                  "X-Parse-Revocable-Session": "1",
@@ -169,50 +154,44 @@ def criar_usuario(request):
                                             "username": f"{username}",
                                             "password": f"{password}",
                                             "cpf": f"{cpf}",
-                                            "nome": f"{nome}",
-                                            "data_nasc": f"{datanasc}",
-                                            "email": f"{email}",
-                                            "celular": f"{celular}",
-                                            "cargo": f"{cargo}",
-                                            "departamento": f"{departamento}",
                                             "empresa_confirmacao": bool(True),
-                                            "nome_empresa": f"nao definido",
                                             "admin": bool(False),
                                             "id_empresa": {
                                                 '__type': "Pointer",
                                                 "className": "Empresa",
                                                 "objectId": empresa_id}
                                         })
-        ppp = conexao2.json()
-        ppa = str(conexao2.status_code)
-        if ppa == '201':
-            return redirect('criar_usuario_sucesso')
+        req_user.json()
+        status = str(req_user.status_code)
+        if status == '201':
+            return redirect('register_success')
         else:
             return redirect('login')
 
-    return render(request, 'criar_usuario.html', {})
+    return render(request, 'register.html')
 
 
-def criar_usuario_sucesso(request):
-    return render(request, 'criar_usuario_sucesso.html')
+def register_success(request):
+    return render(request, 'register_success.html')
 
 
-def criar_funcionario(request, token):
-    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
+def cadastro_colaborador(request, token):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
+                                    headers={
                                         "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
                                         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
                                         "X-Parse-Session-Token": f"{token}"})
 
-    abc = conexao.json()
-    if str(abc['sessionToken']) != f"{token}":
+    response = conexao.json()
+    if str(response['sessionToken']) != f"{token}":
         return redirect('login')
-    elif abc['empresa_confirmacao'] == False:
+    elif response['empresa_confirmacao'] == False:
         return redirect('login')
     else:
         pass
 
-    key = [{'id': token, 'user': abc['username']}]
-    empresa_id = abc['id_empresa']['objectId']
+    key = [{'id': token, 'user': response['username']}]
+    empresa_id = response['id_empresa']['objectId']
 
     if request.method == 'POST':
         username = request.POST['username']
@@ -272,7 +251,7 @@ def criar_funcionario(request, token):
         if hora_domingo_saida_2 == "":
             hora_domingo_saida_2 = "nao definido"
 
-        conexao1 = requests.api.request('POST', f"https://parseapi.back4app.com/users",
+        req_user = requests.api.request('POST', f"https://parseapi.back4app.com/users",
                                         headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
                                                  "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
                                                  "X-Parse-Revocable-Session": "1",
@@ -301,87 +280,96 @@ def criar_funcionario(request, token):
                                             "hora_domingo_entrada_2": f"{hora_domingo_entrada_2}",
                                             "hora_domingo_saida_2": f"{hora_domingo_saida_2}",
                                             "empresa_confirmacao": bool(False),
-                                            "nome_empresa": abc['nome_empresa'],
+                                            "nome_empresa": response['nome_empresa'],
                                             "admin": bool(False),
                                             "id_empresa": {
                                                 '__type': "Pointer",
                                                 "className": "Empresa",
                                                 "objectId": empresa_id}
                                         })
-        return redirect('criar_funcionario_sucesso', token=token)
-    return render(request, 'criar_funcionario.html', {'lista': key})
+
+        req_user.json()
+        status = str(req_user.status_code)
+        if status != '201':
+            return redirect('dashboard')
+        else:
+            return redirect('cadastro_colaborador_success', token=token)
+
+    return render(request, 'cadastro_colaborador.html', {'lista': key})
 
 
-def criar_funcionario_sucesso(request, token):
-    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
-        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
-        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
-        "X-Parse-Session-Token": f"{token}"})
-    abc = conexao.json()
-    if str(abc['sessionToken']) != f"{token}":
+def cadastro_colaborador_success(request, token):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
+                                    headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                            "X-Parse-Session-Token": f"{token}"})
+
+    response = conexao.json()
+    if str(response['sessionToken']) != f"{token}":
         return redirect('login')
-    elif abc['empresa_confirmacao'] == False:
+    elif response['empresa_confirmacao'] == False:
         return redirect('login')
     else:
         pass
-    key = [{'id': token, 'user': abc['username']}]
-    return render(request, 'criar_funcionario_sucesso.html', {'lista': key})
+    key = [{'id': token, 'user': response['username']}]
+    return render(request, 'cadastro_colaborador_success.html', {'lista': key})
 
 
-def listar_funcionario(request, token):
-    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
-        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
-        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
-        "X-Parse-Session-Token": f"{token}"})
-    abc = conexao.json()
-    if str(abc['sessionToken']) != f"{token}":
+def listar_colaborador(request, token):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
+                                    headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                        "X-Parse-Session-Token": f"{token}"})
+    response = conexao.json()
+    if str(response['sessionToken']) != f"{token}":
         return redirect('login')
-    elif abc['empresa_confirmacao'] == False:
+    elif response['empresa_confirmacao'] == False:
         return redirect('login')
-
-    key = [{'id': token, 'user': abc['username']}]
-    empresa_id = abc['id_empresa']['objectId']
+    else:
+        pass
+    key = [{'id': token, 'user': response['username']}]
+    empresa_id = response['id_empresa']['objectId']
     
-    conexao1 = requests.api.request('GET',
-                                    f"https://parseapi.back4app.com/classes/_User",
+    req_user = requests.api.request('GET', f"https://parseapi.back4app.com/classes/_User",
                                     headers={
                                         "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
                                         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
-    dop = conexao1.json()
-    dap = [x for x in dop['results']]
-    a = len(dap)
-    [dap[x].update({'cod': token}) for x in range(a)]
+    res_user = req_user.json()
+    colaborador = [x for x in res_user['results']]
+    total_colaborador = len(colaborador)
+    [colaborador[x].update({'cod': token}) for x in range(total_colaborador)]
     
-    return render(request, 'listar_funcionario.html', {'lista': key, 'order': dap, 'id_emp': empresa_id})
+    return render(request, 'listar_colaborador.html', {'lista': key, 'order': colaborador, 'id_emp': empresa_id})
 
 
-def exibir_perfil(request, token, id_user):
-    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
-        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
-        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
-        "X-Parse-Session-Token": f"{token}"})
-    abc = conexao.json()
-    if str(abc['sessionToken']) != f"{token}":
+def pontos_colaborador(request, token, id_user):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
+                                    headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                        "X-Parse-Session-Token": f"{token}"})
+    response = conexao.json()
+    if str(response['sessionToken']) != f"{token}":
         return redirect('login')
-    elif abc['empresa_confirmacao'] == False:
+    elif response['empresa_confirmacao'] == False:
         return redirect('login')
-    key = [{'id': token, 'id_user': abc['objectId']}]
-    empresa_id = abc['id_empresa']['objectId']
-    conexao1 = requests.api.request('GET', 
-                                    f"https://parseapi.back4app.com/classes/_User",
+    else:
+        pass
+    key = [{'id': token, 'user': response['username']}]
+    empresa_id = response['id_empresa']['objectId']
+
+    req_user = requests.api.request('GET', f"https://parseapi.back4app.com/classes/_User",
                                     headers={
                                         "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
                                         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
-    f = conexao1.json()
-    funcionario = [x for x in f['results']]
+    res_user = req_user.json()
+    colaborador = [x for x in res_user['results']]
 
-    conexao2 = requests.api.request('GET',
-                                    f"https://parseapi.back4app.com/classes/Ponto",
+    req_ponto = requests.api.request('GET', f"https://parseapi.back4app.com/classes/Ponto",
                                     headers={
                                         "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
                                         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
-    p = conexao2.json()
-    ponto = [x for x in p['results']]
+    res_ponto = req_ponto.json()
+    ponto = [x for x in res_ponto['results']]
 
     for x in ponto:
         data = x['createdAt']
@@ -398,12 +386,12 @@ def exibir_perfil(request, token, id_user):
         end = datetime.strptime(end_date, '%Y-%m-%d').date()
         start_data = start.strftime('%d/%m/%Y')
         end_data = end.strftime('%d/%m/%Y')
-        dia_start = start.day
-        mes_start = start.month
-        ano_start = start.year
-        dia_end = end.day
-        mes_end = end.month
-        ano_end = end.year
+        dia_start = start_data.day
+        mes_start = start_data.month
+        ano_start = start_data.year
+        dia_end = end_data.day
+        mes_end = end_data.month
+        ano_end = end_data.year
 
         if mes_start == mes_end:
             if mes_start < 10:
@@ -434,7 +422,7 @@ def exibir_perfil(request, token, id_user):
         start = "0"
         end = "0"
     
-    return render(request, 'exibir_perfil.html', {'lista': key, 'funcionarios': funcionario, 'id_emp': empresa_id, 'Id_user': id_user, 'pontos': ponto_date, 'start_data': start, 'end_data': end})
+    return render(request, 'pontos_colaborador.html', {'lista': key, 'colaboradores': colaborador, 'id_emp': empresa_id, 'Id_user': id_user, 'pontos': ponto_date, 'start_data': start, 'end_data': end})
 
 
 def gerar_relatorio_func(request, token):

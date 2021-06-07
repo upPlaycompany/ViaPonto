@@ -8,16 +8,36 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>VIA PONTO - Cadastrar Empresa</title>
+    <title>VIA PONTO - Cadastro</title>
 
     <!-- Custom fonts for this template-->
     <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
     <!-- Custom styles for this template-->
+    <link rel="stylesheet" href="{% static 'css/register.css' %}">
     <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
 </head>
 <body class="bg-gradient-light">
+    <div id="container">
+    <header>
+        <div class="center">
+            <img src="{% static 'img/logo.png' %}" alt="Logo Via Ponto" class="logo">
+            <nav>
+                <ul class="nav__links">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Como Funciona</a></li>
+                    <li><a href="#">Ferramentas</a></li>
+                    <li><a href="#">Pacotes</a></li>
+                    <li><a href="#">Ajuda</a></li>
+                    <li><a href="#">Ponto Online</a></li>
+                </ul>
+            </nav>
+            <a href="{% url 'register' %}" class="cta"><button class="btn_register">Criar sua Conta</button></a>
+            <a href="{% url 'login' %}" class="cta"><button class="btn_login">Entrar</button></a>
+        </div>
+        
+    </header>
     <div class="container">
         <div class="row justify-content-center">
             <div class="card o-hidden border-0 shadow-lg my-5">
@@ -27,7 +47,7 @@
                         <div class="col-lg-12">
                             <div class="p-2">
                                 <div class="text-center">
-                                    <h1 class="h2 text-gray-900 mb-2"><strong>Cadastrar Empresa</strong></h1>
+                                    <h1 class="h2 text-gray-900 mb-2"><strong>Cadastro Empresa</strong></h1>
                                     <br>
                                 </div>
                                 <form class="user" method="post" enctype="multipart/form-data"> {% csrf_token %}
@@ -37,87 +57,39 @@
                                             <label>Nome de Usuário</label>
                                             <input type="text" class="form-control"
                                                 name="username"
-                                                placeholder="Insira o nome de usuário para acesso" required>
-                                        </div>
-                                        <div class="form-group col-md-4">
-                                            <label>Nome Completo</label>
-                                            <input type="text" class="form-control"
-                                                name="nome"
-                                                placeholder="Insira o nome completo" required>
+                                                required>
                                         </div>
                                         <div class="form-group col-md-4">
                                             <label>CPF</label>
                                             <input type="text" class="form-control"
                                                 name="cpf"
                                                 id="id_cpf"
-                                                placeholder="Insira o seu CPF" required>
-                                        </div>
-                                    </div>
-                                        
-                                    <div class="form-row">
-                                        <div class="form-group col-md-4">
-                                            <label>Nascimento</label>
-                                            <input type="date" class="form-control"
-                                                name="datanasc"
-                                                placeholder="Insira sua data de nascimento" required>
-                                        </div>
-                                        <div class="form-group col-md-4">
-                                            <label>E-mail</label>
-                                            <input type="text" class="form-control"
-                                                name="email"
-                                                placeholder="Insira o email" required>
-                                        </div>
-                                        <div class="form-group col-md-4">
-                                            <label>Celular</label>
-                                            <input type="text" class="form-control"
-                                                name="celular"
-                                                id="phone"
-                                                placeholder="Insira o seu número de celular" required>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-row">
-                                        <div class="form-group col-md-4">
-                                            <label>Cargo</label>
-                                            <input type="text" class="form-control"
-                                                name="cargo"
-                                                placeholder="Insira seu cargo na empresa" required>
-                                        </div>
-                                        <div class="form-group col-md-4">
-                                            <label>Departamento</label>
-                                            <input type="text" class="form-control"
-                                                name="departamento"
-                                                placeholder="Insira seu departamento na empresa" required>
+                                                required>
                                         </div>
                                         <div class="form-group col-md-4">
                                             <label>Senha</label>
                                             <input type="password" class="form-control"
                                                 name="password"
-                                                placeholder="Insira uma senha para acesso" required>
+                                                required>
                                         </div>
                                     </div>
 
                                     <h4 class="my-3">Dados da Empresa</h4>
                                     <div class="form-row">
-                                        <div class="form-group col-md-4">
+                                        <div class="form-group col-md-6">
                                             <label>CNPJ</label>
                                             <input type="text" class="form-control"
                                                 name="cnpj"
                                                 id="id_cnpj"
-                                                placeholder="Insira o CNPJ da empresa" required>
+                                                required>
                                         </div>
-                                        <div class="form-group col-md-4">
+                                        <div class="form-group col-md-6">
                                             <label>Razão Social</label>
                                             <input type="text" class="form-control"
                                                 name="razaosocial"
-                                                placeholder="Insira a razão social da empresa" required>
+                                                required>
                                         </div>
-                                        <div class="form-group col-md-4">
-                                            <label>Atividade</label>
-                                            <input type="text" class="form-control"
-                                                name="atividade"
-                                                placeholder="Insira a atividade da empresa" required>
-                                        </div>
+                                       
                                     </div>
                                         
                                     <h4 class="my-3">Endereço da Empresa</h4>
@@ -127,7 +99,7 @@
                                             <input type="text" class="form-control" name="cep"
                                                 onchange="getAddress()"
                                                 id="id_postal_code"
-                                                placeholder="Insira o CEP da empresa" required>
+                                                required>
                                         </div>
                                         <div class="form-group col-md-4">
                                             <label>UF</label>
@@ -163,7 +135,7 @@
                                             <label>Número</label>
                                             <input type="text" class="form-control"
                                                 name="numero"
-                                                placeholder="Insira o numero da empresa" required>
+                                                required>
                                         </div>
                                     </div>
                                     
@@ -176,6 +148,7 @@
             </div>
         </div>
     </div>
+</div>
 
     <!-- Bootstrap core JavaScript-->
     <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>

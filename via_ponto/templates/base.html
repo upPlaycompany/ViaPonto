@@ -17,68 +17,182 @@
 </head>
 <body id="page-top">
     <div id="wrapper">
-        <ul class="navbar-nav bg-gradient sidebar sidebar accordion" id="accordionSidebar" style="background-color: #1dbf73; opacity: 70%;">
+        <ul class="navbar-nav bg-gradient sidebar sidebar accordion" id="accordionSidebar" style="background-color: #21963b; opacity: 100%;">
             <br>
             {% for key in lista %}
                 <div>
                     <a class="d-flex align-items-center justify-content-center" href="{% url 'dashboard' token=key.id %}">
-                        <img src="{% static '/img/logo_inicial.png' %}" width="90%;" style="padding-left: 5%;">
+                        <img src="{% static '/img/logo_inicial.png' %}" width="80%;" style="margin-top: 0;">
                     </a>
                 </div>
             {% endfor %}
             <br>
+
             <hr class="sidebar-divider my-0">
             <li class="nav-item">
                 {% for key in lista %}
                     <a class="nav-link collapsed" href="{% url 'dashboard' token=key.id %}"
-                    style="color: black;">
+                    style="color: white; font-weight: bold;">
                         <i class="fas fa-fw fa-paper-plane"></i>
-                        <span>Dashboard</span>
+                        <span>DASHBOARD</span>
                     </a>
                 {% endfor %}
             </li>
+
             <hr class="sidebar-divider my-0">
             <li class="nav-item">
-                <a style="color: black;" class="nav-link collapsed" href="#" data-toggle="collapse"
-                data-target="#collapseTwo"
-                aria-expanded="true" aria-controls="collapseTwo">
+                <a style="color: white; font-weight: bold;" class="nav-link collapsed" href="#" data-toggle="collapse"
+                data-target="#collapseOne"
+                aria-expanded="true" aria-controls="collapseOne">
                     <i class="fas fa-fw fa-user-tie"></i>
-                    <span>Funcionário</span>
+                    <span>EMPREGADOR</span>
                 </a>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div id="collapseOne" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Ações</h6>
                         {% for key in lista %}
-                            <a class="collapse-item" href="{% url 'criar_funcionario' token=key.id %}">Cadastrar Funcionário</a>
+                            <a class="collapse-item" href="{% url 'editar_empresa' token=key.id %}">Dados Empresa</a>
                         {% endfor %}
                         {% for key in lista %}
-                            <a class="collapse-item" href="{% url 'listar_funcionario' token=key.id %}">Listar Funcionários</a>
+                            <a class="collapse-item" href="">Departamentos</a>
+                        {% endfor %}
+                        {% for key in lista %}
+                            <a class="collapse-item" href="">Feriados</a>
                         {% endfor %}
                     </div>
                 </div>
             </li>
 
             <hr class="sidebar-divider my-0">
+            <li class="nav-item">
+                <a style="color: white; font-weight: bold;" class="nav-link collapsed" href="#" data-toggle="collapse"
+                data-target="#collapseTwo"
+                aria-expanded="true" aria-controls="collapseTwo">
+                    <i class="fas fa-fw fa-user-tie"></i>
+                    <span>HORÁRIOS</span>
+                </a>
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Ações</h6>
+                        {% for key in lista %}
+                            <a class="collapse-item" href="">Relatório Horário</a>
+                        {% endfor %}
+                        {% for key in lista %}
+                            <a class="collapse-item" href="">Cadastro Horário</a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </li>
 
+            <hr class="sidebar-divider my-0">
+            <li class="nav-item">
+                <a style="color: white; font-weight: bold;" class="nav-link collapsed" href="#" data-toggle="collapse"
+                data-target="#collapseTree"
+                aria-expanded="true" aria-controls="collapseTree">
+                    <i class="fas fa-fw fa-user-tie"></i>
+                    <span>LOCAIS</span>
+                </a>
+                <div id="collapseTree" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Ações</h6>
+                        {% for key in lista %}
+                            <a class="collapse-item" href="">Relatório Local</a>
+                        {% endfor %}
+                        {% for key in lista %}
+                            <a class="collapse-item" href="">Cadastro Local</a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </li>
+
+            <hr class="sidebar-divider my-0">
+            <li class="nav-item">
+                <a style="color: white; font-weight: bold;" class="nav-link collapsed" href="#" data-toggle="collapse"
+                data-target="#collapseFour"
+                aria-expanded="true" aria-controls="collapseFour">
+                    <i class="fas fa-fw fa-user-tie"></i>
+                    <span>COLABORADOR</span>
+                </a>
+                <div id="collapseFour" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Ações</h6>
+                        {% for key in lista %}
+                            <a class="collapse-item" href="">Relatório Cargos</a>
+                        {% endfor %}
+                        {% for key in lista %}
+                            <a class="collapse-item" href="{% url 'listar_funcionario' token=key.id %}">Relatório Colaborador</a>
+                        {% endfor %}
+                        {% for key in lista %}
+                            <a class="collapse-item" href="{% url 'criar_funcionario' token=key.id %}">Cadastro Colaborador</a>
+                        {% endfor %}
+                        {% for key in lista %}
+                            <a class="collapse-item" href="">Configurações</a>
+                        {% endfor %}
+                        {% for key in lista %}
+                            <a class="collapse-item" href="">Demitidos</a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </li>
+
+            <hr class="sidebar-divider my-0">
             <li class="nav-item">
                 {% for key in lista %}
-                    <a class="nav-link collapsed" href="{% url 'editar_empresa' token=key.id %}"
-                    style="color: black;">
+                    <a class="nav-link collapsed" href=""
+                    style="color: white; font-weight: bold;">
                         <i class="fas fa-fw fa-cog"></i>
-                        <span>Editar Empresa</span>
+                        <span>REGISTRO PONTO</span>
+                    </a>
+                {% endfor %}
+            </li>
+
+            <hr class="sidebar-divider my-0">
+            <li class="nav-item">
+                <a style="color: white; font-weight: bold;" class="nav-link collapsed" href="#" data-toggle="collapse"
+                data-target="#collapseFive"
+                aria-expanded="true" aria-controls="collapseFive">
+                    <i class="fas fa-fw fa-user-tie"></i>
+                    <span>RELATÓRIOS</span>
+                </a>
+                <div id="collapseFive" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Ações</h6>
+                        {% for key in lista %}
+                            <a class="collapse-item" href="">Espelho de Registros</a>
+                        {% endfor %}
+                        {% for key in lista %}
+                            <a class="collapse-item" href="">Pontos com Fotos</a>
+                        {% endfor %}
+                        {% for key in lista %}
+                            <a class="collapse-item" href="">Pontos de Trabalho</a>
+                        {% endfor %}
+                        {% for key in lista %}
+                            <a class="collapse-item" href="">Faltas por Período</a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </li>
+
+            <hr class="sidebar-divider my-0">
+            <li class="nav-item">
+                {% for key in lista %}
+                    <a class="nav-link collapsed" href=""
+                    style="color: white; font-weight: bold;">
+                        <i class="fas fa-fw fa-cog"></i>
+                        <span>PLANO CONTRATADO</span>
                     </a>
                 {% endfor %}
             </li>
 
             <hr class="sidebar-divider my-2">
-            
             <div class="text-center d-none d-md-inline">
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
             </div>
         </ul>
+
         <div id="content-wrapper" class="d-flex flex-column">
             <div id="content">
-                <nav class="navbar navbar-expand navbar-light topbar mb-5 static-top shadow" style="background-color: #1dbf73; opacity: 70%">
+                <nav class="navbar navbar-expand navbar-light topbar mb-5 static-top shadow" style="background-color: #21963b; opacity: 100%">
                     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
                     </button>

@@ -1,10 +1,11 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../static/css/home.css">
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
     <title>VIA PONTO</title>
 </head>
 <body>
@@ -22,8 +23,8 @@
                         <li><a href="#">Ponto Online</a></li>
                     </ul>
                 </nav>
-                <a href="#" class="cta"><button class="btn_register">Criar sua Conta</button></a>
-                <a href="#" class="cta"><button class="btn_login">Entrar</button></a>
+                <a href="{% url 'register' %}" class="cta"><button class="btn_register">Criar sua Conta</button></a>
+                <a href="{% url 'login' %}" class="cta"><button class="btn_login">Entrar</button></a>
             </div>
             
         </header>
