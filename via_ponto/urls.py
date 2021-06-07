@@ -15,16 +15,20 @@ urlpatterns = [
     path('redefinir-senha-fail/', views.redefinir_senha_fail, name='redefinir_senha_fail'),
     path('dashboard/<str:token>/', views.index, name='dashboard'),
     path('deslogar/<str:token>/', views.deslogar, name='deslogar'),
-    
+    # EMPREGADOR
+    path('dados-empresa/<str:token>/', views.editar_empresa, name='editar_empresa'),
+    path('dados-empresa-success/<str:token>/', views.editar_empresa_success, name='editar_empresa_success'),
+    path('dados-empresa-fail/<str:token>/', views.editar_empresa_fail, name='editar_empresa_fail'),
+    path('departamento/<str:token>/', views.detail_departamento, name='detail_departamento'),
+    path('feriado/<str:token>/', views.detail_feriado, name='detail_feriado'),
+
     path('cadastro-colaborador/<str:token>/', views.cadastro_colaborador, name='cadastro_colaborador'),
     path('cadastro-colaborador-success/<str:token>/', views.cadastro_colaborador_success, name='cadastro_colaborador_success'),
     path('listar-colaborador/<str:token>/', views.listar_colaborador, name='listar_colaborador'),
     path('pontos-colaborador/<str:token>/<str:id_user>/', views.pontos_colaborador, name='pontos_colaborador'),
-    path('gerar_relatorio_func/<str:token>/', views.gerar_relatorio_func, name='gerar_relatorio_func'),
-    path('gerar_relatorio_ponto/<str:token>/<str:id_user>/<str:start_date>/<str:end_date>/', views.gerar_relatorio_ponto, name='gerar_relatorio_ponto'),
-    path('editar_empresa/<str:token>/', views.editar_empresa, name='editar_empresa'),
-    path('editar_empresa_sucesso/<str:token>/', views.editar_empresa_sucesso, name='editar_empresa_sucesso'),
-    path('editar_empresa_erro/<str:token>/', views.editar_empresa_erro, name='editar_empresa_erro'),
+    path('relatorio-func/<str:token>/', views.gerar_relatorio_func, name='gerar_relatorio_func'),
+    path('relatorio-ponto/<str:token>/<str:id_user>/<str:start_date>/<str:end_date>/', views.gerar_relatorio_ponto, name='gerar_relatorio_ponto'),
+    
 
 
     # ÁREA ADMINSTRATIVA

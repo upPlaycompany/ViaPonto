@@ -1,0 +1,48 @@
+
+h1{
+    font-size: 32px;
+}
+h2{
+    font-size: 28px;
+}
+h3 {
+    font-size: 24px;
+}
+h4 {
+    font-size: 20px;
+}
+h5 {
+    font-size: 18px;
+}
+
+.title {
+    font-weight: bold;
+    color: #21963b;
+}
+
+.subtitle {
+    color: #21963b;
+}
+
+.text {
+    color: #6bc9ca;
+}
+
+.input-text {
+    color: #6bc9ca;
+}
+
+.navlink a{
+    color: white;
+    font-weight: bold;
+    transition: all 0.3s ease 0s;
+}
+
+.navlink a:hover {
+    color: #6bc9ca;
+}
+
+.flex-container {
+    display: flex;
+    justify-content: space-between;
+}

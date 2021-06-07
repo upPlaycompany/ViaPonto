@@ -53,7 +53,7 @@
                         {% for dap in order %}
                             {% if dap.id_empresa.objectId == id_emp %}
                                 <tr>
-                                    <td><a href="{% url 'exibir_perfil' token=dap.cod id_user=dap.objectId %}">{{ dap.nome }}</a></td>
+                                    <td><a href="{% url 'pontos_colaborador' token=dap.cod id_user=dap.objectId %}">{{ dap.nome }}</a></td>
                                     <td>{{ dap.cpf }}</td>
                                     <td>{{ dap.celular }}</td>
                                     <td>{{ dap.cargo }}</td>
