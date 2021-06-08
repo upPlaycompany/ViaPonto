@@ -13,14 +13,20 @@ urlpatterns = [
     path('redefinir-senha/', views.redefinir_senha, name='redefinir_senha'),
     path('redefinir-senha-success/', views.redefinir_senha_success, name='redefinir_senha_success'),
     path('redefinir-senha-fail/', views.redefinir_senha_fail, name='redefinir_senha_fail'),
-    path('dashboard/<str:token>/', views.index, name='dashboard'),
     path('deslogar/<str:token>/', views.deslogar, name='deslogar'),
+    path('dashboard/<str:token>/', views.dashboard, name='dashboard'),
     # EMPREGADOR
     path('dados-empresa/<str:token>/', views.editar_empresa, name='editar_empresa'),
     path('dados-empresa-success/<str:token>/', views.editar_empresa_success, name='editar_empresa_success'),
     path('dados-empresa-fail/<str:token>/', views.editar_empresa_fail, name='editar_empresa_fail'),
     path('departamento/<str:token>/', views.detail_departamento, name='detail_departamento'),
     path('feriado/<str:token>/', views.detail_feriado, name='detail_feriado'),
+    # HORÁRIO
+    path('horario/<str:token>/', views.detail_horario, name='detail_horario'),
+    path('cadastro-horario/<str:token>/', views.cadastro_horario, name='cadastro_horario'),
+    # LOCAL
+    path('local/<str:token>/', views.detail_local, name='detail_local'),
+    path('cadastro-local/<str:token>/', views.cadastro_local, name='cadastro_local'),
 
     path('cadastro-colaborador/<str:token>/', views.cadastro_colaborador, name='cadastro_colaborador'),
     path('cadastro-colaborador-success/<str:token>/', views.cadastro_colaborador_success, name='cadastro_colaborador_success'),

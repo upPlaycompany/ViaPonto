@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <h3 class="title">CADASTRO DE HORÁRIOS</h3>
+    <h6 class="subtitle">Fique a vontade para alterar seus dados</h6>
+    
+    <form method="POST" class="mb-7" enctype="multipart/form-data"> {% csrf_token %}
+        <h4 class="subtitle my-3">Informe os horários para o cadastro</h4>
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label>Nome Horário</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    name="nome-horario"
+                    value=""
+                >
+            </div>
+            <div class="form-group col-md-4">
+                <label>Horas</label>
+                <input
+                    type="date"
+                    class="form-control"
+                    name="inicio-periodo"
+                    id="inicio-periodo"
+                    value=""
+                    required
+                >
+            </div>
+            <div class="form-group col-md-4">
+                <label>Horas</label>
+                <input
+                    type="date"
+                    class="form-control"
+                    name="fim-periodo"
+                    value=""
+                    required
+                >
+            </div>
+        </div>
+       
+        <button type="submit" class="btn btn-info btn-lg">SALVAR</button>
+    </form>
+{% endblock %}

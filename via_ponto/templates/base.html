@@ -75,10 +75,10 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Ações</h6>
                         {% for key in lista %}
-                            <a class="collapse-item" href="">Relatório Horário</a>
+                            <a class="collapse-item" href="{% url 'detail_horario' token=key.id %}">Relatório Horário</a>
                         {% endfor %}
                         {% for key in lista %}
-                            <a class="collapse-item" href="">Cadastro Horário</a>
+                            <a class="collapse-item" href="{% url 'cadastro_horario' token=key.id %}">Cadastro Horário</a>
                         {% endfor %}
                     </div>
                 </div>
@@ -96,10 +96,10 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Ações</h6>
                         {% for key in lista %}
-                            <a class="collapse-item" href="">Relatório Local</a>
+                            <a class="collapse-item" href="{% url 'detail_local' token=key.id %}">Relatório Local</a>
                         {% endfor %}
                         {% for key in lista %}
-                            <a class="collapse-item" href="">Cadastro Local</a>
+                            <a class="collapse-item" href="{% url 'cadastro_local' token=key.id %}">Cadastro Local</a>
                         {% endfor %}
                     </div>
                 </div>
