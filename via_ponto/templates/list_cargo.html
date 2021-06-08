@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block extra_style %}
+    <style>
+        .card-body .row {
+            margin-bottom: 30px;
+        }
+        
+        .rTable {
+            text-align: center;
+        }
+
+        .rTable thead {
+            background-color: #20953B;
+            font-weight: bold;
+            color: white;
+            font-size: 1em;
+        }
+
+        .rTable tbody tr:nth-child(2n){
+            background: #98FB98;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="card shadow mb-5">
+        <div class="card-header py-3 flex-container">
+            <div>
+                <h3 class="title">RELATÓRIO DE CARGOS</h3>
+                <h6 class="subtitle">Fique a vontade para alterar seus dados</h6>
+            </div>
+            
+            <div>
+                {% for key in lista %}
+                    <a href="" target="_blank">
+                        <button class="btn btn-info btn-lg" type="button">CADASTRAR</button>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="card-body">
+            
+            <div class="table-responsive">
+                <table class="rTable table table-bordered" id="dataTable" width="100%" cellspacing="0" >
+                    <thead>
+                        <tr>
+                            <th>CARGOS</th>
+                            <th>OPÇÕES</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <td>Gerente</td>
+                            <td>BOTÕES</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

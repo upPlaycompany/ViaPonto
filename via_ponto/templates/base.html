@@ -54,10 +54,10 @@
                             <a class="collapse-item" href="{% url 'editar_empresa' token=key.id %}">Dados Empresa</a>
                         {% endfor %}
                         {% for key in lista %}
-                            <a class="collapse-item" href="{% url 'detail_departamento' token=key.id %}">Departamentos</a>
+                            <a class="collapse-item" href="{% url 'list_departamento' token=key.id %}">Departamentos</a>
                         {% endfor %}
                         {% for key in lista %}
-                            <a class="collapse-item" href="{% url 'detail_feriado' token=key.id %}">Feriados</a>
+                            <a class="collapse-item" href="{% url 'list_feriado' token=key.id %}">Feriados</a>
                         {% endfor %}
                     </div>
                 </div>
@@ -75,7 +75,7 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Ações</h6>
                         {% for key in lista %}
-                            <a class="collapse-item" href="{% url 'detail_horario' token=key.id %}">Relatório Horário</a>
+                            <a class="collapse-item" href="{% url 'list_horario' token=key.id %}">Relatório Horário</a>
                         {% endfor %}
                         {% for key in lista %}
                             <a class="collapse-item" href="{% url 'cadastro_horario' token=key.id %}">Cadastro Horário</a>
@@ -96,7 +96,7 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Ações</h6>
                         {% for key in lista %}
-                            <a class="collapse-item" href="{% url 'detail_local' token=key.id %}">Relatório Local</a>
+                            <a class="collapse-item" href="{% url 'list_local' token=key.id %}">Relatório Local</a>
                         {% endfor %}
                         {% for key in lista %}
                             <a class="collapse-item" href="{% url 'cadastro_local' token=key.id %}">Cadastro Local</a>
@@ -117,19 +117,16 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Ações</h6>
                         {% for key in lista %}
-                            <a class="collapse-item" href="">Relatório Cargos</a>
+                            <a class="collapse-item" href="{% url 'list_cargo' token=key.id %}">Relatório Cargos</a>
                         {% endfor %}
                         {% for key in lista %}
-                            <a class="collapse-item" href="{% url 'listar_colaborador' token=key.id %}">Relatório Colaborador</a>
+                            <a class="collapse-item" href="{% url 'list_colaborador' token=key.id %}">Relatório Colaborador</a>
                         {% endfor %}
                         {% for key in lista %}
                             <a class="collapse-item" href="{% url 'cadastro_colaborador' token=key.id %}">Cadastro Colaborador</a>
                         {% endfor %}
                         {% for key in lista %}
-                            <a class="collapse-item" href="">Configurações</a>
-                        {% endfor %}
-                        {% for key in lista %}
-                            <a class="collapse-item" href="">Demitidos</a>
+                            <a class="collapse-item" href="{% url 'list_demitidos' token=key.id %}">Demitidos</a>
                         {% endfor %}
                     </div>
                 </div>

@@ -282,7 +282,7 @@ def editar_empresa_fail(request, token):
     return render(request, 'editar_empresa_erro.html', {'lista': key})
 
 
-def detail_departamento(request, token):
+def list_departamento(request, token):
     conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
                                     headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
                                         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
@@ -296,10 +296,10 @@ def detail_departamento(request, token):
         pass
     key = [{'id': token, 'user': response['username']}]
 
-    return render(request, 'detail_departamento.html', {'lista': key})
+    return render(request, 'list_departamento.html', {'lista': key})
 
 
-def detail_feriado(request, token):
+def list_feriado(request, token):
     conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
                                     headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
                                         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
@@ -313,10 +313,10 @@ def detail_feriado(request, token):
         pass
     key = [{'id': token, 'user': response['username']}]
 
-    return render(request, 'detail_feriado.html', {'lista': key})
+    return render(request, 'list_feriado.html', {'lista': key})
 
 # HORÁRIOS
-def detail_horario(request, token):
+def list_horario(request, token):
     conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
                                     headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
                                         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
@@ -330,7 +330,7 @@ def detail_horario(request, token):
         pass
     key = [{'id': token, 'user': response['username']}]
 
-    return render(request, 'detail_horario.html', {'lista': key})
+    return render(request, 'list_horario.html', {'lista': key})
 
 
 def cadastro_horario(request, token):
@@ -351,7 +351,7 @@ def cadastro_horario(request, token):
 
 
 # LOCAIS
-def detail_local(request, token):
+def list_local(request, token):
     conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
                                     headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
                                         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
@@ -365,7 +365,7 @@ def detail_local(request, token):
         pass
     key = [{'id': token, 'user': response['username']}]
 
-    return render(request, 'detail_local.html', {'lista': key})
+    return render(request, 'list_local.html', {'lista': key})
 
 
 def cadastro_local(request, token):
@@ -383,6 +383,51 @@ def cadastro_local(request, token):
     key = [{'id': token, 'user': response['username']}]
 
     return render(request, 'cadastro_local.html', {'lista': key})
+
+
+# COLABORADORES
+def list_cargo(request, token):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
+                                    headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                        "X-Parse-Session-Token": f"{token}"})
+    response = conexao.json()
+    if str(response['sessionToken']) != f"{token}":
+        return redirect('login')
+    elif response['empresa_confirmacao'] == False:
+        return redirect('login')
+    else:
+        pass
+    key = [{'id': token, 'user': response['username']}]
+
+    return render(request, 'list_cargo.html', {'lista': key})
+
+
+def list_colaborador(request, token):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
+                                    headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                        "X-Parse-Session-Token": f"{token}"})
+    response = conexao.json()
+    if str(response['sessionToken']) != f"{token}":
+        return redirect('login')
+    elif response['empresa_confirmacao'] == False:
+        return redirect('login')
+    else:
+        pass
+    key = [{'id': token, 'user': response['username']}]
+    empresa_id = response['id_empresa']['objectId']
+    
+    req_user = requests.api.request('GET', f"https://parseapi.back4app.com/classes/_User",
+                                    headers={
+                                        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
+    res_user = req_user.json()
+    colaborador = [x for x in res_user['results']]
+    total_colaborador = len(colaborador)
+    [colaborador[x].update({'cod': token}) for x in range(total_colaborador)]
+    
+    return render(request, 'list_colaborador.html', {'lista': key, 'order': colaborador, 'id_emp': empresa_id})
 
 
 def cadastro_colaborador(request, token):
@@ -525,7 +570,7 @@ def cadastro_colaborador_success(request, token):
     return render(request, 'cadastro_colaborador_success.html', {'lista': key})
 
 
-def listar_colaborador(request, token):
+def list_demitidos(request, token):
     conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
                                     headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
                                         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
@@ -538,18 +583,8 @@ def listar_colaborador(request, token):
     else:
         pass
     key = [{'id': token, 'user': response['username']}]
-    empresa_id = response['id_empresa']['objectId']
-    
-    req_user = requests.api.request('GET', f"https://parseapi.back4app.com/classes/_User",
-                                    headers={
-                                        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
-                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
-    res_user = req_user.json()
-    colaborador = [x for x in res_user['results']]
-    total_colaborador = len(colaborador)
-    [colaborador[x].update({'cod': token}) for x in range(total_colaborador)]
-    
-    return render(request, 'listar_colaborador.html', {'lista': key, 'order': colaborador, 'id_emp': empresa_id})
+
+    return render(request, 'list_demitidos.html', {'lista': key})
 
 
 def pontos_colaborador(request, token, id_user):

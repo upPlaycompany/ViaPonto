@@ -33,19 +33,30 @@
 
 {% block content %}
     <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-success">Funcionários da Empresa</h6>
+        <div class="card-header py-3 flex-container">
+            <div>
+                <h3 class="title">RELATÓRIO DE COLABORADORES</h3>
+                <h6 class="subtitle">Fique a vontade para alterar seus dados</h6>
+            </div>
+            
+            <div>
+                {% for key in lista %}
+                    <a href="" target="_blank">
+                        <button class="btn btn-info btn-lg" type="button">CADASTRAR</button>
+                    </a>
+                {% endfor %}
+            </div>
         </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="rTable table table-bordered" id="dataTable" width="100%" cellspacing="0" >
                     <thead>
                         <tr>
-                            <th>Nome</th>
+                            <th>COLABORADOR</th>
                             <th>CPF</th>
-                            <th>Celular</th>
                             <th>Cargo</th>
                             <th>Departamento</th>
+                            <th>OPÇÕES</th>
                         </tr>
                     </thead>
 
@@ -55,19 +66,15 @@
                                 <tr>
                                     <td><a href="{% url 'pontos_colaborador' token=dap.cod id_user=dap.objectId %}">{{ dap.nome }}</a></td>
                                     <td>{{ dap.cpf }}</td>
-                                    <td>{{ dap.celular }}</td>
                                     <td>{{ dap.cargo }}</td>
                                     <td>{{ dap.departamento }}</td>
+                                    <td>BOTOES</td>
                                 </tr>
                             {% endif %}
                         {% endfor %}
                     </tbody>
                 </table>
-                {% for key in lista %}
-                    <a href="{% url 'gerar_relatorio_func' token=key.id %}" target="_blank">
-                        <button class="btn btn-success" type="button">Gerar Relatório</button>
-                    </a>
-                {% endfor %}
+                
             </div>
         </div>
     </div>

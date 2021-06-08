@@ -19,18 +19,22 @@ urlpatterns = [
     path('dados-empresa/<str:token>/', views.editar_empresa, name='editar_empresa'),
     path('dados-empresa-success/<str:token>/', views.editar_empresa_success, name='editar_empresa_success'),
     path('dados-empresa-fail/<str:token>/', views.editar_empresa_fail, name='editar_empresa_fail'),
-    path('departamento/<str:token>/', views.detail_departamento, name='detail_departamento'),
-    path('feriado/<str:token>/', views.detail_feriado, name='detail_feriado'),
+    path('departamento/<str:token>/', views.list_departamento, name='list_departamento'),
+    path('feriado/<str:token>/', views.list_feriado, name='list_feriado'),
     # HORÁRIO
-    path('horario/<str:token>/', views.detail_horario, name='detail_horario'),
+    path('horario/<str:token>/', views.list_horario, name='list_horario'),
     path('cadastro-horario/<str:token>/', views.cadastro_horario, name='cadastro_horario'),
     # LOCAL
-    path('local/<str:token>/', views.detail_local, name='detail_local'),
+    path('local/<str:token>/', views.list_local, name='list_local'),
     path('cadastro-local/<str:token>/', views.cadastro_local, name='cadastro_local'),
-
+    # COLABORADOR
+    path('cargo/<str:token>/', views.list_cargo, name='list_cargo'),
+    path('colaborador/<str:token>/', views.list_colaborador, name='list_colaborador'),
     path('cadastro-colaborador/<str:token>/', views.cadastro_colaborador, name='cadastro_colaborador'),
     path('cadastro-colaborador-success/<str:token>/', views.cadastro_colaborador_success, name='cadastro_colaborador_success'),
-    path('listar-colaborador/<str:token>/', views.listar_colaborador, name='listar_colaborador'),
+    path('demitidos/<str:token>/', views.list_demitidos, name='list_demitidos'),
+
+
     path('pontos-colaborador/<str:token>/<str:id_user>/', views.pontos_colaborador, name='pontos_colaborador'),
     path('relatorio-func/<str:token>/', views.gerar_relatorio_func, name='gerar_relatorio_func'),
     path('relatorio-ponto/<str:token>/<str:id_user>/<str:start_date>/<str:end_date>/', views.gerar_relatorio_ponto, name='gerar_relatorio_ponto'),
