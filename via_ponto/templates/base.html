@@ -12,6 +12,7 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
     <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/global.css' %}" rel="stylesheet">
 
     {% block extra_style %} {% endblock %}
 </head>
@@ -29,10 +30,9 @@
             <br>
 
             <hr class="sidebar-divider my-0">
-            <li class="nav-item">
+            <li class="navlink nav-item">
                 {% for key in lista %}
-                    <a class="nav-link collapsed" href="{% url 'dashboard' token=key.id %}"
-                    style="color: white; font-weight: bold;">
+                    <a class="nav-link collapsed" href="{% url 'dashboard' token=key.id %}">
                         <i class="fas fa-fw fa-paper-plane"></i>
                         <span>DASHBOARD</span>
                     </a>
@@ -40,8 +40,8 @@
             </li>
 
             <hr class="sidebar-divider my-0">
-            <li class="nav-item">
-                <a style="color: white; font-weight: bold;" class="nav-link collapsed" href="#" data-toggle="collapse"
+            <li class="navlink nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse"
                 data-target="#collapseOne"
                 aria-expanded="true" aria-controls="collapseOne">
                     <i class="fas fa-fw fa-user-tie"></i>
@@ -54,18 +54,18 @@
                             <a class="collapse-item" href="{% url 'editar_empresa' token=key.id %}">Dados Empresa</a>
                         {% endfor %}
                         {% for key in lista %}
-                            <a class="collapse-item" href="">Departamentos</a>
+                            <a class="collapse-item" href="{% url 'list_departamento' token=key.id %}">Departamentos</a>
                         {% endfor %}
                         {% for key in lista %}
-                            <a class="collapse-item" href="">Feriados</a>
+                            <a class="collapse-item" href="{% url 'list_feriado' token=key.id %}">Feriados</a>
                         {% endfor %}
                     </div>
                 </div>
             </li>
 
             <hr class="sidebar-divider my-0">
-            <li class="nav-item">
-                <a style="color: white; font-weight: bold;" class="nav-link collapsed" href="#" data-toggle="collapse"
+            <li class="navlink nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse"
                 data-target="#collapseTwo"
                 aria-expanded="true" aria-controls="collapseTwo">
                     <i class="fas fa-fw fa-user-tie"></i>
@@ -75,18 +75,18 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Ações</h6>
                         {% for key in lista %}
-                            <a class="collapse-item" href="">Relatório Horário</a>
+                            <a class="collapse-item" href="{% url 'list_horario' token=key.id %}">Relatório Horário</a>
                         {% endfor %}
                         {% for key in lista %}
-                            <a class="collapse-item" href="">Cadastro Horário</a>
+                            <a class="collapse-item" href="{% url 'cadastro_horario' token=key.id %}">Cadastro Horário</a>
                         {% endfor %}
                     </div>
                 </div>
             </li>
 
             <hr class="sidebar-divider my-0">
-            <li class="nav-item">
-                <a style="color: white; font-weight: bold;" class="nav-link collapsed" href="#" data-toggle="collapse"
+            <li class="navlink nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse"
                 data-target="#collapseTree"
                 aria-expanded="true" aria-controls="collapseTree">
                     <i class="fas fa-fw fa-user-tie"></i>
@@ -96,18 +96,18 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Ações</h6>
                         {% for key in lista %}
-                            <a class="collapse-item" href="">Relatório Local</a>
+                            <a class="collapse-item" href="{% url 'list_local' token=key.id %}">Relatório Local</a>
                         {% endfor %}
                         {% for key in lista %}
-                            <a class="collapse-item" href="">Cadastro Local</a>
+                            <a class="collapse-item" href="{% url 'cadastro_local' token=key.id %}">Cadastro Local</a>
                         {% endfor %}
                     </div>
                 </div>
             </li>
 
             <hr class="sidebar-divider my-0">
-            <li class="nav-item">
-                <a style="color: white; font-weight: bold;" class="nav-link collapsed" href="#" data-toggle="collapse"
+            <li class="navlink nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse"
                 data-target="#collapseFour"
                 aria-expanded="true" aria-controls="collapseFour">
                     <i class="fas fa-fw fa-user-tie"></i>
@@ -117,29 +117,25 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Ações</h6>
                         {% for key in lista %}
-                            <a class="collapse-item" href="">Relatório Cargos</a>
+                            <a class="collapse-item" href="{% url 'list_cargo' token=key.id %}">Relatório Cargos</a>
                         {% endfor %}
                         {% for key in lista %}
-                            <a class="collapse-item" href="{% url 'listar_funcionario' token=key.id %}">Relatório Colaborador</a>
+                            <a class="collapse-item" href="{% url 'list_colaborador' token=key.id %}">Relatório Colaborador</a>
                         {% endfor %}
                         {% for key in lista %}
-                            <a class="collapse-item" href="{% url 'criar_funcionario' token=key.id %}">Cadastro Colaborador</a>
+                            <a class="collapse-item" href="{% url 'cadastro_colaborador' token=key.id %}">Cadastro Colaborador</a>
                         {% endfor %}
                         {% for key in lista %}
-                            <a class="collapse-item" href="">Configurações</a>
-                        {% endfor %}
-                        {% for key in lista %}
-                            <a class="collapse-item" href="">Demitidos</a>
+                            <a class="collapse-item" href="{% url 'list_demitidos' token=key.id %}">Demitidos</a>
                         {% endfor %}
                     </div>
                 </div>
             </li>
 
             <hr class="sidebar-divider my-0">
-            <li class="nav-item">
+            <li class="navlink nav-item">
                 {% for key in lista %}
-                    <a class="nav-link collapsed" href=""
-                    style="color: white; font-weight: bold;">
+                    <a class="nav-link collapsed" href="">
                         <i class="fas fa-fw fa-cog"></i>
                         <span>REGISTRO PONTO</span>
                     </a>
@@ -147,8 +143,8 @@
             </li>
 
             <hr class="sidebar-divider my-0">
-            <li class="nav-item">
-                <a style="color: white; font-weight: bold;" class="nav-link collapsed" href="#" data-toggle="collapse"
+            <li class="navlink nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse"
                 data-target="#collapseFive"
                 aria-expanded="true" aria-controls="collapseFive">
                     <i class="fas fa-fw fa-user-tie"></i>
@@ -174,10 +170,9 @@
             </li>
 
             <hr class="sidebar-divider my-0">
-            <li class="nav-item">
+            <li class="navlink nav-item">
                 {% for key in lista %}
-                    <a class="nav-link collapsed" href=""
-                    style="color: white; font-weight: bold;">
+                    <a class="nav-link collapsed" href="">
                         <i class="fas fa-fw fa-cog"></i>
                         <span>PLANO CONTRATADO</span>
                     </a>

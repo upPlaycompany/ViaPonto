@@ -6,8 +6,6 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
 
     <title>VIA PONTO - Login</title>
 
@@ -19,6 +17,7 @@
 
     <!-- Custom styles for this template-->
     <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/global.css' %}" rel="stylesheet">
 </head>
 <body class="bg-gradient-light">
     <div class="container">
@@ -33,10 +32,13 @@
                                         <img src="{% static 'img/logo_inicial.png' %}" width="70%;">
                                         <br> <br>
                                     </div>
+                                    <div>
+                                        <h2 class="text-center text">Registro de Ponto</h2>
+                                    </div>
                                     <form class="user" method="post" enctype="multipart/form-data">{% csrf_token %}
                                         <div class="form-group">
                                             <input type="text" class="form-control form-control-user" name="username"
-                                                placeholder="Insira o nome do usuário" required>
+                                                placeholder="Insira seu nome de usuário" required>
                                         </div>
                                         <div class="form-group">
                                             <input type="password" class="form-control form-control-user"

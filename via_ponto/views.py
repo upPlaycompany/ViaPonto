@@ -13,30 +13,13 @@ import requests
 import urllib3
 
 
-def index(request, token):
-    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
-                                    "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
-                                    "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
-                                    "X-Parse-Session-Token": f"{token}"})
-    usuario = conexao.json()
-    if str(usuario['sessionToken']) != f"{token}":
-        return redirect('login')
-    elif usuario['empresa_confirmacao'] == False:
-        return redirect('login')
-    elif usuario['admin'] == True:
-        return redirect('login')
-    else:
-        pass
-    key = [{'id': token, 'user': usuario['username']}]
-
-    return render(request, 'index.html', {'lista': key})
 
 
 def home(request):
     return render(request, 'home.html')
 
 
-def login(request):
+def login_colaborador(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -59,7 +42,33 @@ def login(request):
         else:
             return redirect('login_fail')
 
-    return render(request, 'login.html')
+    return render(request, 'login_colaborador.html')
+
+
+def login_gestor(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        conexao = requests.api.request('GET',
+                                       f"https://parseapi.back4app.com/login?username={username}&password={password}",
+                                       headers={
+                                           "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                           "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                           "X-Parse-Revocable-Session": '1'
+                                       })
+        response = conexao.json()
+        status = str(conexao.status_code)
+        
+        if status == '200' and response['admin'] == True:
+            return redirect('base_admin', token=response['sessionToken'])
+        elif status == '200' and response['empresa_confirmacao'] == True:
+            return redirect('dashboard', token=response['sessionToken'])
+        elif status == '200' and response['admin'] == True:
+            return redirect('base_admin', token=response['sessionToken'])
+        else:
+            return redirect('login_fail')
+
+    return render(request, 'login_gestor.html')
 
 
 def login_fail(request):
@@ -173,6 +182,329 @@ def register(request):
 
 def register_success(request):
     return render(request, 'register_success.html')
+
+
+def dashboard(request, token):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
+                                    "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                    "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                    "X-Parse-Session-Token": f"{token}"})
+    usuario = conexao.json()
+    if str(usuario['sessionToken']) != f"{token}":
+        return redirect('login')
+    elif usuario['empresa_confirmacao'] == False:
+        return redirect('login')
+    elif usuario['admin'] == True:
+        return redirect('login')
+    else:
+        pass
+    key = [{'id': token, 'user': usuario['username']}]
+
+    return render(request, 'dashboard.html', {'lista': key})
+
+
+# EMPREGADOR
+def editar_empresa(request, token):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
+                                    headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                        "X-Parse-Session-Token": f"{token}"})
+    response = conexao.json()
+    if str(response['sessionToken']) != f"{token}":
+        return redirect('login')
+    elif response['empresa_confirmacao'] == False:
+        return redirect('login')
+    else:
+        pass
+    key = [{'id': token, 'user': response['username']}]
+    empresa_id = response['id_empresa']['objectId']
+    
+    req_emp = requests.api.request('GET', f"https://parseapi.back4app.com/classes/Empresa/{empresa_id}",
+                                    headers={
+                                        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
+    emp = req_emp.json()
+
+    if request.method == 'POST':
+        # Dados da Empresa
+        nome_empresa = request.POST['nome_empresa']
+        cnpj = request.POST['cnpj']
+        ie = request.POST['ie']
+        razaosocial = request.POST['razaosocial']
+        atividade = request.POST['atividade']
+        tel_comercial = request.POST['tel_comercial']
+        celular_empresa = request.POST['celular_empresa']
+        email_empresa = request.POST['email_empresa']
+        # Endereço da Empresa
+        cep = request.POST['cep']
+        uf = request.POST['uf']
+        cidade = request.POST['cidade']
+        logradouro = request.POST['logradouro']
+        bairro = request.POST['bairro']
+        numero = request.POST['numero']
+        
+        req_emp = requests.api.request('PUT', f"https://parseapi.back4app.com/classes/Empresa/{empresa_id}",
+                                        headers={
+                                            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                            "Content-Type": "application/json"},
+                                        json={
+                                            "nome_empresa": f"{nome_empresa}",
+                                            "cnpj": f"{cnpj}",
+                                            "ie": f"{ie}",
+                                            "razaosocial": f"{razaosocial}",
+                                            "atividade": f"{atividade}",
+                                            "tel_comercial": f"{tel_comercial}",
+                                            "celular_empresa": f"{celular_empresa}",
+                                            "email_empresa": f"{email_empresa}",
+                                            "cep": f"{cep}",
+                                            "uf": f"{uf}",
+                                            "cidade": f"{cidade}",
+                                            "logradouro": f"{logradouro}",
+                                            "bairro": f"{bairro}",
+                                            "numero": f"{numero}",
+                                        })
+
+        status = str(req_emp.status_code)
+        if status == '200':
+            return redirect('editar_empresa_success', token=token)
+        else:
+            return redirect('editar_empresa_fail', token=token)
+
+    return render(request, 'editar_empresa.html', {'lista': key, 'empresa': emp })
+
+
+def editar_empresa_success(request, token):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
+                                    headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                        "X-Parse-Session-Token": f"{token}"})
+    response = conexao.json()
+    if str(response['sessionToken']) != f"{token}":
+        return redirect('login')
+    elif response['empresa_confirmacao'] == False:
+        return redirect('login')
+    else:
+        pass
+    key = [{'id': token, 'user': response['username']}]
+
+    return render(request, 'editar_empresa_sucesso.html', {'lista': key})
+
+
+def editar_empresa_fail(request, token):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
+                                    headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                        "X-Parse-Session-Token": f"{token}"})
+    response = conexao.json()
+    if str(response['sessionToken']) != f"{token}":
+        return redirect('login')
+    elif response['empresa_confirmacao'] == False:
+        return redirect('login')
+    else:
+        pass
+    key = [{'id': token, 'user': response['username']}]
+
+    return render(request, 'editar_empresa_erro.html', {'lista': key})
+
+
+def list_departamento(request, token):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
+                                    headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                        "X-Parse-Session-Token": f"{token}"})
+    response = conexao.json()
+    if str(response['sessionToken']) != f"{token}":
+        return redirect('login')
+    elif response['empresa_confirmacao'] == False:
+        return redirect('login')
+    else:
+        pass
+    key = [{'id': token, 'user': response['username']}]
+
+    return render(request, 'list_departamento.html', {'lista': key})
+
+
+def cadastro_departamento(request, token):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
+                                    headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                        "X-Parse-Session-Token": f"{token}"})
+    response = conexao.json()
+    if str(response['sessionToken']) != f"{token}":
+        return redirect('login')
+    elif response['empresa_confirmacao'] == False:
+        return redirect('login')
+    else:
+        pass
+    key = [{'id': token, 'user': response['username']}]
+
+    return render(request, 'cadastro_departamento.html', {'lista': key})
+
+
+def edit_departamento(request, token):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
+                                    headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                        "X-Parse-Session-Token": f"{token}"})
+    response = conexao.json()
+    if str(response['sessionToken']) != f"{token}":
+        return redirect('login')
+    elif response['empresa_confirmacao'] == False:
+        return redirect('login')
+    else:
+        pass
+    key = [{'id': token, 'user': response['username']}]
+
+    return render(request, 'edit_departamento.html', {'lista': key})
+
+
+def delete_departamento(request, token):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
+                                    headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                        "X-Parse-Session-Token": f"{token}"})
+    response = conexao.json()
+    if str(response['sessionToken']) != f"{token}":
+        return redirect('login')
+    elif response['empresa_confirmacao'] == False:
+        return redirect('login')
+    else:
+        pass
+    key = [{'id': token, 'user': response['username']}]
+
+    return render(request, 'delete_departamento.html', {'lista': key})
+
+
+def list_feriado(request, token):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
+                                    headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                        "X-Parse-Session-Token": f"{token}"})
+    response = conexao.json()
+    if str(response['sessionToken']) != f"{token}":
+        return redirect('login')
+    elif response['empresa_confirmacao'] == False:
+        return redirect('login')
+    else:
+        pass
+    key = [{'id': token, 'user': response['username']}]
+
+    return render(request, 'list_feriado.html', {'lista': key})
+
+# HORÁRIOS
+def list_horario(request, token):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
+                                    headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                        "X-Parse-Session-Token": f"{token}"})
+    response = conexao.json()
+    if str(response['sessionToken']) != f"{token}":
+        return redirect('login')
+    elif response['empresa_confirmacao'] == False:
+        return redirect('login')
+    else:
+        pass
+    key = [{'id': token, 'user': response['username']}]
+
+    return render(request, 'list_horario.html', {'lista': key})
+
+
+def cadastro_horario(request, token):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
+                                    headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                        "X-Parse-Session-Token": f"{token}"})
+    response = conexao.json()
+    if str(response['sessionToken']) != f"{token}":
+        return redirect('login')
+    elif response['empresa_confirmacao'] == False:
+        return redirect('login')
+    else:
+        pass
+    key = [{'id': token, 'user': response['username']}]
+
+    return render(request, 'cadastro_horario.html', {'lista': key})
+
+
+# LOCAIS
+def list_local(request, token):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
+                                    headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                        "X-Parse-Session-Token": f"{token}"})
+    response = conexao.json()
+    if str(response['sessionToken']) != f"{token}":
+        return redirect('login')
+    elif response['empresa_confirmacao'] == False:
+        return redirect('login')
+    else:
+        pass
+    key = [{'id': token, 'user': response['username']}]
+
+    return render(request, 'list_local.html', {'lista': key})
+
+
+def cadastro_local(request, token):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
+                                    headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                        "X-Parse-Session-Token": f"{token}"})
+    response = conexao.json()
+    if str(response['sessionToken']) != f"{token}":
+        return redirect('login')
+    elif response['empresa_confirmacao'] == False:
+        return redirect('login')
+    else:
+        pass
+    key = [{'id': token, 'user': response['username']}]
+
+    return render(request, 'cadastro_local.html', {'lista': key})
+
+
+# COLABORADORES
+def list_cargo(request, token):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
+                                    headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                        "X-Parse-Session-Token": f"{token}"})
+    response = conexao.json()
+    if str(response['sessionToken']) != f"{token}":
+        return redirect('login')
+    elif response['empresa_confirmacao'] == False:
+        return redirect('login')
+    else:
+        pass
+    key = [{'id': token, 'user': response['username']}]
+
+    return render(request, 'list_cargo.html', {'lista': key})
+
+
+def list_colaborador(request, token):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
+                                    headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                        "X-Parse-Session-Token": f"{token}"})
+    response = conexao.json()
+    if str(response['sessionToken']) != f"{token}":
+        return redirect('login')
+    elif response['empresa_confirmacao'] == False:
+        return redirect('login')
+    else:
+        pass
+    key = [{'id': token, 'user': response['username']}]
+    empresa_id = response['id_empresa']['objectId']
+    
+    req_user = requests.api.request('GET', f"https://parseapi.back4app.com/classes/_User",
+                                    headers={
+                                        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
+    res_user = req_user.json()
+    colaborador = [x for x in res_user['results']]
+    total_colaborador = len(colaborador)
+    [colaborador[x].update({'cod': token}) for x in range(total_colaborador)]
+    
+    return render(request, 'list_colaborador.html', {'lista': key, 'order': colaborador, 'id_emp': empresa_id})
 
 
 def cadastro_colaborador(request, token):
@@ -315,7 +647,7 @@ def cadastro_colaborador_success(request, token):
     return render(request, 'cadastro_colaborador_success.html', {'lista': key})
 
 
-def listar_colaborador(request, token):
+def list_demitidos(request, token):
     conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
                                     headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
                                         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
@@ -328,18 +660,8 @@ def listar_colaborador(request, token):
     else:
         pass
     key = [{'id': token, 'user': response['username']}]
-    empresa_id = response['id_empresa']['objectId']
-    
-    req_user = requests.api.request('GET', f"https://parseapi.back4app.com/classes/_User",
-                                    headers={
-                                        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
-                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
-    res_user = req_user.json()
-    colaborador = [x for x in res_user['results']]
-    total_colaborador = len(colaborador)
-    [colaborador[x].update({'cod': token}) for x in range(total_colaborador)]
-    
-    return render(request, 'listar_colaborador.html', {'lista': key, 'order': colaborador, 'id_emp': empresa_id})
+
+    return render(request, 'list_demitidos.html', {'lista': key})
 
 
 def pontos_colaborador(request, token, id_user):
@@ -538,112 +860,11 @@ def gerar_relatorio_ponto(request, token, id_user, start_date, end_date):
                                             encoding='utf-8')
 
 
-def editar_empresa(request, token):
-    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
-        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
-        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
-        "X-Parse-Session-Token": f"{token}"})
-    abc = conexao.json()
-    if str(abc['sessionToken']) != f"{token}":
-        return redirect('login')
-    elif abc['empresa_confirmacao'] == False:
-        return redirect('login')
 
-    key = [{'id': token, 'user': abc['username']}]
-    empresa_id = abc['id_empresa']['objectId']
-    
-    conexao1 = requests.api.request('GET', f"https://parseapi.back4app.com/classes/Empresa/{empresa_id}",
-                                    headers={
-                                        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
-                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
-    emp = conexao1.json()
-
-    if request.method == 'POST':
-        # Dados da Empresa
-        cnpj = request.POST['cnpj']
-        nome_empresa = request.POST['nome_empresa']
-        ie = request.POST['ie']
-        razaosocial = request.POST['razaosocial']
-        atividade = request.POST['atividade']
-        tel_comercial = request.POST['tel_comercial']
-        celular_empresa = request.POST['celular_empresa']
-        email_empresa = request.POST['email_empresa']
-        # Endereço da Empresa
-        cep = request.POST['cep']
-        uf = request.POST['uf']
-        cidade = request.POST['cidade']
-        logradouro = request.POST['logradouro']
-        bairro = request.POST['bairro']
-        numero = request.POST['numero']
-        
-        conexao1 = requests.api.request('PUT', f"https://parseapi.back4app.com/classes/Empresa/{empresa_id}",
-                                        headers={
-                                            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
-                                            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
-                                            "Content-Type": "application/json"},
-                                        json={
-                                            "cep": f"{cep}",
-                                            "cnpj": f"{cnpj}",
-                                            "tel_comercial": f"{tel_comercial}",
-                                            "nome_empresa": f"{nome_empresa}",
-                                            "celular_empresa": f"{celular_empresa}",
-                                            "razaosocial": f"{razaosocial}",
-                                            "ie": f"{ie}",
-                                            "atividade": f"{atividade}",
-                                            "uf": f"{uf}",
-                                            "email_empresa": f"{email_empresa}",
-                                            "logradouro": f"{logradouro}",
-                                            "numero": f"{numero}",
-                                            "cidade": f"{cidade}",
-                                            "bairro": f"{bairro}",
-                                        })
-        status = str(conexao1.status_code)
-        
-        if status == '200':
-            return redirect('editar_empresa_sucesso', token=token)
-        else:
-            return redirect('editar_empresa_erro', token=token)
-
-    return render(request, 'editar_empresa.html', {'lista': key, 'empresa': emp })
-
-
-def editar_empresa_sucesso(request, token):
-    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
-        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
-        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
-        "X-Parse-Session-Token": f"{token}"})
-    abc = conexao.json()
-    if str(abc['sessionToken']) != f"{token}":
-        return redirect('login')
-    elif abc['empresa_confirmacao'] == False:
-        return redirect('login')
-    else:
-        pass
-    key = [{'id': token, 'emp': abc['nome_empresa'], 'user': abc['username']}]
-
-    return render(request, 'editar_empresa_sucesso.html', {'lista': key})
-
-
-def editar_empresa_erro(request, token):
-    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
-        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
-        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
-        "X-Parse-Session-Token": f"{token}"})
-    abc = conexao.json()
-    if str(abc['sessionToken']) != f"{token}":
-        return redirect('login')
-    elif abc['empresa_confirmacao'] == False:
-        return redirect('login')
-    else:
-        pass
-    key = [{'id': token, 'emp': abc['nome_empresa'], 'user': abc['username']}]
-
-    return render(request, 'editar_empresa_erro.html', {'lista': key})
 
 
 
 # ÁREA ADMINISTRATIVA #
-
 def base_admin(request, token):
     conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
         "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
@@ -741,5 +962,3 @@ def ver_empresa(request, token, id):
     dop = conexao1.json()
     dap = [x for x in dop['results']]
     return render(request, 'ver_empresa.html', {'lista': key, 'lista2': dap})
-
-
