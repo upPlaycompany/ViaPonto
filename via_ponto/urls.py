@@ -14,11 +14,15 @@ urlpatterns = [
     path('redefinir-senha-fail/', views.redefinir_senha_fail, name='redefinir_senha_fail'),
     path('deslogar/<str:token>/', views.deslogar, name='deslogar'),
     path('dashboard/<str:token>/', views.dashboard, name='dashboard'),
+    path('fail/<str:token>/', views.dashboard, name='fail_default'),
     # EMPREGADOR
-    path('dados-empresa/<str:token>/', views.edit_empresa, name='edit_empresa'),
-    path('dados-empresa-success/<str:token>/', views.edit_empresa_success, name='edit_empresa_success'),
-    path('dados-empresa-fail/<str:token>/', views.edit_empresa_fail, name='edit_empresa_fail'),
+    path('empresa/edit/<str:token>/', views.edit_empresa, name='edit_empresa'),
+    path('empresa/success/<str:token>/', views.edit_empresa_success, name='edit_empresa_success'),
+    path('empresa/fail/<str:token>/', views.edit_empresa_fail, name='edit_empresa_fail'),
     path('departamento/<str:token>/', views.list_departamento, name='list_departamento'),
+    path('departamento/cadastro/<str:token>/', views.cadastro_departamento, name='cadastro_departamento'),
+    path('departamento/edit/<str:token>/<str:id>/', views.edit_departamento, name='edit_departamento'),
+    path('departamento/delete/<str:token>/<str:id>/', views.delete_departamento, name='delete_departamento'),
     path('feriado/<str:token>/', views.list_feriado, name='list_feriado'),
     # HORÁRIO
     path('horario/<str:token>/', views.list_horario, name='list_horario'),
