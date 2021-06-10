@@ -3,7 +3,7 @@
 
 
 {% block content %}
-    <h3 class="title">Olá, Vital Tecnologia</h3>
+    <h2 class="title">Olá, {{ empresa.nome_empresa }}</h2>
     <h6 class="subtitle">Fique a vontade para alterar seus dados</h6>
     
     <form method="POST" class="mb-7" enctype="multipart/form-data"> {% csrf_token %}
@@ -14,7 +14,7 @@
                 <input
                     type="text"
                     class="form-control"
-                    name="nome-empresa"
+                    name="nome_empresa"
                     value="{{ empresa.nome_empresa }}"
                 >
             </div>
@@ -64,7 +64,7 @@
                 <input
                     type="text"
                     class="form-control"
-                    name="phone"
+                    name="tel_comercial"
                     id="phone"
                     value="{{ empresa.tel_comercial }}"
                 >

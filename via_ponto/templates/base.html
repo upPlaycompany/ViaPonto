@@ -51,7 +51,7 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Ações</h6>
                         {% for key in lista %}
-                            <a class="collapse-item" href="{% url 'editar_empresa' token=key.id %}">Dados Empresa</a>
+                            <a class="collapse-item" href="{% url 'edit_empresa' token=key.id %}">Dados Empresa</a>
                         {% endfor %}
                         {% for key in lista %}
                             <a class="collapse-item" href="{% url 'list_departamento' token=key.id %}">Departamentos</a>
@@ -117,13 +117,10 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Ações</h6>
                         {% for key in lista %}
-                            <a class="collapse-item" href="{% url 'list_cargo' token=key.id %}">Relatório Cargos</a>
+                            <a class="collapse-item" href="{% url 'list_cargo' token=key.id %}">Cargos</a>
                         {% endfor %}
                         {% for key in lista %}
-                            <a class="collapse-item" href="{% url 'list_colaborador' token=key.id %}">Relatório Colaborador</a>
-                        {% endfor %}
-                        {% for key in lista %}
-                            <a class="collapse-item" href="{% url 'cadastro_colaborador' token=key.id %}">Cadastro Colaborador</a>
+                            <a class="collapse-item" href="{% url 'list_colaborador' token=key.id %}">Colaboradores</a>
                         {% endfor %}
                         {% for key in lista %}
                             <a class="collapse-item" href="{% url 'list_demitidos' token=key.id %}">Demitidos</a>

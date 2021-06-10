@@ -20,6 +20,14 @@
         .rTable tbody tr:nth-child(2n){
             background: #98FB98;
         }
+
+        .td-1 {
+            width: 80%;
+        }
+
+        .td-2 {
+            width: 20%;
+        }
     </style>
 {% endblock %}
 
@@ -46,14 +54,21 @@
                     <thead>
                         <tr>
                             <th>DEPARTAMENTOS</th>
-                            <th>OPÇÕES</th>
+                            <th>AÇÕES</th>
                         </tr>
                     </thead>
 
                     <tbody>
                         <tr>
-                            <td>GERENCIA</td>
-                            <td>BOTÕES</td>
+                            <td class="td-1">GERENCIA</td>
+                            <td class="td-2">
+                                <a href="#">
+                                    <i style="color: #6bc9ca; font-size: 20px;" class="fas fa-pencil-alt"></i>
+                                </a>
+                                <a href="#">
+                                    <i style="margin-left: 25px; color: red; font-size: 20px;" class="far fa-trash-alt"></i>
+                                </a>
+                            </td>
                         </tr>
                     </tbody>
                 </table>

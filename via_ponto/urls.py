@@ -1,7 +1,5 @@
 
-from django.contrib import admin
 from django.urls import path
-
 from . import views
 
 urlpatterns = [
@@ -17,9 +15,9 @@ urlpatterns = [
     path('deslogar/<str:token>/', views.deslogar, name='deslogar'),
     path('dashboard/<str:token>/', views.dashboard, name='dashboard'),
     # EMPREGADOR
-    path('dados-empresa/<str:token>/', views.editar_empresa, name='editar_empresa'),
-    path('dados-empresa-success/<str:token>/', views.editar_empresa_success, name='editar_empresa_success'),
-    path('dados-empresa-fail/<str:token>/', views.editar_empresa_fail, name='editar_empresa_fail'),
+    path('dados-empresa/<str:token>/', views.edit_empresa, name='edit_empresa'),
+    path('dados-empresa-success/<str:token>/', views.edit_empresa_success, name='edit_empresa_success'),
+    path('dados-empresa-fail/<str:token>/', views.edit_empresa_fail, name='edit_empresa_fail'),
     path('departamento/<str:token>/', views.list_departamento, name='list_departamento'),
     path('feriado/<str:token>/', views.list_feriado, name='list_feriado'),
     # HORÁRIO
@@ -39,11 +37,10 @@ urlpatterns = [
     path('pontos-colaborador/<str:token>/<str:id_user>/', views.pontos_colaborador, name='pontos_colaborador'),
     path('relatorio-func/<str:token>/', views.gerar_relatorio_func, name='gerar_relatorio_func'),
     path('relatorio-ponto/<str:token>/<str:id_user>/<str:start_date>/<str:end_date>/', views.gerar_relatorio_ponto, name='gerar_relatorio_ponto'),
-    
 
 
     # ÁREA ADMINSTRATIVA
     path('base_admin/<str:token>/', views.base_admin, name='base_admin'),
-    path('listar_empresa/<str:token>/', views.listar_empresa, name='listar_empresa'),
-    path('ver_empresa/<str:token>/<str:id>/', views.ver_empresa, name='ver_empresa'),
+    path('empresa/<str:token>/', views.list_empresa, name='list_empresa'),
+    path('detail-empresa/<str:token>/<str:id>/', views.detail_empresa, name='detail_empresa'),
 ]

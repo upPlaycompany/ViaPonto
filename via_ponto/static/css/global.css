@@ -33,7 +33,7 @@ h5 {
     color: #6bc9ca;
 }
 
-.navlink a{
+.navlink a {
     color: white;
     font-weight: bold;
     transition: all 0.3s ease 0s;
@@ -46,4 +46,9 @@ h5 {
 .flex-container {
     display: flex;
     justify-content: space-between;
+}
+
+.icon-delete i {
+    color: red;
+    font-size: 30px;
 }

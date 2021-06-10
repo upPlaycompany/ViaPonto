@@ -72,7 +72,7 @@ def login_gestor(request):
 
 
 def login_fail(request):
-    return render(request, 'login_fail.html')
+    return render(request, 'fail_login.html')
 
 
 def deslogar(request, token):
@@ -108,11 +108,11 @@ def redefinir_senha(request):
 
 
 def redefinir_senha_success(request):
-    return render(request, 'redefinir_senha_success.html')
+    return render(request, 'success_redefinir_senha.html')
 
 
 def redefinir_senha_fail(request):
-    return render(request, 'redefinir_senha_fail.html')
+    return render(request, 'fail_redefinir_senha.html')
 
 
 def register(request):
@@ -181,7 +181,7 @@ def register(request):
 
 
 def register_success(request):
-    return render(request, 'register_success.html')
+    return render(request, 'success_register.html')
 
 
 def dashboard(request, token):
@@ -204,7 +204,7 @@ def dashboard(request, token):
 
 
 # EMPREGADOR
-def editar_empresa(request, token):
+def edit_empresa(request, token):
     conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
                                     headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
                                         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
@@ -267,14 +267,14 @@ def editar_empresa(request, token):
 
         status = str(req_emp.status_code)
         if status == '200':
-            return redirect('editar_empresa_success', token=token)
+            return redirect('edit_empresa_success', token=token)
         else:
-            return redirect('editar_empresa_fail', token=token)
+            return redirect('edit_empresa_fail', token=token)
 
-    return render(request, 'editar_empresa.html', {'lista': key, 'empresa': emp })
+    return render(request, 'edit_empresa.html', {'lista': key, 'empresa': emp })
 
 
-def editar_empresa_success(request, token):
+def edit_empresa_success(request, token):
     conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
                                     headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
                                         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
@@ -288,10 +288,10 @@ def editar_empresa_success(request, token):
         pass
     key = [{'id': token, 'user': response['username']}]
 
-    return render(request, 'editar_empresa_sucesso.html', {'lista': key})
+    return render(request, 'success_edit_empresa.html', {'lista': key})
 
 
-def editar_empresa_fail(request, token):
+def edit_empresa_fail(request, token):
     conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
                                     headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
                                         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
@@ -305,7 +305,7 @@ def editar_empresa_fail(request, token):
         pass
     key = [{'id': token, 'user': response['username']}]
 
-    return render(request, 'editar_empresa_erro.html', {'lista': key})
+    return render(request, 'fail_edit_empresa.html', {'lista': key})
 
 
 def list_departamento(request, token):
@@ -895,10 +895,11 @@ def base_admin(request, token):
     empresa = [x for x in emp['results']]
     num_empresa = [{'numero_empresa': len(empresa)}]
     key = [{'id': token, 'user': abc['username']}]
-    return render(request, 'base_admin.html', {'lista': key, 'usuarios': num_usuario, 'empresas': num_empresa})
 
-  
-def index_admin(request, token):
+    return render(request, 'admin_base.html', {'lista': key, 'usuarios': num_usuario, 'empresas': num_empresa})
+
+
+def dashboard_admin(request, token):
     conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
         "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
@@ -911,10 +912,10 @@ def index_admin(request, token):
     else:
         pass
     key = [{'id': token, 'user': abc['username']}]
-    return render(request, 'index_admin.html', {'lista': key})
+    return render(request, 'admin_dashboard.html', {'lista': key})
 
 
-def listar_empresa(request, token):
+def list_empresa(request, token):
     conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
         "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
@@ -938,10 +939,10 @@ def listar_empresa(request, token):
     dap = [x for x in dop['results']]
     a = len(dap)
     [dap[x].update({'token': token}) for x in range(a)]
-    return render(request, 'listar_empresa.html', {'lista': key, 'lista2': dap})
+    return render(request, 'list_empresa.html', {'lista': key, 'lista2': dap})
 
 
-def ver_empresa(request, token, id):
+def detail_empresa(request, token, id):
     conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
         "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
@@ -961,4 +962,4 @@ def ver_empresa(request, token, id):
     key = [{'id': token, 'user': abc['username']}]
     dop = conexao1.json()
     dap = [x for x in dop['results']]
-    return render(request, 'ver_empresa.html', {'lista': key, 'lista2': dap})
+    return render(request, 'detail_empresa.html', {'lista': key, 'lista2': dap})
