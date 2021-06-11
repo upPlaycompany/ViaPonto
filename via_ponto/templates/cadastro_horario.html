@@ -3,40 +3,98 @@
 
 {% block content %}
     <h3 class="title">CADASTRO DE HORÁRIOS</h3>
-    <h6 class="subtitle">Fique a vontade para alterar seus dados</h6>
     
     <form method="POST" class="mb-7" enctype="multipart/form-data"> {% csrf_token %}
-        <h4 class="subtitle my-3">Informe os horários para o cadastro</h4>
+        <h4 class="subtitle my-3">Informe os dados de expediente</h4>
         <div class="form-row">
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-6">
                 <label>Nome Horário</label>
                 <input
                     type="text"
                     class="form-control"
-                    name="nome-horario"
-                    value=""
-                >
-            </div>
-            <div class="form-group col-md-4">
-                <label>Horas</label>
-                <input
-                    type="date"
-                    class="form-control"
-                    name="inicio-periodo"
-                    id="inicio-periodo"
-                    value=""
+                    name="nome_horario"
                     required
                 >
             </div>
-            <div class="form-group col-md-4">
-                <label>Horas</label>
+            <div class="form-group col-md-6">
+                <div class="input-group" style="margin-top: 30px;">
+                    <div class="input-group-prepend">
+                      <label class="input-group-text" for="departamento">Departamento</label>
+                    </div>
+                    <select class="custom-select" name="departamento" id="departamento">
+                        <option selected>Selecione um departamento</option>
+                        {% for departamento in departamentos %}
+                            <option value="{{departamento.objectId}}">{{ departamento.nome }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label>Início do período manhã</label>
                 <input
-                    type="date"
+                    type="time"
                     class="form-control"
-                    name="fim-periodo"
-                    value=""
+                    name="inicio_periodo_manha"
                     required
                 >
+            </div>
+            <div class="form-group col-md-6">
+                <label>Fim do período manhã</label>
+                <input
+                    type="time"
+                    class="form-control"
+                    name="fim_periodo_manha"
+                    required
+                >
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label>Início do período tarde</label>
+                <input
+                    type="time"
+                    class="form-control"
+                    name="inicio_periodo_tarde"
+                    required
+                >
+            </div>
+            <div class="form-group col-md-6">
+                <label>Fim do período tarde</label>
+                <input
+                    type="time"
+                    class="form-control"
+                    name="fim_periodo_tarde"
+                    required
+                >
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-12">
+                <div class="btn-group-toggle" data-toggle="buttons">
+                    <label class="btn btn-primary active">
+                        <input type="checkbox" name="segunda" autocomplete="off"> Segunda
+                    </label>
+                    <label class="btn btn-primary active">
+                        <input type="checkbox" name="terca" autocomplete="off"> Terça
+                    </label>
+                    <label class="btn btn-primary active">
+                        <input type="checkbox" name="quarta" autocomplete="off"> Quarta
+                    </label>
+                    <label class="btn btn-primary active">
+                        <input type="checkbox" name="quinta" autocomplete="off"> Quinta
+                    </label>
+                    <label class="btn btn-primary active">
+                        <input type="checkbox" name="sexta" autocomplete="off"> Sexta
+                    </label>
+                    <label class="btn btn-primary active">
+                        <input type="checkbox" name="sabado" autocomplete="off"> Sábado
+                    </label>
+                    <label class="btn btn-primary active">
+                        <input type="checkbox" name="domingo" autocomplete="off"> Domingo
+                    </label>
+                </div>
             </div>
         </div>
        

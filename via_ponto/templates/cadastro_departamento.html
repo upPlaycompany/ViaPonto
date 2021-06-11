@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <h3 class="title">CADASTRO DE DEPARTAMENTO</h3>
+    
+    <form method="POST" class="mb-7" enctype="multipart/form-data"> {% csrf_token %}
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label>Nome Departamento</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    name="nome_departamento"
+                    required
+                >
+            </div>
+        </div>
+        <button type="submit" class="btn btn-info btn-lg">SALVAR</button>
+    </form>
+{% endblock %}
