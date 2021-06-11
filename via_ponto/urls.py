@@ -14,7 +14,7 @@ urlpatterns = [
     path('redefinir-senha-fail/', views.redefinir_senha_fail, name='redefinir_senha_fail'),
     path('deslogar/<str:token>/', views.deslogar, name='deslogar'),
     path('dashboard/<str:token>/', views.dashboard, name='dashboard'),
-    path('fail/<str:token>/', views.dashboard, name='fail_default'),
+    path('fail/<str:token>/', views.fail_default, name='fail_default'),
     # EMPREGADOR
     path('empresa/edit/<str:token>/', views.edit_empresa, name='edit_empresa'),
     path('empresa/success/<str:token>/', views.edit_empresa_success, name='edit_empresa_success'),

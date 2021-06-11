@@ -533,47 +533,16 @@ def cadastro_horario(request, token):
         inicio_periodo_tarde = request.POST['inicio_periodo_tarde']
         fim_periodo_tarde = request.POST['fim_periodo_tarde']
 
-        segunda = request.POST['segunda']
-        if(segunda == "on"):
-            segunda = bool(True)
-        else:
-            segunda = bool(False)
 
-        terca = request.POST['terca']
-        if(terca == "on"):
-            terca = bool(True)
-        else:
-            terca = bool(False)
+        segunda = request.POST.get('segunda', False)
+        terca = request.POST.get('terca', False)
+        quarta = request.POST.get('quarta', False)
+        quinta = request.POST.get('quinta', False)
+        sexta = request.POST.get('sexta', False)
+        sabado = request.POST.get('sabado', False)
+        domingo = request.POST.get('domingo', False)
 
-        quarta = request.POST['quarta']
-        if(quarta == "on"):
-            quarta = bool(True)
-        else:
-            quarta = bool(False)
-
-        quinta = request.POST['quinta']
-        if(quinta == "on"):
-            quinta = bool(True)
-        else:
-            quinta = bool(False)
-
-        sexta = request.POST['sexta']
-        if(sexta == "on"):
-            sexta = bool(True)
-        else:
-            sexta = bool(False)
-
-        sabado = request.POST['sabado']
-        if(sabado == "on"):
-            sabado = bool(True)
-        elif(sabado == "off"):
-            sabado = bool(False)
-
-        domingo = request.POST['domingo']
-        if(domingo == "on"):
-            domingo = bool(True)
-        elif(domingo != "on"):
-            domingo = bool(False)
+        print('domingo: ', domingo, 'sabado: ', sabado)
 
         req_horario = requests.api.request('POST', f"https://parseapi.back4app.com/classes/Horario",
                                         headers={
@@ -586,13 +555,13 @@ def cadastro_horario(request, token):
                                             "fim_periodo_manha": f"{fim_periodo_manha}",
                                             "inicio_periodo_tarde": f"{inicio_periodo_tarde}",
                                             "fim_periodo_tarde": f"{fim_periodo_tarde}",
-                                            "segunda": segunda,
-                                            "terca": terca,
-                                            "quarta": quarta,
-                                            "quinta": quinta,
-                                            "sexta": sexta,
-                                            "sabado": sabado,
-                                            "domingo": domingo,
+                                            "segunda": bool(segunda),
+                                            "terca": bool(terca),
+                                            "quarta": bool(quarta),
+                                            "quinta": bool(quinta),
+                                            "sexta": bool(sexta),
+                                            "sabado": bool(sabado),
+                                            "domingo": bool(domingo),
                                             "id_empresa": {
                                                 '__type': "Pointer",
                                                 "className": "Empresa",
