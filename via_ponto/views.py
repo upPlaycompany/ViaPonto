@@ -340,8 +340,9 @@ def list_departamento(request, token):
     else:
         pass
     key = [{'id': token, 'user': response['username']}]
+    empresa_id = response['id_empresa']['objectId']
 
-    req_dep = requests.api.request('GET', f"https://parseapi.back4app.com/classes/Departamento?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22xHc6stiIIW%22%20%7D%20%7D",
+    req_dep = requests.api.request('GET', f"https://parseapi.back4app.com/classes/Departamento?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
                                     headers={
                                         "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
                                         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
@@ -491,8 +492,15 @@ def list_horario(request, token):
     else:
         pass
     key = [{'id': token, 'user': response['username']}]
+    empresa_id = response['id_empresa']['objectId']
 
-    return render(request, 'list_horario.html', {'lista': key})
+    req_horario = requests.api.request('GET', f"https://parseapi.back4app.com/classes/Horario?where=%7B%20%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
+                                        headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
+    res_horario = req_horario.json()
+    horario = [x for x in res_horario['results']]
+
+    return render(request, 'list_horario.html', {'lista': key, 'horarios': horario})
 
 
 def cadastro_horario(request, token):
@@ -508,8 +516,100 @@ def cadastro_horario(request, token):
     else:
         pass
     key = [{'id': token, 'user': response['username']}]
+    empresa_id = response['id_empresa']['objectId']
 
-    return render(request, 'cadastro_horario.html', {'lista': key})
+    req_dep = requests.api.request('GET', f"https://parseapi.back4app.com/classes/Departamento?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
+                                    headers={
+                                        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
+    res_dep = req_dep.json()
+    departamento = [x for x in res_dep['results']]
+
+    if request.method == 'POST':
+        nome = request.POST['nome_horario']
+        departamento_id = request.POST['departamento']
+        inicio_periodo_manha = request.POST['inicio_periodo_manha']
+        fim_periodo_manha = request.POST['fim_periodo_manha']
+        inicio_periodo_tarde = request.POST['inicio_periodo_tarde']
+        fim_periodo_tarde = request.POST['fim_periodo_tarde']
+
+        segunda = request.POST['segunda']
+        if(segunda == "on"):
+            segunda = bool(True)
+        else:
+            segunda = bool(False)
+
+        terca = request.POST['terca']
+        if(terca == "on"):
+            terca = bool(True)
+        else:
+            terca = bool(False)
+
+        quarta = request.POST['quarta']
+        if(quarta == "on"):
+            quarta = bool(True)
+        else:
+            quarta = bool(False)
+
+        quinta = request.POST['quinta']
+        if(quinta == "on"):
+            quinta = bool(True)
+        else:
+            quinta = bool(False)
+
+        sexta = request.POST['sexta']
+        if(sexta == "on"):
+            sexta = bool(True)
+        else:
+            sexta = bool(False)
+
+        sabado = request.POST['sabado']
+        if(sabado == "on"):
+            sabado = bool(True)
+        elif(sabado == "off"):
+            sabado = bool(False)
+
+        domingo = request.POST['domingo']
+        if(domingo == "on"):
+            domingo = bool(True)
+        elif(domingo != "on"):
+            domingo = bool(False)
+
+        req_horario = requests.api.request('POST', f"https://parseapi.back4app.com/classes/Horario",
+                                        headers={
+                                            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                            "Content-Type": "application/json"},
+                                        json={
+                                            "nome": f"{nome}",
+                                            "inicio_periodo_manha": f"{inicio_periodo_manha}",
+                                            "fim_periodo_manha": f"{fim_periodo_manha}",
+                                            "inicio_periodo_tarde": f"{inicio_periodo_tarde}",
+                                            "fim_periodo_tarde": f"{fim_periodo_tarde}",
+                                            "segunda": segunda,
+                                            "terca": terca,
+                                            "quarta": quarta,
+                                            "quinta": quinta,
+                                            "sexta": sexta,
+                                            "sabado": sabado,
+                                            "domingo": domingo,
+                                            "id_empresa": {
+                                                '__type': "Pointer",
+                                                "className": "Empresa",
+                                                "objectId": empresa_id
+                                            },
+                                            "id_departamento": {
+                                                '__type': "Pointer",
+                                                "className": "Departamento",
+                                                "objectId": departamento_id
+                                            }})
+        status = str(req_horario.status_code)
+        if status == '201':
+            return redirect('list_horario', token=token)
+        else:
+            return redirect('fail_default', token=token)
+
+    return render(request, 'cadastro_horario.html', {'lista': key, 'departamentos': departamento})
 
 
 # LOCAIS

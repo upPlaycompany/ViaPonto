@@ -26,7 +26,7 @@ urlpatterns = [
     path('feriado/<str:token>/', views.list_feriado, name='list_feriado'),
     # HORÁRIO
     path('horario/<str:token>/', views.list_horario, name='list_horario'),
-    path('cadastro-horario/<str:token>/', views.cadastro_horario, name='cadastro_horario'),
+    path('horario/cadastro/<str:token>/', views.cadastro_horario, name='cadastro_horario'),
     # LOCAL
     path('local/<str:token>/', views.list_local, name='list_local'),
     path('cadastro-local/<str:token>/', views.cadastro_local, name='cadastro_local'),
