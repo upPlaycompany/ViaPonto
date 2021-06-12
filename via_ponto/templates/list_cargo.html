@@ -64,7 +64,7 @@
                                 <td class="td-1">{{ cargo.nome }}</td>
                                 <td class="td-2">
                                     {% for key in lista %}
-                                        <a href="">
+                                        <a href="{% url 'edit_cargo' token=key.id id=cargo.objectId %}">
                                             <i style="color: #6bc9ca; font-size: 20px;" class="fas fa-pencil-alt"></i>
                                         </a>
                                     {% endfor %}
