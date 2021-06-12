@@ -34,6 +34,7 @@ urlpatterns = [
     path('cadastro-local/<str:token>/', views.cadastro_local, name='cadastro_local'),
     # COLABORADOR
     path('cargo/<str:token>/', views.list_cargo, name='list_cargo'),
+    path('cargo/cadastro/<str:token>/', views.cadastro_cargo, name='cadastro_cargo'),
     path('colaborador/<str:token>/', views.list_colaborador, name='list_colaborador'),
     path('cadastro-colaborador/<str:token>/', views.cadastro_colaborador, name='cadastro_colaborador'),
     path('cadastro-colaborador-success/<str:token>/', views.cadastro_colaborador_success, name='cadastro_colaborador_success'),
