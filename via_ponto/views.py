@@ -656,6 +656,31 @@ def edit_horario(request, token, id):
     return render(request, 'edit_horario.html', {'lista': key, 'horario': hor, 'departamentos': departamento})
 
 
+def delete_horario(request, token, id):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
+                                    headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                        "X-Parse-Session-Token": f"{token}"})
+    response = conexao.json()
+    if str(response['sessionToken']) != f"{token}":
+        return redirect('login')
+    elif response['empresa_confirmacao'] == False:
+        return redirect('login')
+    else:
+        pass
+
+    req_hor = requests.api.request('DELETE', f"https://parseapi.back4app.com/classes/Horario/{id}",
+                                    headers={
+                                        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
+
+    status = str(req_hor.status_code)
+    if status == '200':
+        return redirect('list_horario', token=token)
+    else:
+        return redirect('fail_default', token=token)
+
+
 # LOCAIS
 def list_local(request, token):
     conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
