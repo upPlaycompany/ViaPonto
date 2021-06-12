@@ -69,7 +69,7 @@
                                         </a>
                                     {% endfor %}
                                     {% for key in lista %}
-                                        <a href="">
+                                        <a href="{% url 'delete_cargo' token=key.id id=cargo.objectId %}">
                                             <i style="margin-left: 25px; color: red; font-size: 20px;" class="far fa-trash-alt"></i>
                                         </a>
                                     {% endfor %}

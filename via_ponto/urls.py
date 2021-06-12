@@ -36,6 +36,7 @@ urlpatterns = [
     path('cargo/<str:token>/', views.list_cargo, name='list_cargo'),
     path('cargo/cadastro/<str:token>/', views.cadastro_cargo, name='cadastro_cargo'),
     path('cargo/edit/<str:token>/<str:id>/', views.edit_cargo, name='edit_cargo'),
+    path('cargo/delete/<str:token>/<str:id>/', views.delete_cargo, name='delete_cargo'),
     path('colaborador/<str:token>/', views.list_colaborador, name='list_colaborador'),
     path('cadastro-colaborador/<str:token>/', views.cadastro_colaborador, name='cadastro_colaborador'),
     path('cadastro-colaborador-success/<str:token>/', views.cadastro_colaborador_success, name='cadastro_colaborador_success'),
