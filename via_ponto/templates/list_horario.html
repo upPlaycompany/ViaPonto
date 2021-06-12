@@ -57,12 +57,12 @@
                                 <td class="td-1">{{ horario.nome }}</td>
                                 <td class="td-2">
                                     {% for key in lista %}
-                                        <a href="{% url 'edit_departamento' token=key.id id=horario.objectId %}">
+                                        <a href="{% url 'edit_horario' token=key.id id=horario.objectId %}">
                                             <i style="color: #6bc9ca; font-size: 20px;" class="fas fa-pencil-alt"></i>
                                         </a>
                                     {% endfor %}
                                     {% for key in lista %}
-                                        <a href="{% url 'delete_departamento' token=key.id id=horario.objectId %}">
+                                        <a href="{% url 'delete_horario' token=key.id id=horario.objectId %}">
                                             <i style="margin-left: 25px; color: red; font-size: 20px;" class="far fa-trash-alt"></i>
                                         </a>
                                     {% endfor %}
