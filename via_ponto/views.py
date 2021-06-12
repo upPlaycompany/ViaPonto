@@ -532,8 +532,6 @@ def cadastro_horario(request, token):
         fim_periodo_manha = request.POST['fim_periodo_manha']
         inicio_periodo_tarde = request.POST['inicio_periodo_tarde']
         fim_periodo_tarde = request.POST['fim_periodo_tarde']
-
-
         segunda = request.POST.get('segunda', False)
         terca = request.POST.get('terca', False)
         quarta = request.POST.get('quarta', False)
@@ -541,8 +539,6 @@ def cadastro_horario(request, token):
         sexta = request.POST.get('sexta', False)
         sabado = request.POST.get('sabado', False)
         domingo = request.POST.get('domingo', False)
-
-        print('domingo: ', domingo, 'sabado: ', sabado)
 
         req_horario = requests.api.request('POST', f"https://parseapi.back4app.com/classes/Horario",
                                         headers={
@@ -579,6 +575,85 @@ def cadastro_horario(request, token):
             return redirect('fail_default', token=token)
 
     return render(request, 'cadastro_horario.html', {'lista': key, 'departamentos': departamento})
+
+
+def edit_horario(request, token, id):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
+                                    headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                        "X-Parse-Session-Token": f"{token}"})
+    response = conexao.json()
+    if str(response['sessionToken']) != f"{token}":
+        return redirect('login')
+    elif response['empresa_confirmacao'] == False:
+        return redirect('login')
+    else:
+        pass
+    key = [{'id': token, 'user': response['username']}]
+    empresa_id = response['id_empresa']['objectId']
+
+    req_dep = requests.api.request('GET', f"https://parseapi.back4app.com/classes/Departamento?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
+                                    headers={
+                                        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
+    res_dep = req_dep.json()
+    departamento = [x for x in res_dep['results']]
+
+    req_horario = requests.api.request('GET', f"https://parseapi.back4app.com/classes/Horario/{id}",
+                                        headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
+    hor = req_horario.json()
+
+    if request.method == 'POST':
+        nome = request.POST['nome_horario']
+        departamento_id = request.POST['departamento']
+        inicio_periodo_manha = request.POST['inicio_periodo_manha']
+        fim_periodo_manha = request.POST['fim_periodo_manha']
+        inicio_periodo_tarde = request.POST['inicio_periodo_tarde']
+        fim_periodo_tarde = request.POST['fim_periodo_tarde']
+        segunda = request.POST.get('segunda', False)
+        terca = request.POST.get('terca', False)
+        quarta = request.POST.get('quarta', False)
+        quinta = request.POST.get('quinta', False)
+        sexta = request.POST.get('sexta', False)
+        sabado = request.POST.get('sabado', False)
+        domingo = request.POST.get('domingo', False)
+
+        req_dep = requests.api.request('PUT', f"https://parseapi.back4app.com/classes/Horario/{id}",
+                                        headers={
+                                            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                            "Content-Type": "application/json"},
+                                        json={
+                                            "nome": f"{nome}",
+                                            "inicio_periodo_manha": f"{inicio_periodo_manha}",
+                                            "fim_periodo_manha": f"{fim_periodo_manha}",
+                                            "inicio_periodo_tarde": f"{inicio_periodo_tarde}",
+                                            "fim_periodo_tarde": f"{fim_periodo_tarde}",
+                                            "segunda": bool(segunda),
+                                            "terca": bool(terca),
+                                            "quarta": bool(quarta),
+                                            "quinta": bool(quinta),
+                                            "sexta": bool(sexta),
+                                            "sabado": bool(sabado),
+                                            "domingo": bool(domingo),
+                                            "id_empresa": {
+                                                '__type': "Pointer",
+                                                "className": "Empresa",
+                                                "objectId": empresa_id
+                                            },
+                                            "id_departamento": {
+                                                '__type': "Pointer",
+                                                "className": "Departamento",
+                                                "objectId": departamento_id
+                                            }})
+        status = str(req_dep.status_code)
+        if status == '200':
+            return redirect('list_horario', token=token)
+        else:
+            return redirect('fail_default', token=token)
+
+    return render(request, 'edit_horario.html', {'lista': key, 'horario': hor, 'departamentos': departamento})
 
 
 # LOCAIS

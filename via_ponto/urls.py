@@ -27,6 +27,7 @@ urlpatterns = [
     # HORÁRIO
     path('horario/<str:token>/', views.list_horario, name='list_horario'),
     path('horario/cadastro/<str:token>/', views.cadastro_horario, name='cadastro_horario'),
+    path('horario/edit/<str:token>/<str:id>', views.edit_horario, name='edit_horario'),
     # LOCAL
     path('local/<str:token>/', views.list_local, name='list_local'),
     path('cadastro-local/<str:token>/', views.cadastro_local, name='cadastro_local'),

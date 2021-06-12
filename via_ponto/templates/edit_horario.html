@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <h3 class="title">EDITAR HORÁRIO: {{ horario.nome }}</h3>
+    
+    <form method="POST" class="mb-7" enctype="multipart/form-data"> {% csrf_token %}
+        <h6 class="subtitle">Fique a vontade para alterar seus dados</h6>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label>Nome Horário</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    name="nome_horario"
+                    value="{{horario.nome}}"
+                    required
+                >
+            </div>
+            <div class="form-group col-md-6">
+                <div class="input-group" style="margin-top: 30px;">
+                    <div class="input-group-prepend">
+                      <label class="input-group-text" for="departamento">Departamento</label>
+                    </div>
+                    <select class="custom-select" name="departamento" id="departamento">
+                        {% for departamento in departamentos %}
+                            {% if departamento.objectId != horario.id_departamento.objectId %}
+                                <option value="{{departamento.objectId}}">{{ departamento.nome }}</option>
+                            
+                            {% else %}
+                                <option value="{{departamento.objectId}}" selected>{{ departamento.nome }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label>Início do período manhã</label>
+                <input
+                    type="time"
+                    class="form-control"
+                    name="inicio_periodo_manha"
+                    value="{{horario.inicio_periodo_manha}}"
+                    required
+                >
+            </div>
+            <div class="form-group col-md-6">
+                <label>Fim do período manhã</label>
+                <input
+                    type="time"
+                    class="form-control"
+                    name="fim_periodo_manha"
+                    value="{{horario.fim_periodo_manha}}"
+                    required
+                >
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label>Início do período tarde</label>
+                <input
+                    type="time"
+                    class="form-control"
+                    name="inicio_periodo_tarde"
+                    value="{{horario.inicio_periodo_tarde}}"
+                    required
+                >
+            </div>
+            <div class="form-group col-md-6">
+                <label>Fim do período tarde</label>
+                <input
+                    type="time"
+                    class="form-control"
+                    name="fim_periodo_tarde"
+                    value="{{horario.fim_periodo_tarde}}"
+                    required
+                >
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-12">
+                <div class="btn-group-toggle" data-toggle="buttons">
+                    <label class="btn btn-primary active">
+                        {% if horario.segunda == True %}
+                            <input type="checkbox" id="id_segunda" name="segunda" value="True" checked> Segunda
+                        {% else %}
+                            <input type="checkbox" id="id_segunda" name="segunda" value="True"> Segunda
+                        {% endif %}
+                    </label>
+                    <label class="btn btn-primary active">
+                        {% if horario.terca == True %}
+                            <input type="checkbox" id="id_terca" name="terca" value="True" checked> Terça
+                        {% else %}
+                            <input type="checkbox" id="id_terca" name="terca" value="True"> Terça
+                        {% endif %}
+                    </label>
+                    <label class="btn btn-primary active">
+                        {% if horario.quarta == True %}
+                            <input type="checkbox" id="id_quarta" name="quarta" value="True" checked> Quarta
+                        {% else %}
+                            <input type="checkbox" id="id_quarta" name="quarta" value="True"> Quarta
+                        {% endif %}
+                    </label>
+                    <label class="btn btn-primary active">
+                        {% if horario.quinta == True %}
+                            <input type="checkbox" id="id_quinta" name="quinta" value="True" checked> Quinta
+                        {% else %}
+                            <input type="checkbox" id="id_quinta" name="quinta" value="True"> Quinta
+                        {% endif %}
+                    </label>
+                    <label class="btn btn-primary active">
+                        {% if horario.sexta == True %}
+                            <input type="checkbox" id="id_sexta" name="sexta" value="True" checked> Sexta
+                        {% else %}
+                            <input type="checkbox" id="id_sexta" name="sexta" value="True"> Sexta
+                        {% endif %}
+                    </label>
+                    <label class="btn btn-primary active">
+                        {% if horario.sabado == True %}
+                            <input type="checkbox" id="id_sabado" name="sabado" value="True" checked> Sábado
+                        {% else %}
+                            <input type="checkbox" id="id_sabado" name="sabado" value="True"> Sábado
+                        {% endif %}
+                    </label>
+                    <label class="btn btn-primary active">
+                        {% if horario.domingo == True %}
+                            <input type="checkbox" id="id_domingo" name="domingo" value="True" checked> Domingo
+                        {% else %}
+                            <input type="checkbox" id="id_domingo" name="domingo" value="True"> Domingo
+                        {% endif %}
+                    </label>
+                </div>
+            </div>
+        </div>
+       
+        <button type="submit" id="btnSubmit" class="btn btn-info btn-lg">SALVAR</button>
+    </form>
+{% endblock %}
+
