@@ -27,13 +27,16 @@ urlpatterns = [
     # HORÁRIO
     path('horario/<str:token>/', views.list_horario, name='list_horario'),
     path('horario/cadastro/<str:token>/', views.cadastro_horario, name='cadastro_horario'),
-    path('horario/edit/<str:token>/<str:id>', views.edit_horario, name='edit_horario'),
-    path('horario/delete/<str:token>/<str:id>', views.delete_horario, name='delete_horario'),
+    path('horario/edit/<str:token>/<str:id>/', views.edit_horario, name='edit_horario'),
+    path('horario/delete/<str:token>/<str:id>/', views.delete_horario, name='delete_horario'),
     # LOCAL
     path('local/<str:token>/', views.list_local, name='list_local'),
     path('cadastro-local/<str:token>/', views.cadastro_local, name='cadastro_local'),
     # COLABORADOR
     path('cargo/<str:token>/', views.list_cargo, name='list_cargo'),
+    path('cargo/cadastro/<str:token>/', views.cadastro_cargo, name='cadastro_cargo'),
+    path('cargo/edit/<str:token>/<str:id>/', views.edit_cargo, name='edit_cargo'),
+    path('cargo/delete/<str:token>/<str:id>/', views.delete_cargo, name='delete_cargo'),
     path('colaborador/<str:token>/', views.list_colaborador, name='list_colaborador'),
     path('cadastro-colaborador/<str:token>/', views.cadastro_colaborador, name='cadastro_colaborador'),
     path('cadastro-colaborador-success/<str:token>/', views.cadastro_colaborador_success, name='cadastro_colaborador_success'),

@@ -35,10 +35,9 @@ def login_colaborador(request):
         
         if status == '200' and response['admin'] == True:
             return redirect('base_admin', token=response['sessionToken'])
-        elif status == '200' and response['empresa_confirmacao'] == True:
-            return redirect('dashboard', token=response['sessionToken'])
-        elif status == '200' and response['admin'] == True:
-            return redirect('base_admin', token=response['sessionToken'])
+        elif status == '200' and response['gestor'] == False:
+            return redirect('login_fail')
+            # return redirect('dashboard_colaborador', token=response['sessionToken'])
         else:
             return redirect('login_fail')
 
@@ -61,10 +60,8 @@ def login_gestor(request):
         
         if status == '200' and response['admin'] == True:
             return redirect('base_admin', token=response['sessionToken'])
-        elif status == '200' and response['empresa_confirmacao'] == True:
+        elif status == '200' and response['gestor'] == True:
             return redirect('dashboard', token=response['sessionToken'])
-        elif status == '200' and response['admin'] == True:
-            return redirect('base_admin', token=response['sessionToken'])
         else:
             return redirect('login_fail')
 
@@ -163,7 +160,7 @@ def register(request):
                                             "username": f"{username}",
                                             "password": f"{password}",
                                             "cpf": f"{cpf}",
-                                            "empresa_confirmacao": bool(True),
+                                            "gestor": bool(True),
                                             "admin": bool(False),
                                             "id_empresa": {
                                                 '__type': "Pointer",
@@ -192,7 +189,7 @@ def dashboard(request, token):
     usuario = conexao.json()
     if str(usuario['sessionToken']) != f"{token}":
         return redirect('login')
-    elif usuario['empresa_confirmacao'] == False:
+    elif usuario['gestor'] == False:
         return redirect('login')
     elif usuario['admin'] == True:
         return redirect('login')
@@ -211,7 +208,7 @@ def fail_default(request, token):
     usuario = conexao.json()
     if str(usuario['sessionToken']) != f"{token}":
         return redirect('login')
-    elif usuario['empresa_confirmacao'] == False:
+    elif usuario['gestor'] == False:
         return redirect('login')
     elif usuario['admin'] == True:
         return redirect('login')
@@ -231,7 +228,7 @@ def edit_empresa(request, token):
     response = conexao.json()
     if str(response['sessionToken']) != f"{token}":
         return redirect('login')
-    elif response['empresa_confirmacao'] == False:
+    elif response['gestor'] == False:
         return redirect('login')
     else:
         pass
@@ -301,7 +298,7 @@ def edit_empresa_success(request, token):
     response = conexao.json()
     if str(response['sessionToken']) != f"{token}":
         return redirect('login')
-    elif response['empresa_confirmacao'] == False:
+    elif response['gestor'] == False:
         return redirect('login')
     else:
         pass
@@ -318,7 +315,7 @@ def edit_empresa_fail(request, token):
     response = conexao.json()
     if str(response['sessionToken']) != f"{token}":
         return redirect('login')
-    elif response['empresa_confirmacao'] == False:
+    elif response['gestor'] == False:
         return redirect('login')
     else:
         pass
@@ -335,7 +332,7 @@ def list_departamento(request, token):
     response = conexao.json()
     if str(response['sessionToken']) != f"{token}":
         return redirect('login')
-    elif response['empresa_confirmacao'] == False:
+    elif response['gestor'] == False:
         return redirect('login')
     else:
         pass
@@ -360,7 +357,7 @@ def cadastro_departamento(request, token):
     response = conexao.json()
     if str(response['sessionToken']) != f"{token}":
         return redirect('login')
-    elif response['empresa_confirmacao'] == False:
+    elif response['gestor'] == False:
         return redirect('login')
     else:
         pass
@@ -399,7 +396,7 @@ def edit_departamento(request, token, id):
     response = conexao.json()
     if str(response['sessionToken']) != f"{token}":
         return redirect('login')
-    elif response['empresa_confirmacao'] == False:
+    elif response['gestor'] == False:
         return redirect('login')
     else:
         pass
@@ -444,7 +441,7 @@ def delete_departamento(request, token, id):
     response = conexao.json()
     if str(response['sessionToken']) != f"{token}":
         return redirect('login')
-    elif response['empresa_confirmacao'] == False:
+    elif response['gestor'] == False:
         return redirect('login')
     else:
         pass
@@ -469,7 +466,7 @@ def list_feriado(request, token):
     response = conexao.json()
     if str(response['sessionToken']) != f"{token}":
         return redirect('login')
-    elif response['empresa_confirmacao'] == False:
+    elif response['gestor'] == False:
         return redirect('login')
     else:
         pass
@@ -487,7 +484,7 @@ def list_horario(request, token):
     response = conexao.json()
     if str(response['sessionToken']) != f"{token}":
         return redirect('login')
-    elif response['empresa_confirmacao'] == False:
+    elif response['gestor'] == False:
         return redirect('login')
     else:
         pass
@@ -511,7 +508,7 @@ def cadastro_horario(request, token):
     response = conexao.json()
     if str(response['sessionToken']) != f"{token}":
         return redirect('login')
-    elif response['empresa_confirmacao'] == False:
+    elif response['gestor'] == False:
         return redirect('login')
     else:
         pass
@@ -585,7 +582,7 @@ def edit_horario(request, token, id):
     response = conexao.json()
     if str(response['sessionToken']) != f"{token}":
         return redirect('login')
-    elif response['empresa_confirmacao'] == False:
+    elif response['gestor'] == False:
         return redirect('login')
     else:
         pass
@@ -664,7 +661,7 @@ def delete_horario(request, token, id):
     response = conexao.json()
     if str(response['sessionToken']) != f"{token}":
         return redirect('login')
-    elif response['empresa_confirmacao'] == False:
+    elif response['gestor'] == False:
         return redirect('login')
     else:
         pass
@@ -690,7 +687,7 @@ def list_local(request, token):
     response = conexao.json()
     if str(response['sessionToken']) != f"{token}":
         return redirect('login')
-    elif response['empresa_confirmacao'] == False:
+    elif response['gestor'] == False:
         return redirect('login')
     else:
         pass
@@ -707,7 +704,7 @@ def cadastro_local(request, token):
     response = conexao.json()
     if str(response['sessionToken']) != f"{token}":
         return redirect('login')
-    elif response['empresa_confirmacao'] == False:
+    elif response['gestor'] == False:
         return redirect('login')
     else:
         pass
@@ -725,13 +722,130 @@ def list_cargo(request, token):
     response = conexao.json()
     if str(response['sessionToken']) != f"{token}":
         return redirect('login')
-    elif response['empresa_confirmacao'] == False:
+    elif response['gestor'] == False:
         return redirect('login')
     else:
         pass
     key = [{'id': token, 'user': response['username']}]
+    empresa_id = response['id_empresa']['objectId']
 
-    return render(request, 'list_cargo.html', {'lista': key})
+    req_cargo = requests.api.request('GET', f"https://parseapi.back4app.com/classes/Cargo?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
+                                    headers={
+                                        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
+    res_cargo = req_cargo.json()
+    cargo = [x for x in res_cargo['results']]
+
+    return render(request, 'list_cargo.html', {'lista': key, 'cargos': cargo})
+
+
+def cadastro_cargo(request, token):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
+                                    headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                        "X-Parse-Session-Token": f"{token}"})
+    response = conexao.json()
+    if str(response['sessionToken']) != f"{token}":
+        return redirect('login')
+    elif response['gestor'] == False:
+        return redirect('login')
+    else:
+        pass
+    key = [{'id': token, 'user': response['username']}]
+    empresa_id = response['id_empresa']['objectId']
+
+    if request.method == 'POST':
+        nome = request.POST['nome_cargo']
+
+        req_cargo = requests.api.request('POST', f"https://parseapi.back4app.com/classes/Cargo",
+                                        headers={
+                                            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                            "Content-Type": "application/json"},
+                                        json={
+                                            "nome": f"{nome}",
+                                            "id_empresa": {
+                                                '__type': "Pointer",
+                                                "className": "Empresa",
+                                                "objectId": empresa_id
+                                            }})
+        status = str(req_cargo.status_code)
+        if status == '201':
+            return redirect('list_cargo', token=token)
+        else:
+            return redirect('fail_default', token=token)
+
+    return render(request, 'cadastro_cargo.html', {'lista': key})
+
+
+def edit_cargo(request, token, id):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
+                                    headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                        "X-Parse-Session-Token": f"{token}"})
+    response = conexao.json()
+    if str(response['sessionToken']) != f"{token}":
+        return redirect('login')
+    elif response['gestor'] == False:
+        return redirect('login')
+    else:
+        pass
+    key = [{'id': token, 'user': response['username']}]
+    empresa_id = response['id_empresa']['objectId']
+
+    req_carg = requests.api.request('GET', f"https://parseapi.back4app.com/classes/Cargo/{id}",
+                                    headers={
+                                        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
+    carg = req_carg.json()
+
+    if request.method == 'POST':
+        nome = request.POST['nome_cargo']
+
+        req_dep = requests.api.request('PUT', f"https://parseapi.back4app.com/classes/Cargo/{id}",
+                                        headers={
+                                            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                            "Content-Type": "application/json"},
+                                        json={
+                                            "nome": f"{nome}",
+                                            "id_empresa": {
+                                                '__type': "Pointer",
+                                                "className": "Empresa",
+                                                "objectId": empresa_id
+                                            }})
+        status = str(req_dep.status_code)
+        if status == '200':
+            return redirect('list_cargo', token=token)
+        else:
+            return redirect('fail_default', token=token)
+
+    return render(request, 'edit_cargo.html', {'lista': key, 'cargo': carg})
+
+
+def delete_cargo(request, token, id):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
+                                    headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                        "X-Parse-Session-Token": f"{token}"})
+    response = conexao.json()
+    if str(response['sessionToken']) != f"{token}":
+        return redirect('login')
+    elif response['gestor'] == False:
+        return redirect('login')
+    else:
+        pass
+
+    req_carg = requests.api.request('DELETE', f"https://parseapi.back4app.com/classes/Cargo/{id}",
+                                    headers={
+                                        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
+
+    status = str(req_carg.status_code)
+    if status == '200':
+        return redirect('list_cargo', token=token)
+    else:
+        return redirect('fail_default', token=token)
 
 
 def list_colaborador(request, token):
@@ -742,7 +856,7 @@ def list_colaborador(request, token):
     response = conexao.json()
     if str(response['sessionToken']) != f"{token}":
         return redirect('login')
-    elif response['empresa_confirmacao'] == False:
+    elif response['gestor'] == False:
         return redirect('login')
     else:
         pass
@@ -771,71 +885,39 @@ def cadastro_colaborador(request, token):
     response = conexao.json()
     if str(response['sessionToken']) != f"{token}":
         return redirect('login')
-    elif response['empresa_confirmacao'] == False:
+    elif response['gestor'] == False:
         return redirect('login')
     else:
         pass
-
     key = [{'id': token, 'user': response['username']}]
     empresa_id = response['id_empresa']['objectId']
+
+    req_cargo = requests.api.request('GET', f"https://parseapi.back4app.com/classes/Cargo?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
+                                    headers={
+                                        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
+    res_cargo = req_cargo.json()
+    cargo = [x for x in res_cargo['results']]
+
+    req_dep = requests.api.request('GET', f"https://parseapi.back4app.com/classes/Departamento?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
+                                    headers={
+                                        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
+    res_dep = req_dep.json()
+    departamento = [x for x in res_dep['results']]
 
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
-        cpf = request.POST['cpf']
         nome = request.POST['nome']
+        cpf = request.POST['cpf']
         datanasc = request.POST['datanasc']
-        email = request.POST['email']
         celular = request.POST['celular']
-        cargo = request.POST['cargo']
-        departamento = request.POST['departamento']
-        hora_semana_entrada_1 = request.POST['hora_semana_entrada_1']
-        if hora_semana_entrada_1 == "":
-            hora_semana_entrada_1 = "nao definido"
-
-        hora_semana_saida_1 = request.POST['hora_semana_saida_1']
-        if hora_semana_saida_1 == "":
-            hora_semana_saida_1 = "nao definido"
-
-        hora_semana_entrada_2 = request.POST['hora_semana_entrada_2']
-        if hora_semana_entrada_2 == "":
-            hora_semana_entrada_2 = "nao definido"
-
-        hora_semana_saida_2 = request.POST['hora_semana_saida_2']
-        if hora_semana_saida_2 == "":
-            hora_semana_saida_2 = "nao definido"
-
-        hora_sabado_entrada_1 = request.POST['hora_sabado_entrada_1']
-        if hora_sabado_entrada_1 == "":
-            hora_sabado_entrada_1 = "nao definido"
-
-        hora_sabado_saida_1 = request.POST['hora_sabado_saida_1']
-        if hora_sabado_saida_1 == "":
-            hora_sabado_saida_1 = "nao definido"
-
-        hora_sabado_entrada_2 = request.POST['hora_sabado_entrada_2']
-        if hora_sabado_entrada_2 == "":
-            hora_sabado_entrada_2 = "nao definido"
-
-        hora_sabado_saida_2 = request.POST['hora_sabado_saida_2']
-        if hora_sabado_saida_2 == "":
-            hora_sabado_saida_2 = "nao definido"
-
-        hora_domingo_entrada_1 = request.POST['hora_domingo_entrada_1']
-        if hora_domingo_entrada_1 == "":
-            hora_domingo_entrada_1 = "nao definido"
-
-        hora_domingo_saida_1 = request.POST['hora_domingo_saida_1']
-        if hora_domingo_saida_1 == "":
-            hora_domingo_saida_1 = "nao definido"
-
-        hora_domingo_entrada_2 = request.POST['hora_domingo_entrada_2']
-        if hora_domingo_entrada_2 == "":
-            hora_domingo_entrada_2 = "nao definido"
-
-        hora_domingo_saida_2 = request.POST['hora_domingo_saida_2']
-        if hora_domingo_saida_2 == "":
-            hora_domingo_saida_2 = "nao definido"
+        email = request.POST['email']
+        admissao = request.POST['admissao']
+        pis = request.POST['pis']
+        cargo_id = request.POST['cargo']
+        departamento_id = request.POST['departamento']
 
         req_user = requests.api.request('POST', f"https://parseapi.back4app.com/users",
                                         headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
@@ -845,43 +927,39 @@ def cadastro_colaborador(request, token):
                                         json={
                                             "username": f"{username}",
                                             "password": f"{password}",
-                                            "cpf": f"{cpf}",
                                             "nome": f"{nome}",
+                                            "cpf": f"{cpf}",
                                             "data_nasc": f"{datanasc}",
                                             "email": f"{email}",
-                                            
                                             "celular": f"{celular}",
-                                            "cargo": f"{cargo}",
-                                            "departamento": f"{departamento}",
-                                            "hora_semana_entrada_1": f"{hora_semana_entrada_1}",
-                                            "hora_semana_saida_1": f"{hora_semana_saida_1}",
-                                            "hora_semana_entrada_2": f"{hora_semana_entrada_2}",
-                                            "hora_semana_saida_2": f"{hora_semana_saida_2}",
-                                            "hora_sabado_entrada_1": f"{hora_sabado_entrada_1}",
-                                            "hora_sabado_saida_1": f"{hora_sabado_saida_1}",
-                                            "hora_sabado_entrada_2": f"{hora_sabado_entrada_2}",
-                                            "hora_sabado_saida_2": f"{hora_sabado_saida_2}",
-                                            "hora_domingo_entrada_1": f"{hora_domingo_entrada_1}",
-                                            "hora_domingo_saida_1": f"{hora_domingo_saida_1}",
-                                            "hora_domingo_entrada_2": f"{hora_domingo_entrada_2}",
-                                            "hora_domingo_saida_2": f"{hora_domingo_saida_2}",
-                                            "empresa_confirmacao": bool(False),
-                                            "nome_empresa": response['nome_empresa'],
+                                            "admissao": f"{admissao}",
+                                            "pis": f"{pis}",
+                                            "gestor": bool(False),
                                             "admin": bool(False),
+                                            "id_cargo": {
+                                                '__type': "Pointer",
+                                                "className": "Cargo",
+                                                "objectId": cargo_id
+                                            },
+                                            "id_departamento": {
+                                                '__type': "Pointer",
+                                                "className": "Departamento",
+                                                "objectId": departamento_id
+                                            },
                                             "id_empresa": {
                                                 '__type': "Pointer",
                                                 "className": "Empresa",
-                                                "objectId": empresa_id}
-                                        })
+                                                "objectId": empresa_id
+                                            }})
 
         req_user.json()
         status = str(req_user.status_code)
-        if status != '201':
-            return redirect('dashboard')
-        else:
+        if status == '201':
             return redirect('cadastro_colaborador_success', token=token)
+        else:
+            return redirect('fail_default', token=token)
 
-    return render(request, 'cadastro_colaborador.html', {'lista': key})
+    return render(request, 'cadastro_colaborador.html', {'lista': key, 'cargos': cargo, 'departamentos': departamento})
 
 
 def cadastro_colaborador_success(request, token):
@@ -893,12 +971,12 @@ def cadastro_colaborador_success(request, token):
     response = conexao.json()
     if str(response['sessionToken']) != f"{token}":
         return redirect('login')
-    elif response['empresa_confirmacao'] == False:
+    elif response['gestor'] == False:
         return redirect('login')
     else:
         pass
     key = [{'id': token, 'user': response['username']}]
-    return render(request, 'cadastro_colaborador_success.html', {'lista': key})
+    return render(request, 'success_cadastro_colaborador.html', {'lista': key})
 
 
 def list_demitidos(request, token):
@@ -909,7 +987,7 @@ def list_demitidos(request, token):
     response = conexao.json()
     if str(response['sessionToken']) != f"{token}":
         return redirect('login')
-    elif response['empresa_confirmacao'] == False:
+    elif response['gestor'] == False:
         return redirect('login')
     else:
         pass
@@ -926,7 +1004,7 @@ def pontos_colaborador(request, token, id_user):
     response = conexao.json()
     if str(response['sessionToken']) != f"{token}":
         return redirect('login')
-    elif response['empresa_confirmacao'] == False:
+    elif response['gestor'] == False:
         return redirect('login')
     else:
         pass
@@ -1002,16 +1080,20 @@ def pontos_colaborador(request, token, id_user):
 
 
 def gerar_relatorio_func(request, token):
-    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
-        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
-        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
-        "X-Parse-Session-Token": f"{token}"})
-    abc = conexao.json()
-    if str(abc['sessionToken']) != f"{token}":
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
+                                    headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                        "X-Parse-Session-Token": f"{token}"})
+    response = conexao.json()
+    if str(response['sessionToken']) != f"{token}":
         return redirect('login')
-    elif abc['empresa_confirmacao'] == False:
+    elif response['gestor'] == False:
         return redirect('login')
-    empresa_id = abc['id_empresa']['objectId']
+    else:
+        pass
+    key = [{'id': token, 'user': response['username']}]
+    empresa_id = response['id_empresa']['objectId']
+
     conexao1 = requests.api.request('GET',
                                     f"https://parseapi.back4app.com/classes/_User",
                                     headers={
@@ -1035,16 +1117,20 @@ def gerar_relatorio_func(request, token):
 
 
 def gerar_relatorio_ponto(request, token, id_user, start_date, end_date):
-    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
-        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
-        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
-        "X-Parse-Session-Token": f"{token}"})
-    abc = conexao.json()
-    if str(abc['sessionToken']) != f"{token}":
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
+                                    headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                        "X-Parse-Session-Token": f"{token}"})
+    response = conexao.json()
+    if str(response['sessionToken']) != f"{token}":
         return redirect('login')
-    elif abc['empresa_confirmacao'] == False:
+    elif response['gestor'] == False:
         return redirect('login')
-    empresa_id = abc['id_empresa']['objectId']
+    else:
+        pass
+    key = [{'id': token, 'user': response['username']}]
+    empresa_id = response['id_empresa']['objectId']
+
     conexao1 = requests.api.request('GET', 
                                     f"https://parseapi.back4app.com/classes/_User",
                                     headers={
@@ -1120,17 +1206,21 @@ def gerar_relatorio_ponto(request, token, id_user, start_date, end_date):
 
 # ÁREA ADMINISTRATIVA #
 def base_admin(request, token):
-    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
-        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
-        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
-        "X-Parse-Session-Token": f"{token}"})
-    abc = conexao.json()
-    if str(abc['sessionToken']) != f"{token}":
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
+                                    headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                        "X-Parse-Session-Token": f"{token}"})
+    response = conexao.json()
+    if str(response['sessionToken']) != f"{token}":
         return redirect('login')
-    elif abc['admin'] == False:
+    elif response['gestor'] == False or response['gestor'] == True:
+        return redirect('login')
+    elif response['admin'] == False:
         return redirect('login')
     else:
         pass
+    key = [{'id': token, 'user': response['username']}]
+
     conexao1 = requests.api.request('GET',
                                     f"https://parseapi.back4app.com/classes/_User",
                                     headers={
@@ -1154,33 +1244,39 @@ def base_admin(request, token):
 
 
 def dashboard_admin(request, token):
-    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
-        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
-        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
-        "X-Parse-Session-Token": f"{token}"})
-    abc = conexao.json()
-    if str(abc['sessionToken']) != f"{token}":
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
+                                    headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                        "X-Parse-Session-Token": f"{token}"})
+    response = conexao.json()
+    if str(response['sessionToken']) != f"{token}":
         return redirect('login')
-    elif abc['admin'] == False:
+    elif response['gestor'] == False or response['gestor'] == True:
+        return redirect('login')
+    elif response['admin'] == False:
         return redirect('login')
     else:
         pass
-    key = [{'id': token, 'user': abc['username']}]
+    key = [{'id': token, 'user': response['username']}]
+
     return render(request, 'admin_dashboard.html', {'lista': key})
 
 
 def list_empresa(request, token):
-    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
-        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
-        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
-        "X-Parse-Session-Token": f"{token}"})
-    abc = conexao.json()
-    if str(abc['sessionToken']) != f"{token}":
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
+                                    headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                        "X-Parse-Session-Token": f"{token}"})
+    response = conexao.json()
+    if str(response['sessionToken']) != f"{token}":
         return redirect('login')
-    elif abc['admin'] == False:
+    elif response['gestor'] == False or response['gestor'] == True:
+        return redirect('login')
+    elif response['admin'] == False:
         return redirect('login')
     else:
         pass
+    key = [{'id': token, 'user': response['username']}]
     conexao1 = requests.api.request('GET', f"https://parseapi.back4app.com/classes/Empresa",
                                     headers={
                                         "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
@@ -1197,17 +1293,20 @@ def list_empresa(request, token):
 
 
 def detail_empresa(request, token, id):
-    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
-        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
-        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
-        "X-Parse-Session-Token": f"{token}"})
-    abc = conexao.json()
-    if str(abc['sessionToken']) != f"{token}":
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
+                                    headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                        "X-Parse-Session-Token": f"{token}"})
+    response = conexao.json()
+    if str(response['sessionToken']) != f"{token}":
         return redirect('login')
-    elif abc['admin'] == False:
+    elif response['gestor'] == False or response['gestor'] == True:
+        return redirect('login')
+    elif response['admin'] == False:
         return redirect('login')
     else:
         pass
+    key = [{'id': token, 'user': response['username']}]
     conexao1 = requests.api.request('GET', f"https://parseapi.back4app.com/classes/Empresa?where=%7B%22objectId%22%3A%20%22{id}%22%7D",
                                     headers={
                                         "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",

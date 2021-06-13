@@ -4,69 +4,68 @@
 {% block content %}
     <h3 class="title">CADASTRO DE COLABORADORES</h3>
 
-    <!-- <div class="form-group col-md-6">
-        <div class="input-group" style="margin-top: 30px;">
-            <div class="input-group-prepend">
-              <label class="input-group-text" for="departamento">Departamento</label>
-            </div>
-            <select class="custom-select" name="departamento" id="departamento">
-                <option selected>Selecione um departamento</option>
-                {% for departamento in departamentos %}
-                    <option value="{{departamento.objectId}}">{{ departamento.nome }}</option>
-                {% endfor %}
-            </select>
-        </div>
-    </div> -->
-    
     <form method="POST" class="mb-7" enctype="multipart/form-data"> {% csrf_token %}
         <div>
             <h4 class="subtitle">Dados do Colaborador</h4>
         </div>
         <div class="form-row">
-            <div class="form-group col-md-3">
+            <div class="form-group col-md-4">
                 <label>Nome Completo</label>
                 <input type="text" class="form-control" name="nome" required>
             </div>
-            <div class="form-group col-md-3">
+            <div class="form-group col-md-4">
                 <label>CPF</label>
                 <input type="text" class="form-control" name="cpf" id="id_cpf" required>
             </div>
-            <div class="form-group col-md-3">
+            <div class="form-group col-md-4">
                 <label>Data de Nascimento</label>
                 <input type="date"  class="form-control" name="datanasc" required>
             </div>
-            <div class="form-group col-md-3">
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-4">
                 <label>Celular</label>
                 <input type="text"  class="form-control" name="celular" id="phone" required>
             </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group col-md-3">
+            <div class="form-group col-md-4">
                 <label>Email</label>
                 <input type="email" class="form-control" name="email" required>
             </div>
-            <div class="form-group col-md-3">
-                <label>Cargo</label>
-                <input type="text" class="form-control" name="cargo" required>
-            </div>
-            <div class="form-group col-md-3">
-                <label>Departamento</label>
-                <input type="text" class="form-control" name="departamento" required>
-            </div>
-            <div class="form-group col-md-3">
+            <div class="form-group col-md-4">
                 <label>Data Admissão</label>
-                <input type="date" class="form-control" name="data-admissao" required>
+                <input type="date" class="form-control" name="admissao" required>
             </div>
         </div>
-
         <div class="form-row">
-            <div class="form-group col-md-6">
+            <div class="form-group col-md-4">
                 <label>PIS</label>
                 <input type="number" class="form-control" name="pis" required>
             </div>
-            <div class="form-group col-md-6">
-                <label>Local de Trabalho</label>
-                <input type="text" class="form-control" name="local-trabalho" required>
+            <div class="form-group col-md-4">
+                <div class="input-group" style="margin-top: 30px;">
+                    <div class="input-group-prepend">
+                      <label class="input-group-text" for="cargo">Cargo</label>
+                    </div>
+                    <select class="custom-select" name="cargo" id="departamento">
+                        <option value="nao definido" selected>Selecione um cargo</option>
+                        {% for cargo in cargos %}
+                            <option value="{{cargo.objectId}}">{{ cargo.nome }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="form-group col-md-4">
+                <div class="input-group" style="margin-top: 30px;">
+                    <div class="input-group-prepend">
+                      <label class="input-group-text" for="departamento">Departamento</label>
+                    </div>
+                    <select class="custom-select" name="departamento" id="departamento">
+                        <option value="nao definido" selected>Selecione um departamento</option>
+                        {% for departamento in departamentos %}
+                            <option value="{{departamento.objectId}}">{{ departamento.nome }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
             </div>
         </div>
 
@@ -80,7 +79,6 @@
                     name="cep"
                     id="id_postal_code"
                     onchange="getAddress()"
-                    value="{{ empresa.cep }}"
                 >
             </div>
             <div class="form-group col-md-4">
@@ -90,7 +88,6 @@
                     class="form-control"
                     name="uf"
                     id="id_state"
-                    value="{{ empresa.uf }}"
                 >
             </div>
             <div class="form-group col-md-4">
@@ -100,7 +97,6 @@
                     class="form-control"
                     name="cidade"
                     id="id_city"
-                    value="{{ empresa.cidade }}"
                 >
             </div>
         </div>
@@ -113,7 +109,6 @@
                     class="form-control"
                     name="logradouro"
                     id="id_address"
-                    value="{{ empresa.logradouro }}"
                 >
             </div>
             <div class="form-group col-md-4">
@@ -123,7 +118,6 @@
                     class="form-control"
                     name="bairro"
                     id="id_district"
-                    value="{{ empresa.bairro }}"
                 >
             </div>
             <div class="form-group col-md-4">
@@ -132,7 +126,6 @@
                     type="text"
                     class="form-control"
                     name="numero"
-                    value="{{ empresa.numero }}"
                 >
             </div>
         </div>

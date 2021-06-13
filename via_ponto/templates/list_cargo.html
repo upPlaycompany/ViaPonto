@@ -20,6 +20,14 @@
         .rTable tbody tr:nth-child(2n){
             background: #98FB98;
         }
+
+        .td-1 {
+            width: 80%;
+        }
+
+        .td-2 {
+            width: 20%;
+        }
     </style>
 {% endblock %}
 
@@ -33,7 +41,7 @@
             
             <div>
                 {% for key in lista %}
-                    <a href="" target="_blank">
+                    <a href="{% url 'cadastro_cargo' token=key.id %}">
                         <button class="btn btn-info btn-lg" type="button">CADASTRAR</button>
                     </a>
                 {% endfor %}
@@ -46,15 +54,28 @@
                     <thead>
                         <tr>
                             <th>CARGOS</th>
-                            <th>OPÇÕES</th>
+                            <th>AÇÕES</th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        <tr>
-                            <td>Gerente</td>
-                            <td>BOTÕES</td>
-                        </tr>
+                        {% for cargo in cargos %}
+                            <tr>
+                                <td class="td-1">{{ cargo.nome }}</td>
+                                <td class="td-2">
+                                    {% for key in lista %}
+                                        <a href="{% url 'edit_cargo' token=key.id id=cargo.objectId %}">
+                                            <i style="color: #6bc9ca; font-size: 20px;" class="fas fa-pencil-alt"></i>
+                                        </a>
+                                    {% endfor %}
+                                    {% for key in lista %}
+                                        <a href="{% url 'delete_cargo' token=key.id id=cargo.objectId %}">
+                                            <i style="margin-left: 25px; color: red; font-size: 20px;" class="far fa-trash-alt"></i>
+                                        </a>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
