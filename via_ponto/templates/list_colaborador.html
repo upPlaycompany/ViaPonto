@@ -100,7 +100,7 @@
                                             </a>
                                         {% endfor %}
                                         {% for key in lista %}
-                                            <a href="">
+                                            <a href="{% url 'demitir_colaborador' token=key.id id=dap.objectId %}">
                                                 <i style="margin-left: 25px; color: red; font-size: 20px;" class="fas fa-briefcase"></i>
                                             </a>
                                         {% endfor %}
