@@ -863,16 +863,28 @@ def list_colaborador(request, token):
     key = [{'id': token, 'user': response['username']}]
     empresa_id = response['id_empresa']['objectId']
     
-    req_user = requests.api.request('GET', f"https://parseapi.back4app.com/classes/_User",
+    req_user = requests.api.request('GET', f"https://parseapi.back4app.com/classes/_User?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
                                     headers={
                                         "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
                                         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
     res_user = req_user.json()
     colaborador = [x for x in res_user['results']]
-    total_colaborador = len(colaborador)
-    [colaborador[x].update({'cod': token}) for x in range(total_colaborador)]
+
+    req_cargo = requests.api.request('GET', f"https://parseapi.back4app.com/classes/Cargo?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
+                                    headers={
+                                        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
+    res_cargo = req_cargo.json()
+    cargo = [x for x in res_cargo['results']]
+
+    req_dep = requests.api.request('GET', f"https://parseapi.back4app.com/classes/Departamento?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
+                                    headers={
+                                        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
+    res_dep = req_dep.json()
+    departamento = [x for x in res_dep['results']]
     
-    return render(request, 'list_colaborador.html', {'lista': key, 'order': colaborador, 'id_emp': empresa_id})
+    return render(request, 'list_colaborador.html', {'lista': key, 'colaboradores': colaborador, 'id_emp': empresa_id, 'cargos': cargo, 'departamentos': departamento})
 
 
 def cadastro_colaborador(request, token):
