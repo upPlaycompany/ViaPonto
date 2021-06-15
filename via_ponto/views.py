@@ -979,6 +979,43 @@ def cadastro_colaborador_success(request, token):
     return render(request, 'success_cadastro_colaborador.html', {'lista': key})
 
 
+def demitir_colaborador(request, token, id):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
+                                    headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                        "X-Parse-Session-Token": f"{token}"})
+    response = conexao.json()
+    if str(response['sessionToken']) != f"{token}":
+        return redirect('login')
+    elif response['gestor'] == False:
+        return redirect('login')
+    else:
+        pass
+
+    date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    date = date[:10]
+    data = datetime.strptime(date, '%Y-%m-%d').date()
+    data_demissao = data.strftime('%d/%m/%Y')
+    
+    req_dem = requests.api.request('PUT', f"https://parseapi.back4app.com/classes/_User/{id}",
+                                    headers={
+                                        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                        "X-Parse-Session-Token": f"{token}",
+                                        "Content-Type": "application/json"},
+                                    json={
+                                        "demitido": bool(True),
+                                        "demissao": f"{data_demissao}",
+                                        })
+    
+    status = str(req_dem.status_code)
+
+    if status == '200':
+        return redirect('list_demitidos', token=token)
+    else:
+        return redirect('fail_default', token=token)
+
+
 def list_demitidos(request, token):
     conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
                                     headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
