@@ -918,6 +918,13 @@ def cadastro_colaborador(request, token):
         pis = request.POST['pis']
         cargo_id = request.POST['cargo']
         departamento_id = request.POST['departamento']
+        # Endereço do Colaborador
+        cep = request.POST['cep']
+        uf = request.POST['uf']
+        cidade = request.POST['cidade']
+        logradouro = request.POST['logradouro']
+        bairro = request.POST['bairro']
+        numero = request.POST['numero']
 
         req_user = requests.api.request('POST', f"https://parseapi.back4app.com/users",
                                         headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
@@ -931,9 +938,16 @@ def cadastro_colaborador(request, token):
                                             "cpf": f"{cpf}",
                                             "data_nasc": f"{datanasc}",
                                             "email": f"{email}",
+                                            "email_colab": f"{email}",
                                             "celular": f"{celular}",
                                             "admissao": f"{admissao}",
                                             "pis": f"{pis}",
+                                            "cep": f"{cep}",
+                                            "uf": f"{uf}",
+                                            "cidade": f"{cidade}",
+                                            "logradouro": f"{logradouro}",
+                                            "bairro": f"{bairro}",
+                                            "numero": f"{numero}",
                                             "gestor": bool(False),
                                             "admin": bool(False),
                                             "id_cargo": {
@@ -949,8 +963,9 @@ def cadastro_colaborador(request, token):
                                             "id_empresa": {
                                                 '__type': "Pointer",
                                                 "className": "Empresa",
-                                                "objectId": empresa_id
-                                            }})
+                                                "objectId": empresa_id 
+                                            }
+                                        })
 
         req_user.json()
         status = str(req_user.status_code)
@@ -997,7 +1012,7 @@ def demitir_colaborador(request, token, id):
     data = datetime.strptime(date, '%Y-%m-%d').date()
     data_demissao = data.strftime('%d/%m/%Y')
     
-    req_dem = requests.api.request('PUT', f"https://parseapi.back4app.com/classes/_User/{id}",
+    req_user = requests.api.request('PUT', f"https://parseapi.back4app.com/classes/_User/{id}",
                                     headers={
                                         "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
                                         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
@@ -1008,12 +1023,111 @@ def demitir_colaborador(request, token, id):
                                         "demissao": f"{data_demissao}",
                                         })
     
-    status = str(req_dem.status_code)
+    status = str(req_user.status_code)
 
     if status == '200':
         return redirect('list_demitidos', token=token)
     else:
         return redirect('fail_default', token=token)
+
+
+def edit_colaborador(request, token, id):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
+                                    headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                        "X-Parse-Session-Token": f"{token}"})
+    response = conexao.json()
+    if str(response['sessionToken']) != f"{token}":
+        return redirect('login')
+    elif response['gestor'] == False:
+        return redirect('login')
+    else:
+        pass
+    key = [{'id': token, 'user': response['username']}]
+    empresa_id = response['id_empresa']['objectId']
+
+    req_cargo = requests.api.request('GET', f"https://parseapi.back4app.com/classes/Cargo?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
+                                    headers={
+                                        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
+    res_cargo = req_cargo.json()
+    cargo = [x for x in res_cargo['results']]
+
+    req_dep = requests.api.request('GET', f"https://parseapi.back4app.com/classes/Departamento?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
+                                    headers={
+                                        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
+    res_dep = req_dep.json()
+    departamento = [x for x in res_dep['results']]
+
+    req_user_get = requests.api.request('GET', f"https://parseapi.back4app.com/classes/_User/{id}",
+                                        headers={
+                                            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
+    colab = req_user_get.json()
+
+    if request.method == 'POST':
+        username = request.POST['username']
+        nome = request.POST['nome']
+        cpf = request.POST['cpf']
+        datanasc = request.POST['datanasc']
+        celular = request.POST['celular']
+        email_colab = request.POST['email']
+        admissao = request.POST['admissao']
+        pis = request.POST['pis']
+        cargo_id = request.POST['cargo']
+        departamento_id = request.POST['departamento']
+        # Endereço do Colaborador
+        cep = request.POST['cep']
+        uf = request.POST['uf']
+        cidade = request.POST['cidade']
+        logradouro = request.POST['logradouro']
+        bairro = request.POST['bairro']
+        numero = request.POST['numero']
+
+        req_user = requests.api.request('PUT', f"https://parseapi.back4app.com/classes/_User/{id}",
+                                        headers={
+                                            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                            "X-Parse-Session-Token": f"{token}",
+                                            "Content-Type": "application/json"},
+                                        json={
+                                            "username": f"{username}",
+                                            "nome": f"{nome}",
+                                            "cpf": f"{cpf}",
+                                            "data_nasc": f"{datanasc}",
+                                            "email_colab": f"{email_colab}",
+                                            "email": f"{email_colab}",
+                                            "celular": f"{celular}",
+                                            "admissao": f"{admissao}",
+                                            "pis": f"{pis}",
+                                            "cep": f"{cep}",
+                                            "uf": f"{uf}",
+                                            "cidade": f"{cidade}",
+                                            "logradouro": f"{logradouro}",
+                                            "bairro": f"{bairro}",
+                                            "numero": f"{numero}",
+                                            "id_cargo": {
+                                                '__type': "Pointer",
+                                                "className": "Cargo",
+                                                "objectId": cargo_id
+                                            },
+                                            "id_departamento": {
+                                                '__type': "Pointer",
+                                                "className": "Departamento",
+                                                "objectId": departamento_id
+                                            }})
+
+        req_user.json()
+    
+        status = str(req_user.status_code)
+
+        if status == '200':
+            return redirect('list_colaborador', token=token)
+        else:
+            return redirect('fail_default', token=token)
+
+    return render(request, 'edit_colaborador.html', {'lista': key, 'cargos': cargo, 'departamentos': departamento, 'colaborador': colab})
 
 
 def list_demitidos(request, token):
@@ -1033,6 +1147,7 @@ def list_demitidos(request, token):
     return render(request, 'list_demitidos.html', {'lista': key})
 
 
+# RELATÓRIOS
 def pontos_colaborador(request, token, id_user):
     conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me',
                                     headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
