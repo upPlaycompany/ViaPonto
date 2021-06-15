@@ -2,44 +2,44 @@
 {% load static %}
 
 {% block content %}
-    <h3 class="title">CADASTRO DE COLABORADORES</h3>
+    <h3 class="title">EDIÇÃO DE COLABORADORES</h3>
 
     <form method="POST" class="mb-7" enctype="multipart/form-data"> {% csrf_token %}
         <div>
-            <h4 class="subtitle">Dados do Colaborador</h4>
+            <h4 class="subtitle">Editar Colaborador: {{ colaborador.nome }}</h4>
         </div>
         <div class="form-row">
             <div class="form-group col-md-4">
                 <label>Nome Completo</label>
-                <input type="text" class="form-control" name="nome" required>
+                <input type="text" class="form-control" name="nome" value="{{colaborador.nome}}" required>
             </div>
             <div class="form-group col-md-4">
                 <label>CPF</label>
-                <input type="text" class="form-control" name="cpf" id="id_cpf" required>
+                <input type="text" class="form-control" name="cpf" id="id_cpf" value="{{colaborador.cpf}}" required>
             </div>
             <div class="form-group col-md-4">
                 <label>Data de Nascimento</label>
-                <input type="date"  class="form-control" name="datanasc" required>
+                <input type="date"  class="form-control" name="datanasc" value="{{colaborador.data_nasc}}" required>
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-4">
                 <label>Celular</label>
-                <input type="text"  class="form-control" name="celular" id="phone" required>
+                <input type="text"  class="form-control" name="celular" id="phone" value="{{colaborador.celular}}" required>
             </div>
             <div class="form-group col-md-4">
                 <label>Email</label>
-                <input type="email" class="form-control" name="email" required>
+                <input type="email" class="form-control" name="email" value="{{colaborador.email_colab}}" required>
             </div>
             <div class="form-group col-md-4">
                 <label>Data Admissão</label>
-                <input type="date" class="form-control" name="admissao" required>
+                <input type="date" class="form-control" name="admissao" value="{{colaborador.admissao}}" required>
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-4">
                 <label>PIS</label>
-                <input type="number" class="form-control" name="pis" required>
+                <input type="number" class="form-control" name="pis" value="{{colaborador.pis}}" required>
             </div>
             <div class="form-group col-md-4">
                 <div class="input-group" style="margin-top: 30px;">
@@ -47,9 +47,13 @@
                       <label class="input-group-text" for="cargo">Cargo</label>
                     </div>
                     <select class="custom-select" name="cargo" id="cargo">
-                        <option value="nao definido" selected>Selecione um cargo</option>
                         {% for cargo in cargos %}
-                            <option value="{{cargo.objectId}}">{{ cargo.nome }}</option>
+                            {% if cargo.objectId != colaborador.id_departamento.objectId %}
+                                <option value="{{cargo.objectId}}">{{ cargo.nome }}</option>
+                            
+                            {% else %}
+                                <option value="{{cargo.objectId}}" selected>{{ cargo.nome }}</option>
+                            {% endif %}
                         {% endfor %}
                     </select>
                 </div>
@@ -60,9 +64,13 @@
                       <label class="input-group-text" for="departamento">Departamento</label>
                     </div>
                     <select class="custom-select" name="departamento" id="departamento">
-                        <option value="nao definido" selected>Selecione um departamento</option>
                         {% for departamento in departamentos %}
-                            <option value="{{departamento.objectId}}">{{ departamento.nome }}</option>
+                            {% if departamento.objectId != colaborador.id_departamento.objectId %}
+                                <option value="{{departamento.objectId}}">{{ departamento.nome }}</option>
+                            
+                            {% else %}
+                                <option value="{{departamento.objectId}}" selected>{{ departamento.nome }}</option>
+                            {% endif %}
                         {% endfor %}
                     </select>
                 </div>
@@ -79,6 +87,7 @@
                     name="cep"
                     id="id_postal_code"
                     onchange="getAddress()"
+                    value="{{colaborador.cep}}"
                 >
             </div>
             <div class="form-group col-md-4">
@@ -88,6 +97,7 @@
                     class="form-control"
                     name="uf"
                     id="id_state"
+                    value="{{colaborador.uf}}"
                 >
             </div>
             <div class="form-group col-md-4">
@@ -97,6 +107,7 @@
                     class="form-control"
                     name="cidade"
                     id="id_city"
+                    value="{{colaborador.cidade}}"
                 >
             </div>
         </div>
@@ -109,6 +120,7 @@
                     class="form-control"
                     name="logradouro"
                     id="id_address"
+                    value="{{colaborador.logradouro}}"
                 >
             </div>
             <div class="form-group col-md-4">
@@ -118,6 +130,7 @@
                     class="form-control"
                     name="bairro"
                     id="id_district"
+                    value="{{colaborador.bairro}}"
                 >
             </div>
             <div class="form-group col-md-4">
@@ -126,6 +139,7 @@
                     type="text"
                     class="form-control"
                     name="numero"
+                    value="{{colaborador.numero}}"
                 >
             </div>
         </div>
@@ -136,15 +150,11 @@
         <div class="form-row">
             <div class="form-group col-md-4">
                 <label>Usuário do Colaborador</label>
-                <input type="text" class="form-control" name="username" required>
-            </div>
-            <div class="form-group col-md-4">
-                <label>Senha do Colaborador</label>
-                <input type="password"  class="form-control" name="password" required>
+                <input type="text" class="form-control" name="username" value="{{colaborador.username}}" required>
             </div>
         </div>
         
-        <button type="submit" class="btn btn-info btn-lg">CADASTRAR</button>
+        <button type="submit" class="btn btn-info btn-lg">SALVAR</button>
     </form>
 {% endblock %}
 

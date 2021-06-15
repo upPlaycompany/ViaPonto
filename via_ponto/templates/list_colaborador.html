@@ -81,13 +81,25 @@
                     </thead>
 
                     <tbody>
-                        {% for dap in order %}
-                            {% if dap.id_empresa.objectId == id_emp %}
+                        {% for colaborador in colaboradores %}
+                            {% if colaborador.gestor == False and colaborador.demitido == False %}
                                 <tr>
-                                    <td class="td-1"><a href="{% url 'pontos_colaborador' token=dap.cod id_user=dap.objectId %}">{{ dap.nome }}</a></td>
-                                    <td class="td-2">{{ dap.cpf }}</td>
-                                    <td class="td-3">{{ dap.cargo }}</td>
-                                    <td class="td-4">{{ dap.departamento }}</td>
+                                    <td class="td-1">{{ colaborador.nome }}</td>
+                                    <td class="td-2">{{ colaborador.cpf }}</td>
+                                    {% for cargo in cargos %}
+                                        {% if cargo.objectId == colaborador.id_cargo.objectId %}
+                                            <td class="td-3">{{ cargo.nome }}</td>
+                                        {% elif colaborador.id_cargo.objectId == 'nao definido' %}
+                                            <td class="td-3">Não possui cargo</td>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% for departamento in departamentos %}
+                                        {% if departamento.objectId == colaborador.id_departamento.objectId %}
+                                            <td class="td-4">{{ departamento.nome }}</td>
+                                        {% elif colaborador.id_departamento.objectId == 'nao definido' %}
+                                            <td class="td-4">Não possui departamento</td>
+                                        {% endif %}
+                                    {% endfor %}
                                     <td class="td-5">
                                         {% for key in lista %}
                                             <a href="">
@@ -95,12 +107,12 @@
                                             </a>
                                         {% endfor %}
                                         {% for key in lista %}
-                                            <a href="">
+                                            <a href="{% url 'edit_colaborador' token=key.id id=colaborador.objectId %}">
                                                 <i style="margin-left: 25px; color: #6bc9ca; font-size: 20px;" class="fas fa-pencil-alt"></i>
                                             </a>
                                         {% endfor %}
                                         {% for key in lista %}
-                                            <a href="">
+                                            <a href="{% url 'demitir_colaborador' token=key.id id=colaborador.objectId %}">
                                                 <i style="margin-left: 25px; color: red; font-size: 20px;" class="fas fa-briefcase"></i>
                                             </a>
                                         {% endfor %}
