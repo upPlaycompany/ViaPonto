@@ -13,8 +13,6 @@ import requests
 import urllib3
 
 
-
-
 def home(request):
     return render(request, 'home.html')
 
@@ -78,7 +76,7 @@ def deslogar(request, token):
         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
         "X-Parse-Session-Token": f"{token}"})
     logout(request)
-    return redirect('login')
+    return redirect('home')
 
 
 def redefinir_senha(request):
@@ -129,7 +127,7 @@ def register(request):
         bairro = request.POST['bairro']
         numero = request.POST['numero']
         
-        req_emp = requests.api.request('POST', f"https://parseapi.back4app.com/classes/Empresa/",
+        req_emp = requests.api.request('POST', f"https://parseapi.back4app.com/classes/Empresa",
                                         headers={
                                             "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
                                             "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
@@ -144,12 +142,11 @@ def register(request):
                                             "cidade": f"{cidade}",
                                             "bairro": f"{bairro}",
                                         })
+        status_emp = str(req_emp.status_code)
         empresa = req_emp.json()
-        status = str(req_emp.status_code)
-        empresa_id = empresa['objectId']
-
-        if status != '201':
-            return redirect('login')
+        
+        if status_emp != '201':
+            return redirect('login_gestor')
 
         req_user = requests.api.request('POST', f"https://parseapi.back4app.com/users",
                                         headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
@@ -165,14 +162,34 @@ def register(request):
                                             "id_empresa": {
                                                 '__type': "Pointer",
                                                 "className": "Empresa",
-                                                "objectId": empresa_id}
+                                                "objectId": empresa['objectId']}
                                         })
-        req_user.json()
-        status = str(req_user.status_code)
-        if status == '201':
-            return redirect('register_success')
-        else:
-            return redirect('login')
+        user = req_user.json()
+        status_user = str(req_user.status_code)
+
+        if status_user == '201':
+            req_role = requests.api.request('PUT', f"https://parseapi.back4app.com/roles/yBVatyTWv8",
+                                            headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                                    "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                                    "Content-Type": "application/json"},
+                                            json={
+                                                "users": {
+                                                    "__op": "AddRelation",
+                                                    "objects": [
+                                                        {
+                                                            "__type": "Pointer",
+                                                            "className": "_User",
+                                                            "objectId": f"{user['objectId']}"
+                                                        }
+                                                    ]
+                                                }})
+
+            status_role = str(req_role.status_code)
+
+            if status_role == '200':
+                return redirect('register_success')
+            else:
+                return redirect('login_gestor')
 
     return render(request, 'register.html')
 
@@ -944,6 +961,14 @@ def cadastro_colaborador(request, token):
                                                  "X-Parse-Revocable-Session": "1",
                                                  "Content-Type": "application/json"},
                                         json={
+                                            "ACL": {
+                                                "role:admins": {
+                                                    "write": True,
+                                                },
+                                                "*": {
+                                                    "read": True,
+                                                }
+                                            },
                                             "username": f"{username}",
                                             "password": f"{password}",
                                             "nome": f"{nome}",
