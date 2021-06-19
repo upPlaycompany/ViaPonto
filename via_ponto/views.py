@@ -38,8 +38,7 @@ def login_colaborador(request):
         if status == '200' and response['admin'] == True:
             return redirect('base_admin', token=response['sessionToken'])
         elif status == '200' and response['gestor'] == False:
-            return redirect('login_fail')
-            # return redirect('dashboard_colaborador', token=response['sessionToken'])
+            return redirect('dashboard_colaborador', token=response['sessionToken'])
         else:
             return redirect('login_fail')
 
@@ -200,6 +199,25 @@ def register(request):
 
 def register_success(request):
     return render(request, 'success_register.html')
+
+
+def dashboard_colaborador(request, token):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
+                                    "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                    "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                    "X-Parse-Session-Token": f"{token}"})
+    usuario = conexao.json()
+    if str(usuario['sessionToken']) != f"{token}":
+        return redirect('login')
+    elif usuario['gestor'] == True:
+        return redirect('login')
+    elif usuario['admin'] == True:
+        return redirect('login')
+    else:
+        pass
+    key = [{'id': token, 'user': usuario['username']}]
+
+    return render(request, 'dashboard_colaborador.html', {'lista': key})
 
 
 def dashboard(request, token):
