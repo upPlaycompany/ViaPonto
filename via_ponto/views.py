@@ -17,6 +17,10 @@ def home(request):
     return render(request, 'home.html')
 
 
+def login_tipo(request):
+    return render(request, 'login_tipo.html')
+
+
 def login_colaborador(request):
     if request.method == 'POST':
         username = request.POST['username']

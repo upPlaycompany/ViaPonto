@@ -15,8 +15,6 @@
     padding: 0 2%;
 }
 
-
-
 li, a, button {
     font-weight: 500;
     font-size: 16px;
@@ -26,36 +24,14 @@ li, a, button {
 
 header {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
-    padding: 20px 0;
+    padding: 30px 0;
 }
 
-.logo {
+.logo-secondy a img {
     cursor: pointer;
-    margin-right: auto;
-    width: 20%;
-}
-
-.nav__links {
-    list-style: none;
-    
-}
-
-.nav__links li {
-    display: inline-block;
-    padding: 10px 8px;
-}
-
-.nav__links li a {
-    color: #24252A;
-    font-weight: 560;
-    text-decoration: none;
-    transition: all 0.3s ease 0s;
-}
-
-.nav__links li a:hover {
-    color: #6bc9ca;
+    width: 210px;
 }
 
 button {
@@ -71,10 +47,10 @@ button:hover {
 }
 
 .btn_register {
-    margin-left: 4px;
     width: 150px;
     padding: 11px 6px;
     border-radius: 10px 0 0 10px;
+    margin-right: -5px;
 }
 
 .btn_login {
