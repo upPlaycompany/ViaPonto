@@ -1,16 +1,40 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block extra_style %}
+    <style>
+        #map {
+            width: 500px;
+            height: 500px;
+            background: #ddd;
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
     <h3 class="title">CADASTRO DE LOCAIS</h3>
     <h6 class="subtitle">Fique a vontade para alterar seus dados</h6>
-    
-    <form method="POST" class="mb-7" enctype="multipart/form-data"> {% csrf_token %}
-        <h4 class="subtitle my-3">Informe o local para o cadastro</h4>
-        <div class="form-row">
-          
+    <form action="POST">
+        <div>
+            <label for="txtEndereco">Endereço:</label>
+            <input type="text" id="txtEndereco" name="txtEndereco">
         </div>
-       
-        <button type="submit" class="btn btn-info btn-lg">SALVAR</button>
+        <div>
+            <input type="button" id="btnEndereco" onclick="pegarEndereco()" value="Mostrar no mapa">
+        </div>
+        <div id="map"></div>
+
+        <div>
+            <input type="submit" value="Enviar" name="btnSubmit">
+        </div>
+
+        <input type="hidden" name="txtLatitude" id="txtLatitude">
+        <input type="hidden" name="txtLongitude" id="txtLongitude">
     </form>
+    
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'js/api-map.js' %}"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAm4peDy9NIsTJ9m7n8QS-md9HbtXY0cj4&callback=initMap&language=pt&region=BR" async defer></script>
 {% endblock %}

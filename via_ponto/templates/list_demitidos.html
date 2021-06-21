@@ -20,6 +20,26 @@
         .rTable tbody tr:nth-child(2n){
             background: #98FB98;
         }
+
+        .td-1 {
+            width: 20%;
+        }
+
+        .td-2 {
+            width: 30%;
+        }
+
+        .td-3 {
+            width: 20%;
+        }
+
+        .td-4 {
+            width: 20%;
+        }
+
+        .td-5 {
+            width: 10%;
+        }
     </style>
 {% endblock %}
 
@@ -28,28 +48,46 @@
         <div class="card-header py-3">
             <div>
                 <h3 class="title">RELATÓRIO DE DEMITIDOS</h3>
-                <h6 class="subtitle">Fique a vontade para alterar seus dados</h6>
             </div>
             
         </div>
         <div class="card-body">
-            
             <div class="table-responsive">
                 <table class="rTable table table-bordered" id="dataTable" width="100%" cellspacing="0" >
                     <thead>
                         <tr>
-                            <th>Nome</th>
-                            <th>Data de demissao</th>
-                            <th>Ultimo registro de ponto</th>
-                            <th>Ações</th>
+                            <th>DATA DEMISSÃO</th>
+                            <th>COLABORADOR</th>
+                            <th>CPF</th>
+                            <th>DEPARTAMENTO</th>
+                            <th>AÇÕES</th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        <tr>
-                            <td>EQIPE 1</td>
-                            <td>BOTÕES</td>
-                        </tr>
+                        {% for colaborador in colaboradores %}
+                            {% if colaborador.gestor == False and colaborador.demitido == True %}
+                                <tr>
+                                    <td class="td-1">{{ colaborador.demissao }}</td>
+                                    <td class="td-2">{{ colaborador.nome }}</td>
+                                    <td class="td-3">{{ colaborador.cpf }}</td>
+                                    {% for departamento in departamentos %}
+                                        {% if departamento.objectId == colaborador.id_departamento.objectId %}
+                                            <td class="td-4">{{ departamento.nome }}</td>
+                                        {% elif colaborador.id_departamento.objectId == 'nao definido' %}
+                                            <td class="td-4">Não possui departamento</td>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <td class="td-5">
+                                        {% for key in lista %}
+                                            <a href="">
+                                                <i style="color: #6bc9ca; font-size: 20px;" class="fas fa-eye"></i>
+                                            </a>
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>

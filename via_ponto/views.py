@@ -13,10 +13,12 @@ import requests
 import urllib3
 
 
-
-
 def home(request):
     return render(request, 'home.html')
+
+
+def login_tipo(request):
+    return render(request, 'login_tipo.html')
 
 
 def login_colaborador(request):
@@ -36,8 +38,7 @@ def login_colaborador(request):
         if status == '200' and response['admin'] == True:
             return redirect('base_admin', token=response['sessionToken'])
         elif status == '200' and response['gestor'] == False:
-            return redirect('login_fail')
-            # return redirect('dashboard_colaborador', token=response['sessionToken'])
+            return redirect('dashboard_colaborador', token=response['sessionToken'])
         else:
             return redirect('login_fail')
 
@@ -78,7 +79,7 @@ def deslogar(request, token):
         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
         "X-Parse-Session-Token": f"{token}"})
     logout(request)
-    return redirect('login')
+    return redirect('home')
 
 
 def redefinir_senha(request):
@@ -129,7 +130,7 @@ def register(request):
         bairro = request.POST['bairro']
         numero = request.POST['numero']
         
-        req_emp = requests.api.request('POST', f"https://parseapi.back4app.com/classes/Empresa/",
+        req_emp = requests.api.request('POST', f"https://parseapi.back4app.com/classes/Empresa",
                                         headers={
                                             "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
                                             "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
@@ -144,12 +145,11 @@ def register(request):
                                             "cidade": f"{cidade}",
                                             "bairro": f"{bairro}",
                                         })
+        status_emp = str(req_emp.status_code)
         empresa = req_emp.json()
-        status = str(req_emp.status_code)
-        empresa_id = empresa['objectId']
-
-        if status != '201':
-            return redirect('login')
+        
+        if status_emp != '201':
+            return redirect('login_gestor')
 
         req_user = requests.api.request('POST', f"https://parseapi.back4app.com/users",
                                         headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
@@ -165,20 +165,59 @@ def register(request):
                                             "id_empresa": {
                                                 '__type': "Pointer",
                                                 "className": "Empresa",
-                                                "objectId": empresa_id}
+                                                "objectId": empresa['objectId']}
                                         })
-        req_user.json()
-        status = str(req_user.status_code)
-        if status == '201':
-            return redirect('register_success')
-        else:
-            return redirect('login')
+        user = req_user.json()
+        status_user = str(req_user.status_code)
+
+        if status_user == '201':
+            req_role = requests.api.request('PUT', f"https://parseapi.back4app.com/roles/yBVatyTWv8",
+                                            headers={"X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                                    "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                                    "Content-Type": "application/json"},
+                                            json={
+                                                "users": {
+                                                    "__op": "AddRelation",
+                                                    "objects": [
+                                                        {
+                                                            "__type": "Pointer",
+                                                            "className": "_User",
+                                                            "objectId": f"{user['objectId']}"
+                                                        }
+                                                    ]
+                                                }})
+
+            status_role = str(req_role.status_code)
+
+            if status_role == '200':
+                return redirect('register_success')
+            else:
+                return redirect('login_gestor')
 
     return render(request, 'register.html')
 
 
 def register_success(request):
     return render(request, 'success_register.html')
+
+
+def dashboard_colaborador(request, token):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
+                                    "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                    "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                    "X-Parse-Session-Token": f"{token}"})
+    usuario = conexao.json()
+    if str(usuario['sessionToken']) != f"{token}":
+        return redirect('login')
+    elif usuario['gestor'] == True:
+        return redirect('login')
+    elif usuario['admin'] == True:
+        return redirect('login')
+    else:
+        pass
+    key = [{'id': token, 'user': usuario['username']}]
+
+    return render(request, 'dashboard_colaborador.html', {'lista': key})
 
 
 def dashboard(request, token):
@@ -944,6 +983,14 @@ def cadastro_colaborador(request, token):
                                                  "X-Parse-Revocable-Session": "1",
                                                  "Content-Type": "application/json"},
                                         json={
+                                            "ACL": {
+                                                "role:admins": {
+                                                    "write": True,
+                                                },
+                                                "*": {
+                                                    "read": True,
+                                                }
+                                            },
                                             "username": f"{username}",
                                             "password": f"{password}",
                                             "nome": f"{nome}",
@@ -1155,8 +1202,23 @@ def list_demitidos(request, token):
     else:
         pass
     key = [{'id': token, 'user': response['username']}]
+    empresa_id = response['id_empresa']['objectId']
+    
+    req_user = requests.api.request('GET', f"https://parseapi.back4app.com/classes/_User?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
+                                    headers={
+                                        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
+    res_user = req_user.json()
+    colaborador = [x for x in res_user['results']]
 
-    return render(request, 'list_demitidos.html', {'lista': key})
+    req_dep = requests.api.request('GET', f"https://parseapi.back4app.com/classes/Departamento?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
+                                    headers={
+                                        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
+    res_dep = req_dep.json()
+    departamento = [x for x in res_dep['results']]
+
+    return render(request, 'list_demitidos.html', {'lista': key, 'colaboradores': colaborador, 'id_emp': empresa_id, 'departamentos': departamento})
 
 
 # RELATÓRIOS

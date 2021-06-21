@@ -19,16 +19,6 @@
             background: #98FB98;
         }
 
-        .rTable tbody tr .link-func {
-            text-decoration: none;
-            cursor: pointer;
-            transition: ease-in 0.2s;
-        }
-
-        .rTable tbody tr .link-func:hover {
-            color: #7FFF00;
-        }
-
         .td-1 {
             width: 25%;
         }
@@ -86,18 +76,21 @@
                                 <tr>
                                     <td class="td-1">{{ colaborador.nome }}</td>
                                     <td class="td-2">{{ colaborador.cpf }}</td>
+                                    {% if colaborador.id_cargo.objectId == 'nao definido' %}
+                                        <td class="td-3">Não possui</td>
+                                    {% endif %}
                                     {% for cargo in cargos %}
                                         {% if cargo.objectId == colaborador.id_cargo.objectId %}
                                             <td class="td-3">{{ cargo.nome }}</td>
-                                        {% elif colaborador.id_cargo.objectId == 'nao definido' %}
-                                            <td class="td-3">Não possui cargo</td>
                                         {% endif %}
                                     {% endfor %}
+
+                                    {% if colaborador.id_departamento.objectId == 'nao definido' %}
+                                        <td class="td-4">Não possui</td>
+                                    {% endif %}
                                     {% for departamento in departamentos %}
                                         {% if departamento.objectId == colaborador.id_departamento.objectId %}
                                             <td class="td-4">{{ departamento.nome }}</td>
-                                        {% elif colaborador.id_departamento.objectId == 'nao definido' %}
-                                            <td class="td-4">Não possui departamento</td>
                                         {% endif %}
                                     {% endfor %}
                                     <td class="td-5">
