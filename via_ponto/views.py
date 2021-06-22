@@ -6,7 +6,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 import datetime
-from datetime import *
+from datetime import datetime
 from easy_pdf import rendering
 from django.utils.six import BytesIO
 import requests
@@ -19,54 +19,6 @@ def home(request):
 
 def login_tipo(request):
     return render(request, 'login_tipo.html')
-
-
-def login_colaborador(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        conexao = requests.api.request('GET',
-                                       f"https://parseapi.back4app.com/login?username={username}&password={password}",
-                                       headers={
-                                           "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
-                                           "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
-                                           "X-Parse-Revocable-Session": '1'
-                                       })
-        response = conexao.json()
-        status = str(conexao.status_code)
-        
-        if status == '200' and response['admin'] == True:
-            return redirect('base_admin', token=response['sessionToken'])
-        elif status == '200' and response['gestor'] == False:
-            return redirect('dashboard_colaborador', token=response['sessionToken'])
-        else:
-            return redirect('login_fail')
-
-    return render(request, 'login_colaborador.html')
-
-
-def login_gestor(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        conexao = requests.api.request('GET',
-                                       f"https://parseapi.back4app.com/login?username={username}&password={password}",
-                                       headers={
-                                           "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
-                                           "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
-                                           "X-Parse-Revocable-Session": '1'
-                                       })
-        response = conexao.json()
-        status = str(conexao.status_code)
-        
-        if status == '200' and response['admin'] == True:
-            return redirect('base_admin', token=response['sessionToken'])
-        elif status == '200' and response['gestor'] == True:
-            return redirect('dashboard', token=response['sessionToken'])
-        else:
-            return redirect('login_fail')
-
-    return render(request, 'login_gestor.html')
 
 
 def login_fail(request):
@@ -201,6 +153,50 @@ def register_success(request):
     return render(request, 'success_register.html')
 
 
+def fail_default(request, token):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
+                                    "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                    "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                    "X-Parse-Session-Token": f"{token}"})
+    usuario = conexao.json()
+    if str(usuario['sessionToken']) != f"{token}":
+        return redirect('login')
+    elif usuario['gestor'] == False:
+        return redirect('login')
+    elif usuario['admin'] == True:
+        return redirect('login')
+    else:
+        pass
+    key = [{'id': token, 'user': usuario['username']}]
+
+    return render(request, 'fail_default.html', {'lista': key})
+
+
+# COLABORADOR DASHBOARD
+def login_colaborador(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        conexao = requests.api.request('GET',
+                                       f"https://parseapi.back4app.com/login?username={username}&password={password}",
+                                       headers={
+                                           "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                           "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                           "X-Parse-Revocable-Session": '1'
+                                       })
+        response = conexao.json()
+        status = str(conexao.status_code)
+        
+        if status == '200' and response['admin'] == True:
+            return redirect('base_admin', token=response['sessionToken'])
+        elif status == '200' and response['gestor'] == False:
+            return redirect('dashboard_colaborador', token=response['sessionToken'])
+        else:
+            return redirect('login_fail')
+
+    return render(request, 'login_colaborador.html')
+
+
 def dashboard_colaborador(request, token):
     conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
                                     "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
@@ -220,6 +216,104 @@ def dashboard_colaborador(request, token):
     return render(request, 'dashboard_colaborador.html', {'lista': key})
 
 
+def registro_ponto(request, token):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
+                                    "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                    "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                    "X-Parse-Session-Token": f"{token}"})
+    usuario = conexao.json()
+    if str(usuario['sessionToken']) != f"{token}":
+        return redirect('login')
+    elif usuario['gestor'] == True:
+        return redirect('login')
+    elif usuario['admin'] == True:
+        return redirect('login')
+    else:
+        pass
+    key = [{'id': token, 'user': usuario['username']}]
+
+    return render(request, 'registro_ponto.html', {'lista': key})
+
+
+def registrar_ponto(request, token):
+    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
+                                    "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                    "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                    "X-Parse-Session-Token": f"{token}"})
+    usuario = conexao.json()
+    if str(usuario['sessionToken']) != f"{token}":
+        return redirect('login')
+    elif usuario['gestor'] == True:
+        return redirect('login')
+    elif usuario['admin'] == True:
+        return redirect('login')
+    else:
+        pass
+    key = [{'id': token, 'user': usuario['username']}]
+    departamento_id = usuario['id_departamento']['objectId']
+    DAYS = [
+        'segunda',
+        'terca',
+        'quarta',
+        'quinta',
+        'sexta',
+        'sabado',
+        'domingo'
+    ]
+
+    data_hora = datetime.now()
+    indice_week = data_hora.weekday()
+    data = data_hora.strftime('%d/%m/%Y')
+    hora = data_hora.strftime('%H:%M')
+    weekday = DAYS[indice_week]
+
+    # req_turno = requests.api.request('GET', f"https://parseapi.back4app.com/classes/Turno?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{departamento_id}%22%20%7D%20%7D",
+    #                                 headers={
+    #                                     "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+    #                                     "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
+    # res_turno = req_turno.json()
+    # turnos = [x for x in res_turno['results']]
+
+    for turno in turnos:
+        if turno['dia_da_semana'] == weekday:
+            if hora >= turno['primeira_entrada'] and hora <= turno['primeira_saida']:
+                print('Primeira Entrada: ', hora)
+            if hora >= turno['primeira_saida'] and hora <= turno['segunda_entrada']:
+                print('Primeira Saída: ', hora)
+            if hora >= turno['segunda_entrada'] and hora <= turno['segunda_saida']:
+                print('Segunda Entrada')
+            if hora >= turno['segunda_saida'] and hora <= turno['segunda_saida'] + '00:30':
+                print('Segunda Saída')
+
+
+    return render(request, 'registro_ponto.html', {'lista': key})
+
+
+# GESTOR DASHBOARD
+def login_gestor(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        conexao = requests.api.request('GET',
+                                       f"https://parseapi.back4app.com/login?username={username}&password={password}",
+                                       headers={
+                                           "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                           "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                                           "X-Parse-Revocable-Session": '1'
+                                       })
+        response = conexao.json()
+        status = str(conexao.status_code)
+        
+        if status == '200' and response['admin'] == True:
+            return redirect('base_admin', token=response['sessionToken'])
+        elif status == '200' and response['gestor'] == True:
+            return redirect('dashboard', token=response['sessionToken'])
+        else:
+            return redirect('login_fail')
+
+    return render(request, 'login_gestor.html')
+
+
 def dashboard(request, token):
     conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
                                     "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
@@ -237,25 +331,6 @@ def dashboard(request, token):
     key = [{'id': token, 'user': usuario['username']}]
 
     return render(request, 'dashboard.html', {'lista': key})
-
-
-def fail_default(request, token):
-    conexao = requests.api.request('GET', 'https://parseapi.back4app.com/users/me', headers={
-                                    "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
-                                    "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
-                                    "X-Parse-Session-Token": f"{token}"})
-    usuario = conexao.json()
-    if str(usuario['sessionToken']) != f"{token}":
-        return redirect('login')
-    elif usuario['gestor'] == False:
-        return redirect('login')
-    elif usuario['admin'] == True:
-        return redirect('login')
-    else:
-        pass
-    key = [{'id': token, 'user': usuario['username']}]
-
-    return render(request, 'fail_default.html', {'lista': key})
 
 
 # EMPREGADOR
