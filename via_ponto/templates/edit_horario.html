@@ -2,18 +2,18 @@
 {% load static %}
 
 {% block content %}
-    <h3 class="title">EDITAR TURNO: {{ turno.nome }}</h3>
+    <h3 class="title">EDITAR TURNO: {{ nome_turno }}</h3>
     
     <form method="POST" class="mb-7" enctype="multipart/form-data"> {% csrf_token %}
         <h6 class="subtitle">Fique a vontade para alterar seus dados</h6>
         <div class="form-row">
             <div class="form-group col-md-6">
-                <label>Nome Turno</label>
+                <label>Nome do Turno</label>
                 <input
                     type="text"
                     class="form-control"
                     name="nome_turno"
-                    value="{{turno.nome}}"
+                    value="{{nome_turno}}"
                     required
                 >
             </div>
@@ -24,7 +24,7 @@
                     </div>
                     <select class="custom-select" name="departamento" id="departamento">
                         {% for departamento in departamentos %}
-                            {% if departamento.objectId != horario.id_departamento.objectId %}
+                            {% if departamento.objectId != departamento_id %}
                                 <option value="{{departamento.objectId}}">{{ departamento.nome }}</option>
                             
                             {% else %}
@@ -35,52 +35,533 @@
                 </div>
             </div>
         </div>
-        <h5>Segunda</h5>
-        <div class="form-row">
-            <div class="form-group col-md-4">
-                <label>Primeira Entrada</label>
-                <input
-                    type="time"
-                    class="form-control"
-                    name="primeira_entrada"
-                    value="{{turno.primeira_entrada}}"
-                    required
-                >
-            </div>
-            <div class="form-group col-md-4">
-                <label>Primeira Saída</label>
-                <input
-                    type="time"
-                    class="form-control"
-                    name="primeira_saida"
-                    value="{{turno.primeira_saida}}"
-                    required
-                >
+        {% for turno in turnos %}
+            <h5>Segunda</h5>
+            <div class="form-row">
+                {% if turno.dia_da_semana == "segunda" %}
+                    <div class="form-group col-md-4">
+                        <label>Primeira Entrada</label>
+                        {% if turno.primeira_entrada != "nao definido" %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="seg_primeira_entrada"
+                                value="{{turno.primeira_entrada}}"
+                            >
+                        {% else %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="seg_primeira_entrada"
+                            >
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Primeira Saída</label>
+                        {% if turno.primeira_saida != "nao definido" %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="seg_primeira_saida"
+                                value="{{turno.primeira_saida}}"
+                            >
+                        {% else %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="seg_primeira_saida"
+                            >
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label>Segunda Entrada</label>
+                        {% if turno.segunda_entrada != "nao definido" %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="seg_segunda_entrada"
+                                value="{{turno.segunda_entrada}}"
+                            >
+                        {% else %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="seg_segunda_entrada"
+                            >
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Segunda Saída</label>
+                        {% if turno.segunda_saida != "nao definido" %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="seg_segunda_saida"
+                                value="{{turno.segunda_saida}}"
+                            >
+                        {% else %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="seg_segunda_saida"
+                            >
+                        {% endif %}
+                    </div>
+                {% endif %}
             </div>
 
-            <div class="form-group col-md-4">
-                <label>Segunda Entrada</label>
-                <input
-                    type="time"
-                    class="form-control"
-                    name="segunda_entrada"
-                    value="{{turno.segunda_entrada}}"
-                    required
-                >
-            </div>
-            <div class="form-group col-md-4">
-                <label>Segunda Saída</label>
-                <input
-                    type="time"
-                    class="form-control"
-                    name="segunda_saida"
-                    value="{{turno.segunda_saida}}"
-                    required
-                >
-            </div>
-        </div>
+            <h5>Terça</h5>
+            <div class="form-row">
+                {% if turno.dia_da_semana == "terca" %}
+                    <div class="form-group col-md-4">
+                        <label>Primeira Entrada</label>
+                        {% if turno.primeira_entrada != "nao definido" %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="ter_primeira_entrada"
+                                value="{{turno.primeira_entrada}}"
+                            >
+                        {% else %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="ter_primeira_entrada"
+                            >
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Primeira Saída</label>
+                        {% if turno.primeira_saida != "nao definido" %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="ter_primeira_saida"
+                                value="{{turno.primeira_saida}}"
+                            >
+                        {% else %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="ter_primeira_saida"
+                            >
+                        {% endif %}
+                    </div>
 
+                    <div class="form-group col-md-4">
+                        <label>Segunda Entrada</label>
+                        {% if turno.segunda_entrada != "nao definido" %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="ter_segunda_entrada"
+                                value="{{turno.segunda_entrada}}"
+                            >
+                        {% else %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="ter_segunda_entrada"
+                            >
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Segunda Saída</label>
+                        {% if turno.segunda_saida != "nao definido" %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="ter_segunda_saida"
+                                value="{{turno.segunda_saida}}"
+                            >
+                        {% else %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="ter_segunda_saida"
+                            >
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <h5>Quarta</h5>
+            <div class="form-row">
+                {% if turno.dia_da_semana == "quarta" %}
+                    <div class="form-group col-md-4">
+                        <label>Primeira Entrada</label>
+                        {% if turno.primeira_entrada != "nao definido" %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="qua_primeira_entrada"
+                                value="{{turno.primeira_entrada}}"
+                            >
+                        {% else %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="qua_primeira_entrada"
+                            >
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Primeira Saída</label>
+                        {% if turno.primeira_saida != "nao definido" %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="qua_primeira_saida"
+                                value="{{turno.primeira_saida}}"
+                            >
+                        {% else %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="qua_primeira_saida"
+                            >
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label>Segunda Entrada</label>
+                        {% if turno.segunda_entrada != "nao definido" %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="qua_segunda_entrada"
+                                value="{{turno.segunda_entrada}}"
+                            >
+                        {% else %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="qua_segunda_entrada"
+                            >
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Segunda Saída</label>
+                        {% if turno.segunda_saida != "nao definido" %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="qua_segunda_saida"
+                                value="{{turno.segunda_saida}}"
+                            >
+                        {% else %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="qua_segunda_saida"
+                            >
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <h5>Quinta</h5>
+            <div class="form-row">
+                {% if turno.dia_da_semana == "quinta" %}
+                    <div class="form-group col-md-4">
+                        <label>Primeira Entrada</label>
+                        {% if turno.primeira_entrada != "nao definido" %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="qui_primeira_entrada"
+                                value="{{turno.primeira_entrada}}"
+                            >
+                        {% else %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="qui_primeira_entrada"
+                            >
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Primeira Saída</label>
+                        {% if turno.primeira_saida != "nao definido" %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="qui_primeira_saida"
+                                value="{{turno.primeira_saida}}"
+                            >
+                        {% else %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="qui_primeira_saida"
+                            >
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label>Segunda Entrada</label>
+                        {% if turno.segunda_entrada != "nao definido" %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="qui_segunda_entrada"
+                                value="{{turno.segunda_entrada}}"
+                            >
+                        {% else %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="qui_segunda_entrada"
+                            >
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Segunda Saída</label>
+                        {% if turno.segunda_saida != "nao definido" %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="qui_segunda_saida"
+                                value="{{turno.segunda_saida}}"
+                            >
+                        {% else %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="qui_segunda_saida"
+                            >
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <h5>Sexta</h5>
+            <div class="form-row">
+                {% if turno.dia_da_semana == "sexta" %}
+                    <div class="form-group col-md-4">
+                        <label>Primeira Entrada</label>
+                        {% if turno.primeira_entrada != "nao definido" %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="sex_primeira_entrada"
+                                value="{{turno.primeira_entrada}}"
+                            >
+                        {% else %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="sex_primeira_entrada"
+                            >
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Primeira Saída</label>
+                        {% if turno.primeira_saida != "nao definido" %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="sex_primeira_saida"
+                                value="{{turno.primeira_saida}}"
+                            >
+                        {% else %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="sex_primeira_saida"
+                            >
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label>Segunda Entrada</label>
+                        {% if turno.segunda_entrada != "nao definido" %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="sex_segunda_entrada"
+                                value="{{turno.segunda_entrada}}"
+                            >
+                        {% else %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="sex_segunda_entrada"
+                            >
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Segunda Saída</label>
+                        {% if turno.segunda_saida != "nao definido" %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="sex_segunda_saida"
+                                value="{{turno.segunda_saida}}"
+                            >
+                        {% else %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="sex_segunda_saida"
+                            >
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <h5>Sábado</h5>
+            <div class="form-row">
+                {% if turno.dia_da_semana == "sabado" %}
+                    <div class="form-group col-md-4">
+                        <label>Primeira Entrada</label>
+                        {% if turno.primeira_entrada != "nao definido" %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="sab_primeira_entrada"
+                                value="{{turno.primeira_entrada}}"
+                            >
+                        {% else %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="sab_primeira_entrada"
+                            >
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Primeira Saída</label>
+                        {% if turno.primeira_saida != "nao definido" %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="sab_primeira_saida"
+                                value="{{turno.primeira_saida}}"
+                            >
+                        {% else %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="sab_primeira_saida"
+                            >
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label>Segunda Entrada</label>
+                        {% if turno.segunda_entrada != "nao definido" %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="sab_segunda_entrada"
+                                value="{{turno.segunda_entrada}}"
+                            >
+                        {% else %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="sab_segunda_entrada"
+                            >
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Segunda Saída</label>
+                        {% if turno.segunda_saida != "nao definido" %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="sab_segunda_saida"
+                                value="{{turno.segunda_saida}}"
+                            >
+                        {% else %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="sab_segunda_saida"
+                            >
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <h5>Domingo</h5>
+            <div class="form-row">
+                {% if turno.dia_da_semana == "domingo" %}
+                    <div class="form-group col-md-4">
+                        <label>Primeira Entrada</label>
+                        {% if turno.primeira_entrada != "nao definido" %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="dom_primeira_entrada"
+                                value="{{turno.primeira_entrada}}"
+                            >
+                        {% else %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="dom_primeira_entrada"
+                            >
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Primeira Saída</label>
+                        {% if turno.primeira_saida != "nao definido" %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="dom_primeira_saida"
+                                value="{{turno.primeira_saida}}"
+                            >
+                        {% else %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="dom_primeira_saida"
+                            >
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label>Segunda Entrada</label>
+                        {% if turno.segunda_entrada != "nao definido" %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="dom_segunda_entrada"
+                                value="{{turno.segunda_entrada}}"
+                            >
+                        {% else %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="dom_segunda_entrada"
+                            >
+                        {% endif %}
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label>Segunda Saída</label>
+                        {% if turno.segunda_saida != "nao definido" %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="dom_segunda_saida"
+                                value="{{turno.segunda_saida}}"
+                            >
+                        {% else %}
+                            <input
+                                type="time"
+                                class="form-control"
+                                name="dom_segunda_saida"
+                            >
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+
+        {% endfor %}
         <button type="submit" id="btnSubmit" class="btn btn-info btn-lg">SALVAR</button>
     </form>
 {% endblock %}
-
