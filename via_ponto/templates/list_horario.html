@@ -35,7 +35,7 @@
     <div class="card shadow mb-5">
         <div class="card-header py-3">
             <div>
-                <h3 class="title">RELATÓRIO DE HORÁRIOS</h3>
+                <h3 class="title">RELATÓRIO DE TURNOS</h3>
                 <h6 class="subtitle">Fique a vontade para alterar seus dados</h6>
             </div>
             
@@ -46,23 +46,23 @@
                 <table class="rTable table table-bordered" id="dataTable" width="100%" cellspacing="0" >
                     <thead>
                         <tr>
-                            <th>HORÁRIOS</th>
+                            <th>TURNOS</th>
                             <th>AÇÕES</th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        {% for horario in horarios %}
+                        {% for turno in turnos %}
                             <tr>
-                                <td class="td-1">{{ horario.nome }}</td>
+                                <td class="td-1">{{ turno.nome }}</td>
                                 <td class="td-2">
                                     {% for key in lista %}
-                                        <a href="{% url 'edit_horario' token=key.id id=horario.objectId %}">
+                                        <a href="{% url 'edit_horario' token=key.id id=turno.objectId %}">
                                             <i style="color: #6bc9ca; font-size: 20px;" class="fas fa-pencil-alt"></i>
                                         </a>
                                     {% endfor %}
                                     {% for key in lista %}
-                                        <a href="{% url 'delete_horario' token=key.id id=horario.objectId %}">
+                                        <a href="{% url 'delete_horario' token=key.id id=turno.objectId %}">
                                             <i style="margin-left: 25px; color: red; font-size: 20px;" class="far fa-trash-alt"></i>
                                         </a>
                                     {% endfor %}
