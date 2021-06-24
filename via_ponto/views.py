@@ -707,8 +707,20 @@ def list_feriado(request, token):
     else:
         pass
     key = [{"id": token, "user": response["username"]}]
+    empresa_id = response["id_empresa"]["objectId"]
 
-    return render(request, "list_feriado.html", {"lista": key})
+    req_fer = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/Feriado?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    res_fer = req_fer.json()
+    feriado = [x for x in res_fer["results"]]
+
+    return render(request, "list_feriado.html", {"lista": key, "feriados": feriado})
 
 
 def cadastro_feriado(request, token):
