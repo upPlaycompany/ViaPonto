@@ -1125,18 +1125,6 @@ def edit_horario(request, token, id):
     else:
         pass
     key = [{"id": token, "user": response["username"]}]
-    empresa_id = response["id_empresa"]["objectId"]
-
-    req_dep = requests.api.request(
-        "GET",
-        f"https://parseapi.back4app.com/classes/Departamento?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
-        headers={
-            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
-            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
-        },
-    )
-    res_dep = req_dep.json()
-    departamento = [x for x in res_dep["results"]]
 
     req_turno = requests.api.request(
         "GET",
@@ -1146,11 +1134,9 @@ def edit_horario(request, token, id):
             "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
         },
     )
-    tur = req_turno.json()
+    turno = req_turno.json()
 
     if request.method == "POST":
-        nome = request.POST["nome_turno"]
-        departamento_id = request.POST["departamento"]
         primeira_entrada = request.POST["primeira_entrada"]
         primeira_saida = request.POST["primeira_saida"]
         segunda_entrada = request.POST["segunda_entrada"]
@@ -1165,21 +1151,10 @@ def edit_horario(request, token, id):
                 "Content-Type": "application/json",
             },
             json={
-                "nome": f"{nome}",
                 "primeira_entrada": f"{primeira_entrada}",
                 "primeira_saida": f"{primeira_saida}",
                 "segunda_entrada": f"{segunda_entrada}",
                 "segunda_saida": f"{segunda_saida}",
-                "id_empresa": {
-                    "__type": "Pointer",
-                    "className": "Empresa",
-                    "objectId": empresa_id,
-                },
-                "id_departamento": {
-                    "__type": "Pointer",
-                    "className": "Departamento",
-                    "objectId": departamento_id,
-                },
             },
         )
         status = str(req_turn.status_code)
@@ -1191,7 +1166,7 @@ def edit_horario(request, token, id):
     return render(
         request,
         "edit_horario.html",
-        {"lista": key, "horario": tur, "departamentos": departamento},
+        {"lista": key, "horario": turno}
     )
 
 
