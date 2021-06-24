@@ -31,6 +31,9 @@ urlpatterns = [
     path('departamento/edit/<str:token>/<str:id>/', views.edit_departamento, name='edit_departamento'),
     path('departamento/delete/<str:token>/<str:id>/', views.delete_departamento, name='delete_departamento'),
     path('feriado/<str:token>/', views.list_feriado, name='list_feriado'),
+    path('feriado/cadastro/<str:token>/', views.cadastro_feriado, name='cadastro_feriado'),
+    path('feriado/edit/<str:token>/<str:id>/', views.edit_feriado, name='edit_feriado'),
+    path('feriado/delete/<str:token>/<str:id>/', views.delete_feriado, name='delete_feriado'),
     # HORÁRIO
     path('horario/<str:token>/', views.list_horario, name='list_horario'),
     path('horario/cadastro/<str:token>/', views.cadastro_horario, name='cadastro_horario'),
@@ -38,7 +41,9 @@ urlpatterns = [
     path('horario/delete/<str:token>/<str:id>/', views.delete_horario, name='delete_horario'),
     # LOCAL
     path('local/<str:token>/', views.list_local, name='list_local'),
-    path('cadastro-local/<str:token>/', views.cadastro_local, name='cadastro_local'),
+    path('local/cadastro/<str:token>/', views.cadastro_local, name='cadastro_local'),
+    path('local/edit/<str:token>/<str:id>/', views.edit_local, name='edit_local'),
+    path('local/delete/<str:token>/<str:id>/', views.delete_local, name='delete_local'),
     # COLABORADOR
     path('cargo/<str:token>/', views.list_cargo, name='list_cargo'),
     path('cargo/cadastro/<str:token>/', views.cadastro_cargo, name='cadastro_cargo'),

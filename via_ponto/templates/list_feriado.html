@@ -20,6 +20,18 @@
         .rTable tbody tr:nth-child(2n){
             background: #98FB98;
         }
+
+        .td-1 {
+            width: 40%;
+        }
+
+        .td-2 {
+            width: 40%;
+        }
+
+        .td-3 {
+            width: 20%;
+        }
     </style>
 {% endblock %}
 
@@ -27,13 +39,13 @@
     <div class="card shadow mb-5">
         <div class="card-header py-3 flex-container">
             <div>
-                <h3 class="title">CADASTRO DE FERIADO</h3>
+                <h3 class="title">RELATÓRIO DE FERIADO</h3>
                 <h6 class="subtitle">Fique a vontade para alterar seus dados</h6>
             </div>
             
             <div>
                 {% for key in lista %}
-                    <a href="" target="_blank">
+                    <a href="{% url 'cadastro_feriado' token=key.id %}">
                         <button class="btn btn-info btn-lg" type="button">CADASTRAR</button>
                     </a>
                 {% endfor %}
@@ -42,7 +54,36 @@
         <div class="card-body">
             
             <div class="table-responsive">
-                
+                <table class="rTable table table-bordered" id="dataTable" width="100%" cellspacing="0" >
+                    <thead>
+                        <tr>
+                            <th>NOME</th>
+                            <th>DATA</th>
+                            <th>AÇÕES</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for feriado in feriados %}
+                            <tr>
+                                <td class="td-1">{{ feriado.nome }}</td>
+                                <td class="td-2">{{ feriado.data }}</td>
+                                <td class="td-3">
+                                    {% for key in lista %}
+                                        <a href="{% url 'edit_feriado' token=key.id id=feriado.objectId %}">
+                                            <i style="color: #6bc9ca; font-size: 20px;" class="fas fa-pencil-alt"></i>
+                                        </a>
+                                    {% endfor %}
+                                    {% for key in lista %}
+                                        <a href="{% url 'delete_feriado' token=key.id id=feriado.objectId %}">
+                                            <i style="margin-left: 25px; color: red; font-size: 20px;" class="far fa-trash-alt"></i>
+                                        </a>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

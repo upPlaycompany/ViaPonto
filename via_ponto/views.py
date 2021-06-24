@@ -301,10 +301,13 @@ def registrar_ponto(request, token):
     DAYS = ["segunda", "terca", "quarta", "quinta", "sexta", "sabado", "domingo"]
 
     data_hora = datetime.now()
+    print("Data e hora: ", data_hora)
     indice_week = data_hora.weekday()
     data = data_hora.strftime("%d/%m/%Y")
     hora = data_hora.strftime("%H:%M")
     weekday = DAYS[indice_week]
+    print("Data ", data, "Hora ", hora)
+    print("Dia semana ", weekday)
 
     # req_turno = requests.api.request('GET', f"https://parseapi.back4app.com/classes/Turno?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{departamento_id}%22%20%7D%20%7D",
     #                                 headers={
@@ -707,8 +710,176 @@ def list_feriado(request, token):
     else:
         pass
     key = [{"id": token, "user": response["username"]}]
+    empresa_id = response["id_empresa"]["objectId"]
 
-    return render(request, "list_feriado.html", {"lista": key})
+    req_fer = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/Feriado?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    res_fer = req_fer.json()
+    feriado = [x for x in res_fer["results"]]
+
+    return render(request, "list_feriado.html", {"lista": key, "feriados": feriado})
+
+
+def cadastro_feriado(request, token):
+    conexao = requests.api.request(
+        "GET",
+        "https://parseapi.back4app.com/users/me",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+            "X-Parse-Session-Token": f"{token}",
+        },
+    )
+    response = conexao.json()
+    if str(response["sessionToken"]) != f"{token}":
+        return redirect("login")
+    elif response["gestor"] == False:
+        return redirect("login")
+    else:
+        pass
+    key = [{"id": token, "user": response["username"]}]
+    empresa_id = response["id_empresa"]["objectId"]
+
+    if request.method == "POST":
+        nome = request.POST["nome_feriado"]
+        data = request.POST["data_feriado"]
+        date = datetime.strptime(data, "%Y-%m-%d").date()
+        date = date.strftime("%d/%m/%Y")
+
+        req_fer = requests.api.request(
+            "POST",
+            f"https://parseapi.back4app.com/classes/Feriado",
+            headers={
+                "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                "Content-Type": "application/json",
+            },
+            json={
+                "nome": f"{nome}",
+                "data": f"{date}",
+                "id_empresa": {
+                    "__type": "Pointer",
+                    "className": "Empresa",
+                    "objectId": empresa_id,
+                },
+            },
+        )
+        status = str(req_fer.status_code)
+        if status == "201":
+            return redirect("list_feriado", token=token)
+        else:
+            return redirect("fail_default", token=token)
+
+    return render(request, "cadastro_feriado.html", {"lista": key})
+
+
+def edit_feriado(request, token, id):
+    conexao = requests.api.request(
+        "GET",
+        "https://parseapi.back4app.com/users/me",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+            "X-Parse-Session-Token": f"{token}",
+        },
+    )
+    response = conexao.json()
+    if str(response["sessionToken"]) != f"{token}":
+        return redirect("login")
+    elif response["gestor"] == False:
+        return redirect("login")
+    else:
+        pass
+    key = [{"id": token, "user": response["username"]}]
+    empresa_id = response["id_empresa"]["objectId"]
+
+    req_fer = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/Feriado/{id}",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    res_fer = req_fer.json()
+
+    data = res_fer["data"]
+    date = datetime.strptime(data, "%d/%m/%Y").date()
+    data = date.strftime("%Y-%m-%d")
+    res_fer["data"] = data
+    print(data)
+
+    if request.method == "POST":
+        nome = request.POST["nome_feriado"]
+        data = request.POST["data_feriado"]
+        date = datetime.strptime(data, "%Y-%m-%d").date()
+        date = date.strftime("%d/%m/%Y")
+
+        req_fer = requests.api.request(
+            "PUT",
+            f"https://parseapi.back4app.com/classes/Feriado/{id}",
+            headers={
+                "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                "Content-Type": "application/json",
+            },
+            json={
+                "nome": f"{nome}",
+                "data": f"{date}",
+                "id_empresa": {
+                    "__type": "Pointer",
+                    "className": "Empresa",
+                    "objectId": empresa_id,
+                },
+            },
+        )
+        status = str(req_fer.status_code)
+        if status == "200":
+            return redirect("list_feriado", token=token)
+        else:
+            return redirect("fail_default", token=token)
+
+    return render(request, "edit_feriado.html", {"lista": key, "feriado": res_fer})
+
+
+def delete_feriado(request, token, id):
+    conexao = requests.api.request(
+        "GET",
+        "https://parseapi.back4app.com/users/me",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+            "X-Parse-Session-Token": f"{token}",
+        },
+    )
+    response = conexao.json()
+    if str(response["sessionToken"]) != f"{token}":
+        return redirect("login")
+    elif response["gestor"] == False:
+        return redirect("login")
+    else:
+        pass
+
+    req_fer = requests.api.request(
+        "DELETE",
+        f"https://parseapi.back4app.com/classes/Feriado/{id}",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+
+    status = str(req_fer.status_code)
+    if status == "200":
+        return redirect("list_feriado", token=token)
+    else:
+        return redirect("fail_default", token=token)
 
 
 # HORÁRIOS
@@ -732,6 +903,17 @@ def list_horario(request, token):
     key = [{"id": token, "user": response["username"]}]
     empresa_id = response["id_empresa"]["objectId"]
 
+    req_dep = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/Departamento?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    res_dep = req_dep.json()
+    departamento = [x for x in res_dep["results"]]
+
     req_turno = requests.api.request(
         "GET",
         f"https://parseapi.back4app.com/classes/Turno?where=%7B%20%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
@@ -743,7 +925,11 @@ def list_horario(request, token):
     res_turno = req_turno.json()
     turno = [x for x in res_turno["results"]]
 
-    return render(request, "list_horario.html", {"lista": key, "turnos": turno})
+    return render(
+        request,
+        "list_horario.html",
+        {"lista": key, "turnos": turno, "departamentos": departamento},
+    )
 
 
 def cadastro_horario(request, token):
@@ -780,42 +966,120 @@ def cadastro_horario(request, token):
     if request.method == "POST":
         nome = request.POST["nome_turno"]
         departamento_id = request.POST["departamento"]
+
         seg_primeira_entrada = request.POST["seg_primeira_entrada"]
+        if seg_primeira_entrada == "":
+            seg_primeira_entrada = "nao definido"
+
         seg_primeira_saida = request.POST["seg_primeira_saida"]
+        if seg_primeira_saida == "":
+            seg_primeira_saida = "nao definido"
+
         seg_segunda_entrada = request.POST["seg_segunda_entrada"]
+        if seg_segunda_entrada == "":
+            seg_segunda_entrada = "nao definido"
+
         seg_segunda_saida = request.POST["seg_segunda_saida"]
+        if seg_segunda_saida == "":
+            seg_segunda_saida = "nao definido"
 
         ter_primeira_entrada = request.POST["ter_primeira_entrada"]
+        if ter_primeira_entrada == "":
+            ter_primeira_entrada = "nao definido"
+
         ter_primeira_saida = request.POST["ter_primeira_saida"]
+        if ter_primeira_saida == "":
+            ter_primeira_saida = "nao definido"
+
         ter_segunda_entrada = request.POST["ter_segunda_entrada"]
+        if ter_segunda_entrada == "":
+            ter_segunda_entrada = "nao definido"
+
         ter_segunda_saida = request.POST["ter_segunda_saida"]
+        if ter_segunda_saida == "":
+            ter_segunda_saida = "nao definido"
 
         qua_primeira_entrada = request.POST["qua_primeira_entrada"]
+        if qua_primeira_entrada == "":
+            qua_primeira_entrada = "nao definido"
+
         qua_primeira_saida = request.POST["qua_primeira_saida"]
+        if qua_primeira_saida == "":
+            qua_primeira_saida = "nao definido"
+
         qua_segunda_entrada = request.POST["qua_segunda_entrada"]
+        if qua_segunda_entrada == "":
+            qua_segunda_entrada = "nao definido"
+
         qua_segunda_saida = request.POST["qua_segunda_saida"]
+        if qua_segunda_saida == "":
+            qua_segunda_saida = "nao definido"
 
         qui_primeira_entrada = request.POST["qui_primeira_entrada"]
+        if qui_primeira_entrada == "":
+            qui_primeira_entrada = "nao definido"
+
         qui_primeira_saida = request.POST["qui_primeira_saida"]
+        if qui_primeira_saida == "":
+            qui_primeira_saida = "nao definido"
+
         qui_segunda_entrada = request.POST["qui_segunda_entrada"]
+        if qui_segunda_entrada == "":
+            qui_segunda_entrada = "nao definido"
+
         qui_segunda_saida = request.POST["qui_segunda_saida"]
+        if qui_segunda_saida == "":
+            qui_segunda_saida = "nao definido"
 
         sex_primeira_entrada = request.POST["sex_primeira_entrada"]
+        if sex_primeira_entrada == "":
+            sex_primeira_entrada = "nao definido"
+
         sex_primeira_saida = request.POST["sex_primeira_saida"]
+        if sex_primeira_saida == "":
+            sex_primeira_saida = "nao definido"
+
         sex_segunda_entrada = request.POST["sex_segunda_entrada"]
+        if sex_segunda_entrada == "":
+            sex_segunda_entrada = "nao definido"
+
         sex_segunda_saida = request.POST["sex_segunda_saida"]
+        if sex_segunda_saida == "":
+            sex_segunda_saida = "nao definido"
 
         sab_primeira_entrada = request.POST["sab_primeira_entrada"]
+        if sab_primeira_entrada == "":
+            sab_primeira_entrada = "nao definido"
+
         sab_primeira_saida = request.POST["sab_primeira_saida"]
+        if sab_primeira_saida == "":
+            sab_primeira_saida = "nao definido"
+
         sab_segunda_entrada = request.POST["sab_segunda_entrada"]
+        if sab_segunda_entrada == "":
+            sab_segunda_entrada = "nao definido"
+
         sab_segunda_saida = request.POST["sab_segunda_saida"]
+        if sab_segunda_saida == "":
+            sab_segunda_saida = "nao definido"
 
         dom_primeira_entrada = request.POST["dom_primeira_entrada"]
-        dom_primeira_saida = request.POST["dom_primeira_saida"]
-        dom_segunda_entrada = request.POST["dom_segunda_entrada"]
-        dom_segunda_saida = request.POST["dom_segunda_saida"]
+        if dom_primeira_entrada == "":
+            dom_primeira_entrada = "nao definido"
 
-        req_seg = requests.api.request(
+        dom_primeira_saida = request.POST["dom_primeira_saida"]
+        if dom_primeira_saida == "":
+            dom_primeira_saida = "nao definido"
+
+        dom_segunda_entrada = request.POST["dom_segunda_entrada"]
+        if dom_segunda_entrada == "":
+            dom_segunda_entrada = "nao definido"
+
+        dom_segunda_saida = request.POST["dom_segunda_saida"]
+        if dom_segunda_saida == "":
+            dom_segunda_saida = "nao definido"
+
+        requests.api.request(
             "POST",
             f"https://parseapi.back4app.com/classes/Turno",
             headers={
@@ -843,184 +1107,175 @@ def cadastro_horario(request, token):
             },
         )
 
-        if req_seg.status_code == "201":
-            req_ter = requests.api.request(
-                "POST",
-                f"https://parseapi.back4app.com/classes/Turno",
-                headers={
-                    "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
-                    "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
-                    "Content-Type": "application/json",
+        requests.api.request(
+            "POST",
+            f"https://parseapi.back4app.com/classes/Turno",
+            headers={
+                "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                "Content-Type": "application/json",
+            },
+            json={
+                "nome": f"{nome}",
+                "dia_da_semana": "terca",
+                "primeira_entrada": f"{ter_primeira_entrada}",
+                "primeira_saida": f"{ter_primeira_saida}",
+                "segunda_entrada": f"{ter_segunda_entrada}",
+                "segunda_saida": f"{ter_segunda_saida}",
+                "id_empresa": {
+                    "__type": "Pointer",
+                    "className": "Empresa",
+                    "objectId": empresa_id,
                 },
-                json={
-                    "nome": f"{nome}",
-                    "dia_da_semana": "terca",
-                    "primeira_entrada": f"{ter_primeira_entrada}",
-                    "primeira_saida": f"{ter_primeira_saida}",
-                    "segunda_entrada": f"{ter_segunda_entrada}",
-                    "segunda_saida": f"{ter_segunda_saida}",
-                    "id_empresa": {
-                        "__type": "Pointer",
-                        "className": "Empresa",
-                        "objectId": empresa_id,
-                    },
-                    "id_departamento": {
-                        "__type": "Pointer",
-                        "className": "Departamento",
-                        "objectId": departamento_id,
-                    },
+                "id_departamento": {
+                    "__type": "Pointer",
+                    "className": "Departamento",
+                    "objectId": departamento_id,
                 },
-            )
+            },
+        )
 
-            if req_ter.status_code == "201":
-                req_qua = requests.api.request(
-                    "POST",
-                    f"https://parseapi.back4app.com/classes/Turno",
-                    headers={
-                        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
-                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
-                        "Content-Type": "application/json",
-                    },
-                    json={
-                        "nome": f"{nome}",
-                        "dia_da_semana": "quarta",
-                        "primeira_entrada": f"{qua_primeira_entrada}",
-                        "primeira_saida": f"{qua_primeira_saida}",
-                        "segunda_entrada": f"{qua_segunda_entrada}",
-                        "segunda_saida": f"{qua_segunda_saida}",
-                        "id_empresa": {
-                            "__type": "Pointer",
-                            "className": "Empresa",
-                            "objectId": empresa_id,
-                        },
-                        "id_departamento": {
-                            "__type": "Pointer",
-                            "className": "Departamento",
-                            "objectId": departamento_id,
-                        },
-                    },
-                )
+        requests.api.request(
+            "POST",
+            f"https://parseapi.back4app.com/classes/Turno",
+            headers={
+                "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                "Content-Type": "application/json",
+            },
+            json={
+                "nome": f"{nome}",
+                "dia_da_semana": "quarta",
+                "primeira_entrada": f"{qua_primeira_entrada}",
+                "primeira_saida": f"{qua_primeira_saida}",
+                "segunda_entrada": f"{qua_segunda_entrada}",
+                "segunda_saida": f"{qua_segunda_saida}",
+                "id_empresa": {
+                    "__type": "Pointer",
+                    "className": "Empresa",
+                    "objectId": empresa_id,
+                },
+                "id_departamento": {
+                    "__type": "Pointer",
+                    "className": "Departamento",
+                    "objectId": departamento_id,
+                },
+            },
+        )
 
-                if req_qua.status_code == "201":
-                    req_qui = requests.api.request(
-                        "POST",
-                        f"https://parseapi.back4app.com/classes/Turno",
-                        headers={
-                            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
-                            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
-                            "Content-Type": "application/json",
-                        },
-                        json={
-                            "nome": f"{nome}",
-                            "dia_da_semana": "quinta",
-                            "primeira_entrada": f"{qui_primeira_entrada}",
-                            "primeira_saida": f"{qui_primeira_saida}",
-                            "segunda_entrada": f"{qui_segunda_entrada}",
-                            "segunda_saida": f"{qui_segunda_saida}",
-                            "id_empresa": {
-                                "__type": "Pointer",
-                                "className": "Empresa",
-                                "objectId": empresa_id,
-                            },
-                            "id_departamento": {
-                                "__type": "Pointer",
-                                "className": "Departamento",
-                                "objectId": departamento_id,
-                            },
-                        },
-                    )
+        requests.api.request(
+            "POST",
+            f"https://parseapi.back4app.com/classes/Turno",
+            headers={
+                "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                "Content-Type": "application/json",
+            },
+            json={
+                "nome": f"{nome}",
+                "dia_da_semana": "quinta",
+                "primeira_entrada": f"{qui_primeira_entrada}",
+                "primeira_saida": f"{qui_primeira_saida}",
+                "segunda_entrada": f"{qui_segunda_entrada}",
+                "segunda_saida": f"{qui_segunda_saida}",
+                "id_empresa": {
+                    "__type": "Pointer",
+                    "className": "Empresa",
+                    "objectId": empresa_id,
+                },
+                "id_departamento": {
+                    "__type": "Pointer",
+                    "className": "Departamento",
+                    "objectId": departamento_id,
+                },
+            },
+        )
 
-                    if req_qui.status_code == "201":
-                        req_sex = requests.api.request(
-                            "POST",
-                            f"https://parseapi.back4app.com/classes/Turno",
-                            headers={
-                                "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
-                                "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
-                                "Content-Type": "application/json",
-                            },
-                            json={
-                                "nome": f"{nome}",
-                                "dia_da_semana": "sexta",
-                                "primeira_entrada": f"{sex_primeira_entrada}",
-                                "primeira_saida": f"{sex_primeira_saida}",
-                                "segunda_entrada": f"{sex_segunda_entrada}",
-                                "segunda_saida": f"{sex_segunda_saida}",
-                                "id_empresa": {
-                                    "__type": "Pointer",
-                                    "className": "Empresa",
-                                    "objectId": empresa_id,
-                                },
-                                "id_departamento": {
-                                    "__type": "Pointer",
-                                    "className": "Departamento",
-                                    "objectId": departamento_id,
-                                },
-                            },
-                        )
+        requests.api.request(
+            "POST",
+            f"https://parseapi.back4app.com/classes/Turno",
+            headers={
+                "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                "Content-Type": "application/json",
+            },
+            json={
+                "nome": f"{nome}",
+                "dia_da_semana": "sexta",
+                "primeira_entrada": f"{sex_primeira_entrada}",
+                "primeira_saida": f"{sex_primeira_saida}",
+                "segunda_entrada": f"{sex_segunda_entrada}",
+                "segunda_saida": f"{sex_segunda_saida}",
+                "id_empresa": {
+                    "__type": "Pointer",
+                    "className": "Empresa",
+                    "objectId": empresa_id,
+                },
+                "id_departamento": {
+                    "__type": "Pointer",
+                    "className": "Departamento",
+                    "objectId": departamento_id,
+                },
+            },
+        )
 
-                        if req_sex.status_code == "201":
-                            req_sab = requests.api.request(
-                                "POST",
-                                f"https://parseapi.back4app.com/classes/Turno",
-                                headers={
-                                    "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
-                                    "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
-                                    "Content-Type": "application/json",
-                                },
-                                json={
-                                    "nome": f"{nome}",
-                                    "dia_da_semana": "sabado",
-                                    "primeira_entrada": f"{sab_primeira_entrada}",
-                                    "primeira_saida": f"{sab_primeira_saida}",
-                                    "segunda_entrada": f"{sab_segunda_entrada}",
-                                    "segunda_saida": f"{sab_segunda_saida}",
-                                    "id_empresa": {
-                                        "__type": "Pointer",
-                                        "className": "Empresa",
-                                        "objectId": empresa_id,
-                                    },
-                                    "id_departamento": {
-                                        "__type": "Pointer",
-                                        "className": "Departamento",
-                                        "objectId": departamento_id,
-                                    },
-                                },
-                            )
+        requests.api.request(
+            "POST",
+            f"https://parseapi.back4app.com/classes/Turno",
+            headers={
+                "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                "Content-Type": "application/json",
+            },
+            json={
+                "nome": f"{nome}",
+                "dia_da_semana": "sabado",
+                "primeira_entrada": f"{sab_primeira_entrada}",
+                "primeira_saida": f"{sab_primeira_saida}",
+                "segunda_entrada": f"{sab_segunda_entrada}",
+                "segunda_saida": f"{sab_segunda_saida}",
+                "id_empresa": {
+                    "__type": "Pointer",
+                    "className": "Empresa",
+                    "objectId": empresa_id,
+                },
+                "id_departamento": {
+                    "__type": "Pointer",
+                    "className": "Departamento",
+                    "objectId": departamento_id,
+                },
+            },
+        )
 
-                            if req_sab.status_code == "201":
-                                req_dom = requests.api.request(
-                                    "POST",
-                                    f"https://parseapi.back4app.com/classes/Turno",
-                                    headers={
-                                        "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
-                                        "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
-                                        "Content-Type": "application/json",
-                                    },
-                                    json={
-                                        "nome": f"{nome}",
-                                        "dia_da_semana": "domingo",
-                                        "primeira_entrada": f"{dom_primeira_entrada}",
-                                        "primeira_saida": f"{dom_primeira_saida}",
-                                        "segunda_entrada": f"{dom_segunda_entrada}",
-                                        "segunda_saida": f"{dom_segunda_saida}",
-                                        "id_empresa": {
-                                            "__type": "Pointer",
-                                            "className": "Empresa",
-                                            "objectId": empresa_id,
-                                        },
-                                        "id_departamento": {
-                                            "__type": "Pointer",
-                                            "className": "Departamento",
-                                            "objectId": departamento_id,
-                                        },
-                                    },
-                                )
+        requests.api.request(
+            "POST",
+            f"https://parseapi.back4app.com/classes/Turno",
+            headers={
+                "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                "Content-Type": "application/json",
+            },
+            json={
+                "nome": f"{nome}",
+                "dia_da_semana": "domingo",
+                "primeira_entrada": f"{dom_primeira_entrada}",
+                "primeira_saida": f"{dom_primeira_saida}",
+                "segunda_entrada": f"{dom_segunda_entrada}",
+                "segunda_saida": f"{dom_segunda_saida}",
+                "id_empresa": {
+                    "__type": "Pointer",
+                    "className": "Empresa",
+                    "objectId": empresa_id,
+                },
+                "id_departamento": {
+                    "__type": "Pointer",
+                    "className": "Departamento",
+                    "objectId": departamento_id,
+                },
+            },
+        )
 
-                                if req_dom.status_code == "201":
-                                    return redirect("list_horario", token=token)
-
-        return redirect("fail_default", token=token)
+        return redirect("list_horario", token=token)
 
     return render(
         request, "cadastro_horario.html", {"lista": key, "departamentos": departamento}
@@ -1045,18 +1300,6 @@ def edit_horario(request, token, id):
     else:
         pass
     key = [{"id": token, "user": response["username"]}]
-    empresa_id = response["id_empresa"]["objectId"]
-
-    req_dep = requests.api.request(
-        "GET",
-        f"https://parseapi.back4app.com/classes/Departamento?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
-        headers={
-            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
-            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
-        },
-    )
-    res_dep = req_dep.json()
-    departamento = [x for x in res_dep["results"]]
 
     req_turno = requests.api.request(
         "GET",
@@ -1066,11 +1309,9 @@ def edit_horario(request, token, id):
             "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
         },
     )
-    tur = req_turno.json()
+    turno = req_turno.json()
 
     if request.method == "POST":
-        nome = request.POST["nome_turno"]
-        departamento_id = request.POST["departamento"]
         primeira_entrada = request.POST["primeira_entrada"]
         primeira_saida = request.POST["primeira_saida"]
         segunda_entrada = request.POST["segunda_entrada"]
@@ -1085,21 +1326,10 @@ def edit_horario(request, token, id):
                 "Content-Type": "application/json",
             },
             json={
-                "nome": f"{nome}",
                 "primeira_entrada": f"{primeira_entrada}",
                 "primeira_saida": f"{primeira_saida}",
                 "segunda_entrada": f"{segunda_entrada}",
                 "segunda_saida": f"{segunda_saida}",
-                "id_empresa": {
-                    "__type": "Pointer",
-                    "className": "Empresa",
-                    "objectId": empresa_id,
-                },
-                "id_departamento": {
-                    "__type": "Pointer",
-                    "className": "Departamento",
-                    "objectId": departamento_id,
-                },
             },
         )
         status = str(req_turn.status_code)
@@ -1108,11 +1338,7 @@ def edit_horario(request, token, id):
         else:
             return redirect("fail_default", token=token)
 
-    return render(
-        request,
-        "edit_horario.html",
-        {"lista": key, "horario": tur, "departamentos": departamento},
-    )
+    return render(request, "edit_horario.html", {"lista": key, "horario": turno})
 
 
 def delete_horario(request, token, id):
@@ -1168,8 +1394,20 @@ def list_local(request, token):
     else:
         pass
     key = [{"id": token, "user": response["username"]}]
+    empresa_id = response["id_empresa"]["objectId"]
 
-    return render(request, "list_local.html", {"lista": key})
+    req_local = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/Local?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    res_local = req_local.json()
+    local = [x for x in res_local["results"]]
+
+    return render(request, "list_local.html", {"lista": key, "locais": local})
 
 
 def cadastro_local(request, token):
@@ -1190,8 +1428,152 @@ def cadastro_local(request, token):
     else:
         pass
     key = [{"id": token, "user": response["username"]}]
+    empresa_id = response["id_empresa"]["objectId"]
+
+    if request.method == "POST":
+        nome = request.POST["nome_local"]
+        cep = request.POST["cep"]
+        uf = request.POST["uf"]
+        cidade = request.POST["cidade"]
+        logradouro = request.POST["logradouro"]
+        bairro = request.POST["bairro"]
+        numero = request.POST["numero"]
+
+        req_cargo = requests.api.request(
+            "POST",
+            f"https://parseapi.back4app.com/classes/Local",
+            headers={
+                "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                "Content-Type": "application/json",
+            },
+            json={
+                "nome": f"{nome}",
+                "cep": f"{cep}",
+                "uf": f"{uf}",
+                "cidade": f"{cidade}",
+                "logradouro": f"{logradouro}",
+                "bairro": f"{bairro}",
+                "numero": f"{numero}",
+                "id_empresa": {
+                    "__type": "Pointer",
+                    "className": "Empresa",
+                    "objectId": empresa_id,
+                },
+            },
+        )
+        status = str(req_cargo.status_code)
+        if status == "201":
+            return redirect("list_local", token=token)
+        else:
+            return redirect("fail_default", token=token)
 
     return render(request, "cadastro_local.html", {"lista": key})
+
+
+def edit_local(request, token, id):
+    conexao = requests.api.request(
+        "GET",
+        "https://parseapi.back4app.com/users/me",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+            "X-Parse-Session-Token": f"{token}",
+        },
+    )
+    response = conexao.json()
+    if str(response["sessionToken"]) != f"{token}":
+        return redirect("login")
+    elif response["gestor"] == False:
+        return redirect("login")
+    else:
+        pass
+    key = [{"id": token, "user": response["username"]}]
+    empresa_id = response["id_empresa"]["objectId"]
+
+    req_local = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/Local/{id}",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    res_local = req_local.json()
+
+    if request.method == "POST":
+        nome = request.POST["nome_local"]
+        cep = request.POST["cep"]
+        uf = request.POST["uf"]
+        cidade = request.POST["cidade"]
+        logradouro = request.POST["logradouro"]
+        bairro = request.POST["bairro"]
+        numero = request.POST["numero"]
+
+        req_cargo = requests.api.request(
+            "PUT",
+            f"https://parseapi.back4app.com/classes/Local/{id}",
+            headers={
+                "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                "Content-Type": "application/json",
+            },
+            json={
+                "nome": f"{nome}",
+                "cep": f"{cep}",
+                "uf": f"{uf}",
+                "cidade": f"{cidade}",
+                "logradouro": f"{logradouro}",
+                "bairro": f"{bairro}",
+                "numero": f"{numero}",
+                "id_empresa": {
+                    "__type": "Pointer",
+                    "className": "Empresa",
+                    "objectId": empresa_id,
+                },
+            },
+        )
+        status = str(req_cargo.status_code)
+        if status == "200":
+            return redirect("list_local", token=token)
+        else:
+            return redirect("fail_default", token=token)
+
+    return render(request, "edit_local.html", {"lista": key, "local": res_local})
+
+
+def delete_local(request, token, id):
+    conexao = requests.api.request(
+        "GET",
+        "https://parseapi.back4app.com/users/me",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+            "X-Parse-Session-Token": f"{token}",
+        },
+    )
+    response = conexao.json()
+    if str(response["sessionToken"]) != f"{token}":
+        return redirect("login")
+    elif response["gestor"] == False:
+        return redirect("login")
+    else:
+        pass
+
+    req_local = requests.api.request(
+        "DELETE",
+        f"https://parseapi.back4app.com/classes/Local/{id}",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+
+    status = str(req_local.status_code)
+    if status == "200":
+        return redirect("list_local", token=token)
+    else:
+        return redirect("fail_default", token=token)
 
 
 # COLABORADORES
