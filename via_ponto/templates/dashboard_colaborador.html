@@ -1,93 +1,11 @@
-<!DOCTYPE html>
-{% load static %}
-<html lang="pt-br">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{% extends 'base_colaborador.html' %}
 
-    <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+{% block title %} VIA PONTO - Página Inicial {% endblock title %}
 
-    <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
-    <link href="{% static 'css/global.css' %}" rel="stylesheet">
+{% block button %}
+    <a href="{% url 'registro_ponto' token=key.id %}"><button class="btn-ponto">REGISTRO PONTO</button></a>
+{% endblock %}
 
-    <style>
-        .logo-secondy {
-            width: 140px;
-        }
-
-        .div-button {
-            margin-right: 25px;
-        }
-
-        button {
-            color: #edf0f1;
-            font-weight: bold;
-            background-color: #21963b;
-            border: solid 2px white;
-            border-radius: 10px;
-            padding: 7px 18px;
-            cursor: pointer;
-            transition: all 0.3s ease 0s;
-        }
-
-        button:hover {
-            background-color: #6bc9ca;
-            color: #21963b;
-        }
-
-    </style>
-</head>
-<body id="page-top">
-    <div id="wrapper">
-        <div id="content-wrapper" class="d-flex flex-column">
-            <div id="content">
-                <nav class="navbar navbar-expand navbar-light topbar mb-5 static-top shadow" style="background-color: #21963b; opacity: 100%">
-                    <img src="{% static '/img/logo_inicial.png' %}" class="logo-secondy" />
-
-                    <div class="ml-auto div-button">
-                        <a href="{% url 'register' %}"><button class="btn-ponto">REGISTRO PONTO</button></a>
-                    </div>
-                    
-
-                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                        <i class="fa fa-bars"></i>
-                    </button>
-                    <ul class="navbar-nav ">
-                        <li class="nav-item dropdown no-arrow">
-                            {% for key in lista %}
-                                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <span class="mr-2 d-none d-lg-inline text-grey-600 small">{{ key.user }}</span>
-                                    <img class="img-profile rounded-circle" src="{% static 'img/undraw_profile.svg' %}">
-                                </a>
-                            {% endfor %}
-                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                                {% for key in lista %}
-                                    <a class="dropdown-item" href="{% url 'deslogar' token=key.id %}"><i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>Logout</a>
-                                {% endfor %}
-                            </div>
-                        </li>
-                    </ul>
-                </nav>
-                <div class="container-fluid mb-5">
-                    
-
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Bootstrap core JavaScript-->
-    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
-    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-
-    <!-- Core plugin JavaScript-->
-    <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
-
-    <!-- Custom scripts for all pages-->
-    <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
-</body>
-</html>
+{% block content %}
+    
+{% endblock %}

@@ -2,17 +2,17 @@
 {% load static %}
 
 {% block content %}
-    <h3 class="title">CADASTRO DE HORÁRIOS</h3>
+    <h3 class="title">CADASTRO DE TURNOS</h3>
     
     <form method="POST" class="mb-7" enctype="multipart/form-data"> {% csrf_token %}
         <h4 class="subtitle my-3">Informe os dados de expediente</h4>
         <div class="form-row">
             <div class="form-group col-md-6">
-                <label>Nome Horário</label>
+                <label>Nome do Turno</label>
                 <input
                     type="text"
                     class="form-control"
-                    name="nome_horario"
+                    name="nome_turno"
                     required
                 >
             </div>
@@ -30,75 +30,258 @@
                 </div>
             </div>
         </div>
+        <h3 class="text">Segunda</h3>
         <div class="form-row">
-            <div class="form-group col-md-6">
-                <label>Início do período manhã</label>
+            <div class="form-group col-md-3">
+                <label>Primeira Entrada</label>
                 <input
                     type="time"
                     class="form-control"
-                    name="inicio_periodo_manha"
-                    required
+                    name="seg_primeira_entrada"
                 >
             </div>
-            <div class="form-group col-md-6">
-                <label>Fim do período manhã</label>
+            <div class="form-group col-md-3">
+                <label>Primeira Saída</label>
                 <input
                     type="time"
                     class="form-control"
-                    name="fim_periodo_manha"
-                    required
+                    name="seg_primeira_saida"
+                >
+            </div>
+            <div class="form-group col-md-3">
+                <label>Segunda Entrada</label>
+                <input
+                    type="time"
+                    class="form-control"
+                    name="seg_segunda_entrada"
+                >
+            </div>
+            <div class="form-group col-md-3">
+                <label>Segunda Saída</label>
+                <input
+                    type="time"
+                    class="form-control"
+                    name="seg_segunda_saida"
                 >
             </div>
         </div>
+
+        <h3 class="text">Terça</h3>
         <div class="form-row">
-            <div class="form-group col-md-6">
-                <label>Início do período tarde</label>
+            <div class="form-group col-md-3">
+                <label>Primeira Entrada</label>
                 <input
                     type="time"
                     class="form-control"
-                    name="inicio_periodo_tarde"
-                    required
+                    name="ter_primeira_entrada"
                 >
             </div>
-            <div class="form-group col-md-6">
-                <label>Fim do período tarde</label>
+            <div class="form-group col-md-3">
+                <label>Primeira Saída</label>
                 <input
                     type="time"
                     class="form-control"
-                    name="fim_periodo_tarde"
-                    required
+                    name="ter_primeira_saida"
+                >
+            </div>
+            <div class="form-group col-md-3">
+                <label>Segunda Entrada</label>
+                <input
+                    type="time"
+                    class="form-control"
+                    name="ter_segunda_entrada"
+                >
+            </div>
+            <div class="form-group col-md-3">
+                <label>Segunda Saída</label>
+                <input
+                    type="time"
+                    class="form-control"
+                    name="ter_segunda_saida"
                 >
             </div>
         </div>
+
+        <h3 class="text">Quarta</h3>
         <div class="form-row">
-            <div class="form-group col-md-12">
-                <div class="btn-group-toggle" data-toggle="buttons">
-                    <label class="btn btn-primary active">
-                        <input type="checkbox" id="id_segunda" name="segunda" value="True"> Segunda
-                    </label>
-                    <label class="btn btn-primary active">
-                        <input type="checkbox" id="id_terca" name="terca" value="True"> Terça
-                    </label>
-                    <label class="btn btn-primary active">
-                        <input type="checkbox" id="id_quarta" name="quarta" value="True"> Quarta
-                    </label>
-                    <label class="btn btn-primary active">
-                        <input type="checkbox" id="id_quinta" name="quinta" value="True"> Quinta
-                    </label>
-                    <label class="btn btn-primary active">
-                        <input type="checkbox" id="id_sexta" name="sexta" value="True"> Sexta
-                    </label>
-                    <label class="btn btn-primary active">
-                        <input type="checkbox" id="id_sabado" name="sabado" value="True"> Sábado
-                    </label>
-                    <label class="btn btn-primary active">
-                        <input type="checkbox" id="id_domingo" name="domingo" value="True"> Domingo
-                    </label>
-                </div>
+            <div class="form-group col-md-3">
+                <label>Primeira Entrada</label>
+                <input
+                    type="time"
+                    class="form-control"
+                    name="qua_primeira_entrada"
+                >
+            </div>
+            <div class="form-group col-md-3">
+                <label>Primeira Saída</label>
+                <input
+                    type="time"
+                    class="form-control"
+                    name="qua_primeira_saida"
+                >
+            </div>
+            <div class="form-group col-md-3">
+                <label>Segunda Entrada</label>
+                <input
+                    type="time"
+                    class="form-control"
+                    name="qua_segunda_entrada"
+                >
+            </div>
+            <div class="form-group col-md-3">
+                <label>Segunda Saída</label>
+                <input
+                    type="time"
+                    class="form-control"
+                    name="qua_segunda_saida"
+                >
+            </div>
+        </div>
+
+        <h3 class="text">Quinta</h3>
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <label>Primeira Entrada</label>
+                <input
+                    type="time"
+                    class="form-control"
+                    name="qui_primeira_entrada"
+                >
+            </div>
+            <div class="form-group col-md-3">
+                <label>Primeira Saída</label>
+                <input
+                    type="time"
+                    class="form-control"
+                    name="qui_primeira_saida"
+                >
+            </div>
+            <div class="form-group col-md-3">
+                <label>Segunda Entrada</label>
+                <input
+                    type="time"
+                    class="form-control"
+                    name="qui_segunda_entrada"
+                >
+            </div>
+            <div class="form-group col-md-3">
+                <label>Segunda Saída</label>
+                <input
+                    type="time"
+                    class="form-control"
+                    name="qui_segunda_saida"
+                >
+            </div>
+        </div>
+
+        <h3 class="text">Sexta</h3>
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <label>Primeira Entrada</label>
+                <input
+                    type="time"
+                    class="form-control"
+                    name="sex_primeira_entrada"
+                >
+            </div>
+            <div class="form-group col-md-3">
+                <label>Primeira Saída</label>
+                <input
+                    type="time"
+                    class="form-control"
+                    name="sex_primeira_saida"
+                >
+            </div>
+            <div class="form-group col-md-3">
+                <label>Segunda Entrada</label>
+                <input
+                    type="time"
+                    class="form-control"
+                    name="sex_segunda_entrada"
+                >
+            </div>
+            <div class="form-group col-md-3">
+                <label>Segunda Saída</label>
+                <input
+                    type="time"
+                    class="form-control"
+                    name="sex_segunda_saida"
+                >
+            </div>
+        </div>
+
+        <h3 class="text">Sábado</h3>
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <label>Primeira Entrada</label>
+                <input
+                    type="time"
+                    class="form-control"
+                    name="sab_primeira_entrada"
+                >
+            </div>
+            <div class="form-group col-md-3">
+                <label>Primeira Saída</label>
+                <input
+                    type="time"
+                    class="form-control"
+                    name="sab_primeira_saida"
+                >
+            </div>
+            <div class="form-group col-md-3">
+                <label>Segunda Entrada</label>
+                <input
+                    type="time"
+                    class="form-control"
+                    name="sab_segunda_entrada"
+                >
+            </div>
+            <div class="form-group col-md-3">
+                <label>Segunda Saída</label>
+                <input
+                    type="time"
+                    class="form-control"
+                    name="sab_segunda_saida"
+                >
+            </div>
+        </div>
+
+        <h3 class="text">Domingo</h3>
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <label>Primeira Entrada</label>
+                <input
+                    type="time"
+                    class="form-control"
+                    name="dom_primeira_entrada"
+                >
+            </div>
+            <div class="form-group col-md-3">
+                <label>Primeira Saída</label>
+                <input
+                    type="time"
+                    class="form-control"
+                    name="dom_primeira_saida"
+                >
+            </div>
+            <div class="form-group col-md-3">
+                <label>Segunda Entrada</label>
+                <input
+                    type="time"
+                    class="form-control"
+                    name="dom_segunda_entrada"
+                >
+            </div>
+            <div class="form-group col-md-3">
+                <label>Segunda Saída</label>
+                <input
+                    type="time"
+                    class="form-control"
+                    name="dom_segunda_saida"
+                >
             </div>
         </div>
        
         <button type="submit" id="btnSubmit" class="btn btn-info btn-lg">SALVAR</button>
     </form>
 {% endblock %}
-

@@ -7,16 +7,21 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('register/success/', views.register_success, name='register_success'),
     path('login/', views.login_tipo, name='login_tipo'),
-    path('login/colaborador/', views.login_colaborador, name='login_colaborador'),
-    path('login/gestor/', views.login_gestor, name='login_gestor'),
     path('login/fail/', views.login_fail, name='login_fail'),
     path('redefinir-senha/', views.redefinir_senha, name='redefinir_senha'),
     path('redefinir-senha/success/', views.redefinir_senha_success, name='redefinir_senha_success'),
     path('redefinir-senha/fail/', views.redefinir_senha_fail, name='redefinir_senha_fail'),
     path('deslogar/<str:token>/', views.deslogar, name='deslogar'),
-    path('dashboard/colaborador/<str:token>/', views.dashboard_colaborador, name='dashboard_colaborador'),
-    path('dashboard/<str:token>/', views.dashboard, name='dashboard'),
     path('fail/<str:token>/', views.fail_default, name='fail_default'),
+    # COLABORADOR DASHBOARD
+    path('login/colaborador/', views.login_colaborador, name='login_colaborador'),
+    path('dashboard/colaborador/<str:token>/', views.dashboard_colaborador, name='dashboard_colaborador'),
+    path('ponto/colaborador/<str:token>/', views.registro_ponto, name='registro_ponto'),
+    path('ponto/colaborador/registrar/<str:token>/', views.registrar_ponto, name='registrar_ponto'),
+
+    # GESTOR DASHBOARD
+    path('login/gestor/', views.login_gestor, name='login_gestor'),
+    path('dashboard/<str:token>/', views.dashboard, name='dashboard'),
     # EMPREGADOR
     path('empresa/edit/<str:token>/', views.edit_empresa, name='edit_empresa'),
     path('empresa/success/<str:token>/', views.edit_empresa_success, name='edit_empresa_success'),

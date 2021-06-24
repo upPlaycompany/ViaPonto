@@ -1,0 +1,67 @@
+{% extends 'base_colaborador.html' %}
+
+{% block title %} VIA PONTO - Registro de Ponto {% endblock title %}
+
+{% block extra_style %}
+    <style>
+        #data-hora, #weekday {
+            font-size: 26px;
+        }
+
+        .button {
+            margin-top: 25px;
+        }
+    </style>
+{% endblock %}
+
+{% block button %}
+    <a href="{% url 'dashboard_colaborador' token=key.id %}"><button class="btn-ponto">DASHBOARD</button></a>
+{% endblock %}
+
+{% block content %}
+<div class="card shadow mb-5">
+    <div class="card-header py-3">
+        <div>
+            <h3 class="title text-center">REGISTRO DO PONTO</h3>
+            <h6 class="subtitle text-center">Ative a localização e registre no horário conforme está definido em seu departamento</h6>
+        </div>
+        
+    </div>
+    <div class="card-body">
+        <div class="text-center text" id="weekday"></div>
+        <div class="text-center text" id="data-hora"></div>
+        <div class="text-center button">
+            {% for key in lista %}
+                <a href="{% url 'registrar_ponto' token=key.id %}">
+                    <button class="btn btn-info btn-lg" type="button">REGISTRAR PONTO</button>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        var week = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
+
+        // Função para formatar 1 em 01
+        const zeroFill = n => {
+            return ('0' + n).slice(-2);
+        }
+
+        // Cria intervalo
+        const interval = setInterval(() => {
+            // Pega o horário atual
+            const now = new Date();
+            const weekday = week[now.getDay()];
+
+            // Formata a data conforme dd/mm/aaaa hh:ii:ss
+            const dataHora = zeroFill(now.getUTCDate()) + '/' + zeroFill((now.getMonth() + 1)) + '/' + now.getFullYear() + ' ' + zeroFill(now.getHours()) + ':' + zeroFill(now.getMinutes()) + ':' + zeroFill(now.getSeconds());
+
+            document.getElementById('weekday').innerHTML = weekday;
+            // Exibe na tela usando a div#data-hora
+            document.getElementById('data-hora').innerHTML = dataHora;
+        }, 1000);
+    </script>
+{% endblock %}
