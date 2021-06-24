@@ -70,12 +70,12 @@
                                 <td class="td-2">{{ feriado.data }}</td>
                                 <td class="td-3">
                                     {% for key in lista %}
-                                        <a href="">
+                                        <a href="{% url 'edit_feriado' token=key.id id=feriado.objectId %}">
                                             <i style="color: #6bc9ca; font-size: 20px;" class="fas fa-pencil-alt"></i>
                                         </a>
                                     {% endfor %}
                                     {% for key in lista %}
-                                        <a href="">
+                                        <a href="{% url 'delete_feriado' token=key.id id=feriado.objectId %}">
                                             <i style="margin-left: 25px; color: red; font-size: 20px;" class="far fa-trash-alt"></i>
                                         </a>
                                     {% endfor %}

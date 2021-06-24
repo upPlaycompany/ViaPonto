@@ -32,6 +32,8 @@ urlpatterns = [
     path('departamento/delete/<str:token>/<str:id>/', views.delete_departamento, name='delete_departamento'),
     path('feriado/<str:token>/', views.list_feriado, name='list_feriado'),
     path('feriado/cadastro/<str:token>/', views.cadastro_feriado, name='cadastro_feriado'),
+    path('feriado/edit/<str:token>/<str:id>/', views.edit_feriado, name='edit_feriado'),
+    path('feriado/delete/<str:token>/<str:id>/', views.delete_feriado, name='delete_feriado'),
     # HORÁRIO
     path('horario/<str:token>/', views.list_horario, name='list_horario'),
     path('horario/cadastro/<str:token>/', views.cadastro_horario, name='cadastro_horario'),

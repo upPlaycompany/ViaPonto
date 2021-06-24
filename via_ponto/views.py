@@ -301,10 +301,13 @@ def registrar_ponto(request, token):
     DAYS = ["segunda", "terca", "quarta", "quinta", "sexta", "sabado", "domingo"]
 
     data_hora = datetime.now()
+    print("Data e hora: ", data_hora)
     indice_week = data_hora.weekday()
     data = data_hora.strftime("%d/%m/%Y")
     hora = data_hora.strftime("%H:%M")
     weekday = DAYS[indice_week]
+    print("Data ", data, "Hora ", hora)
+    print("Dia semana ", weekday)
 
     # req_turno = requests.api.request('GET', f"https://parseapi.back4app.com/classes/Turno?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{departamento_id}%22%20%7D%20%7D",
     #                                 headers={
@@ -776,6 +779,109 @@ def cadastro_feriado(request, token):
     return render(request, "cadastro_feriado.html", {"lista": key})
 
 
+def edit_feriado(request, token, id):
+    conexao = requests.api.request(
+        "GET",
+        "https://parseapi.back4app.com/users/me",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+            "X-Parse-Session-Token": f"{token}",
+        },
+    )
+    response = conexao.json()
+    if str(response["sessionToken"]) != f"{token}":
+        return redirect("login")
+    elif response["gestor"] == False:
+        return redirect("login")
+    else:
+        pass
+    key = [{"id": token, "user": response["username"]}]
+    empresa_id = response["id_empresa"]["objectId"]
+
+    req_fer = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/Feriado/{id}",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    res_fer = req_fer.json()
+
+    data = res_fer["data"]
+    date = datetime.strptime(data, "%d/%m/%Y").date()
+    data = date.strftime("%Y-%m-%d")
+    res_fer["data"] = data
+    print(data)
+
+    if request.method == "POST":
+        nome = request.POST["nome_feriado"]
+        data = request.POST["data_feriado"]
+        date = datetime.strptime(data, "%Y-%m-%d").date()
+        date = date.strftime("%d/%m/%Y")
+
+        req_fer = requests.api.request(
+            "PUT",
+            f"https://parseapi.back4app.com/classes/Feriado/{id}",
+            headers={
+                "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                "Content-Type": "application/json",
+            },
+            json={
+                "nome": f"{nome}",
+                "data": f"{date}",
+                "id_empresa": {
+                    "__type": "Pointer",
+                    "className": "Empresa",
+                    "objectId": empresa_id,
+                },
+            },
+        )
+        status = str(req_fer.status_code)
+        if status == "200":
+            return redirect("list_feriado", token=token)
+        else:
+            return redirect("fail_default", token=token)
+
+    return render(request, "edit_feriado.html", {"lista": key, "feriado": res_fer})
+
+
+def delete_feriado(request, token, id):
+    conexao = requests.api.request(
+        "GET",
+        "https://parseapi.back4app.com/users/me",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+            "X-Parse-Session-Token": f"{token}",
+        },
+    )
+    response = conexao.json()
+    if str(response["sessionToken"]) != f"{token}":
+        return redirect("login")
+    elif response["gestor"] == False:
+        return redirect("login")
+    else:
+        pass
+
+    req_fer = requests.api.request(
+        "DELETE",
+        f"https://parseapi.back4app.com/classes/Feriado/{id}",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+
+    status = str(req_fer.status_code)
+    if status == "200":
+        return redirect("list_feriado", token=token)
+    else:
+        return redirect("fail_default", token=token)
+
+
 # HORÁRIOS
 def list_horario(request, token):
     conexao = requests.api.request(
@@ -819,7 +925,11 @@ def list_horario(request, token):
     res_turno = req_turno.json()
     turno = [x for x in res_turno["results"]]
 
-    return render(request, "list_horario.html", {"lista": key, "turnos": turno, "departamentos": departamento})
+    return render(
+        request,
+        "list_horario.html",
+        {"lista": key, "turnos": turno, "departamentos": departamento},
+    )
 
 
 def cadastro_horario(request, token):
@@ -1228,11 +1338,7 @@ def edit_horario(request, token, id):
         else:
             return redirect("fail_default", token=token)
 
-    return render(
-        request,
-        "edit_horario.html",
-        {"lista": key, "horario": turno}
-    )
+    return render(request, "edit_horario.html", {"lista": key, "horario": turno})
 
 
 def delete_horario(request, token, id):
