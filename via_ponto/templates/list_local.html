@@ -22,10 +22,14 @@
         }
 
         .td-1 {
-            width: 80%;
+            width: 40%;
         }
 
         .td-2 {
+            width: 40%;
+        }
+
+        .td-3 {
             width: 20%;
         }
     </style>
@@ -46,7 +50,8 @@
                 <table class="rTable table table-bordered" id="dataTable" width="100%" cellspacing="0" >
                     <thead>
                         <tr>
-                            <th>LOCAIS</th>
+                            <th>NOME</th>
+                            <th>CEP</th>
                             <th>AÇÕES</th>
                         </tr>
                     </thead>
@@ -55,14 +60,15 @@
                         {% for local in locais %}
                             <tr>
                                 <td class="td-1">{{ local.nome }}</td>
-                                <td class="td-2">
+                                <td class="td-2">{{ local.cep }}</td>
+                                <td class="td-3">
                                     {% for key in lista %}
-                                        <a href="">
+                                        <a href="{% url 'edit_local' token=key.id id=local.objectId %}">
                                             <i style="color: #6bc9ca; font-size: 20px;" class="fas fa-pencil-alt"></i>
                                         </a>
                                     {% endfor %}
                                     {% for key in lista %}
-                                        <a href="">
+                                        <a href="{% url 'delete_local' token=key.id id=local.objectId %}">
                                             <i style="margin-left: 25px; color: red; font-size: 20px;" class="far fa-trash-alt"></i>
                                         </a>
                                     {% endfor %}

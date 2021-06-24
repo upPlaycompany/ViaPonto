@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <h3 class="title">EDITAR LOCAL: {{local.nome}}</h3>
+    
+    <form method="POST" class="mb-7" enctype="multipart/form-data"> {% csrf_token %}
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label>Nome do Local</label>
+                <input 
+                    type="text"
+                    class="form-control"
+                    name="nome_local"
+                    value="{{local.nome}}"
+                >
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label>CEP</label>
+                <input 
+                    type="text"
+                    class="form-control"
+                    name="cep"
+                    id="id_postal_code"
+                    value="{{local.cep}}"
+                    onchange="getAddress()"
+                >
+            </div>
+            <div class="form-group col-md-4">
+                <label>UF</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    name="uf"
+                    id="id_state"
+                    value="{{local.uf}}"
+                >
+            </div>
+            <div class="form-group col-md-4">
+                <label>Cidade</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    name="cidade"
+                    id="id_city"
+                    value="{{local.cidade}}"
+                >
+            </div>
+        </div>
+            
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label>Logradouro</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    name="logradouro"
+                    id="id_address"
+                    value="{{local.logradouro}}"
+                >
+            </div>
+            <div class="form-group col-md-4">
+                <label>Bairro</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    name="bairro"
+                    id="id_district"
+                    value="{{local.bairro}}"
+                >
+            </div>
+            <div class="form-group col-md-4">
+                <label>Número</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    name="numero"
+                    value="{{local.numero}}"
+                >
+            </div>
+        </div>
+        <button type="submit" class="btn btn-info btn-lg">SALVAR</button>
+    </form>
+{% endblock %}
+
+{% block scripts %}
+    <script src="https://unpkg.com/imask@6.0.7/dist/imask.js"></script>
+    <script>
+        var maskPostalCode = IMask(document.getElementById('id_postal_code'), {
+            mask: '00000-000'
+        })
+    </script>
+    <script src="{% static 'js/api-cep.js' %}"></script>
+{% endblock %}
