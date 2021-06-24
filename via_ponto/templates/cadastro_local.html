@@ -1,40 +1,89 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block extra_style %}
-    <style>
-        #map {
-            width: 500px;
-            height: 500px;
-            background: #ddd;
-        }
-    </style>
-{% endblock %}
-
 {% block content %}
-    <h3 class="title">CADASTRO DE LOCAIS</h3>
-    <h6 class="subtitle">Fique a vontade para alterar seus dados</h6>
-    <form action="POST">
-        <div>
-            <label for="txtEndereco">Endereço:</label>
-            <input type="text" id="txtEndereco" name="txtEndereco">
-        </div>
-        <div>
-            <input type="button" id="btnEndereco" onclick="pegarEndereco()" value="Mostrar no mapa">
-        </div>
-        <div id="map"></div>
-
-        <div>
-            <input type="submit" value="Enviar" name="btnSubmit">
-        </div>
-
-        <input type="hidden" name="txtLatitude" id="txtLatitude">
-        <input type="hidden" name="txtLongitude" id="txtLongitude">
-    </form>
+    <h3 class="title">CADASTRO DE LOCAL</h3>
     
+    <form method="POST" class="mb-7" enctype="multipart/form-data"> {% csrf_token %}
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label>Nome do Local</label>
+                <input 
+                    type="text"
+                    class="form-control"
+                    name="nome_local"
+                >
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label>CEP</label>
+                <input 
+                    type="text"
+                    class="form-control"
+                    name="cep"
+                    id="id_postal_code"
+                    onchange="getAddress()"
+                >
+            </div>
+            <div class="form-group col-md-4">
+                <label>UF</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    name="uf"
+                    id="id_state"
+                >
+            </div>
+            <div class="form-group col-md-4">
+                <label>Cidade</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    name="cidade"
+                    id="id_city"
+                >
+            </div>
+        </div>
+            
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label>Logradouro</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    name="logradouro"
+                    id="id_address"
+                >
+            </div>
+            <div class="form-group col-md-4">
+                <label>Bairro</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    name="bairro"
+                    id="id_district"
+                >
+            </div>
+            <div class="form-group col-md-4">
+                <label>Número</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    name="numero"
+                >
+            </div>
+        </div>
+        <button type="submit" class="btn btn-info btn-lg">SALVAR</button>
+    </form>
 {% endblock %}
 
 {% block scripts %}
-    <script src="{% static 'js/api-map.js' %}"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAm4peDy9NIsTJ9m7n8QS-md9HbtXY0cj4&callback=initMap&language=pt&region=BR" async defer></script>
+    <script src="https://unpkg.com/imask@6.0.7/dist/imask.js"></script>
+    <script>
+        var maskPostalCode = IMask(document.getElementById('id_postal_code'), {
+            mask: '00000-000'
+        })
+    </script>
+    <script src="{% static 'js/api-cep.js' %}"></script>
 {% endblock %}

@@ -52,17 +52,23 @@
                     </thead>
 
                     <tbody>
-                        <tr>
-                            <td class="td-1">Equipe 1</td>
-                            <td class="td-2">
-                                <a href="#">
-                                    <i style="color: #6bc9ca; font-size: 20px;" class="fas fa-pencil-alt"></i>
-                                </a>
-                                <a href="#">
-                                    <i style="margin-left: 25px; color: red; font-size: 20px;" class="far fa-trash-alt"></i>
-                                </a>
-                            </td>
-                        </tr>
+                        {% for local in locais %}
+                            <tr>
+                                <td class="td-1">{{ local.nome }}</td>
+                                <td class="td-2">
+                                    {% for key in lista %}
+                                        <a href="">
+                                            <i style="color: #6bc9ca; font-size: 20px;" class="fas fa-pencil-alt"></i>
+                                        </a>
+                                    {% endfor %}
+                                    {% for key in lista %}
+                                        <a href="">
+                                            <i style="margin-left: 25px; color: red; font-size: 20px;" class="far fa-trash-alt"></i>
+                                        </a>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>

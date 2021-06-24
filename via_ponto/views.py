@@ -1394,8 +1394,20 @@ def list_local(request, token):
     else:
         pass
     key = [{"id": token, "user": response["username"]}]
+    empresa_id = response["id_empresa"]["objectId"]
 
-    return render(request, "list_local.html", {"lista": key})
+    req_local = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/Local?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    res_local = req_local.json()
+    local = [x for x in res_local["results"]]
+
+    return render(request, "list_local.html", {"lista": key, "locais": local})
 
 
 def cadastro_local(request, token):
@@ -1416,6 +1428,45 @@ def cadastro_local(request, token):
     else:
         pass
     key = [{"id": token, "user": response["username"]}]
+    empresa_id = response["id_empresa"]["objectId"]
+
+    if request.method == "POST":
+        nome = request.POST["nome_local"]
+        cep = request.POST["cep"]
+        uf = request.POST["uf"]
+        cidade = request.POST["cidade"]
+        logradouro = request.POST["logradouro"]
+        bairro = request.POST["bairro"]
+        numero = request.POST["numero"]
+
+        req_cargo = requests.api.request(
+            "POST",
+            f"https://parseapi.back4app.com/classes/Local",
+            headers={
+                "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                "Content-Type": "application/json",
+            },
+            json={
+                "nome": f"{nome}",
+                "cep": f"{cep}",
+                "uf": f"{uf}",
+                "cidade": f"{cidade}",
+                "logradouro": f"{logradouro}",
+                "bairro": f"{bairro}",
+                "numero": f"{numero}",
+                "id_empresa": {
+                    "__type": "Pointer",
+                    "className": "Empresa",
+                    "objectId": empresa_id,
+                },
+            },
+        )
+        status = str(req_cargo.status_code)
+        if status == "201":
+            return redirect("list_local", token=token)
+        else:
+            return redirect("fail_default", token=token)
 
     return render(request, "cadastro_local.html", {"lista": key})
 
