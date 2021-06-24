@@ -711,6 +711,59 @@ def list_feriado(request, token):
     return render(request, "list_feriado.html", {"lista": key})
 
 
+def cadastro_feriado(request, token):
+    conexao = requests.api.request(
+        "GET",
+        "https://parseapi.back4app.com/users/me",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+            "X-Parse-Session-Token": f"{token}",
+        },
+    )
+    response = conexao.json()
+    if str(response["sessionToken"]) != f"{token}":
+        return redirect("login")
+    elif response["gestor"] == False:
+        return redirect("login")
+    else:
+        pass
+    key = [{"id": token, "user": response["username"]}]
+    empresa_id = response["id_empresa"]["objectId"]
+
+    if request.method == "POST":
+        nome = request.POST["nome_feriado"]
+        data = request.POST["data_feriado"]
+        date = datetime.strptime(data, "%Y-%m-%d").date()
+        date = date.strftime("%d/%m/%Y")
+
+        req_fer = requests.api.request(
+            "POST",
+            f"https://parseapi.back4app.com/classes/Feriado",
+            headers={
+                "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                "Content-Type": "application/json",
+            },
+            json={
+                "nome": f"{nome}",
+                "data": f"{date}",
+                "id_empresa": {
+                    "__type": "Pointer",
+                    "className": "Empresa",
+                    "objectId": empresa_id,
+                },
+            },
+        )
+        status = str(req_fer.status_code)
+        if status == "201":
+            return redirect("list_feriado", token=token)
+        else:
+            return redirect("fail_default", token=token)
+
+    return render(request, "cadastro_feriado.html", {"lista": key})
+
+
 # HORÁRIOS
 def list_horario(request, token):
     conexao = requests.api.request(

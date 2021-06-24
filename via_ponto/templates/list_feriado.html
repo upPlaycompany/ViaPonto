@@ -33,7 +33,7 @@
             
             <div>
                 {% for key in lista %}
-                    <a href="" target="_blank">
+                    <a href="{% url 'cadastro_feriado' token=key.id %}">
                         <button class="btn btn-info btn-lg" type="button">CADASTRAR</button>
                     </a>
                 {% endfor %}
