@@ -89,11 +89,13 @@
 
                     <tbody>
                         {% for ponto in pontos %}
-                            <tr>
-                                <td class="td-1">{{ponto.registro}}</td>
-                                <td class="td-2">{{ponto.horario}}</td>
-                                <td class="td-3">{{ponto.local_registro}}</td>
-                            </tr>
+                            {% if ponto.createdAt == data %}
+                                <tr>
+                                    <td class="td-1">{{ponto.registro}}</td>
+                                    <td class="td-2">{{ponto.horario}}</td>
+                                    <td class="td-3">{{ponto.local_registro}}</td>
+                                </tr>
+                            {% endif %}
                         {% endfor %}
                     </tbody>
                 </table>
@@ -133,7 +135,7 @@
                                 <tr>
                                     <td>Segunda</td>
                                     <td>{{horario.primeira_entrada}}</td>
-                                    <td>{{horario.primeira_saida</td>
+                                    <td>{{horario.primeira_saida}}</td>
                                     <td>{{horario.segunda_entrada}}</td>
                                     <td>{{horario.segunda_saida}}</td>
                                 </tr>
@@ -143,7 +145,7 @@
                                 <tr>
                                     <td>Terça</td>
                                     <td>{{horario.primeira_entrada}}</td>
-                                    <td>{{horario.primeira_saida</td>
+                                    <td>{{horario.primeira_saida}}</td>
                                     <td>{{horario.segunda_entrada}}</td>
                                     <td>{{horario.segunda_saida}}</td>
                                 </tr>
@@ -152,7 +154,7 @@
                                 <tr>
                                     <td>Quarta</td>
                                     <td>{{horario.primeira_entrada}}</td>
-                                    <td>{{horario.primeira_saida</td>
+                                    <td>{{horario.primeira_saida}}</td>
                                     <td>{{horario.segunda_entrada}}</td>
                                     <td>{{horario.segunda_saida}}</td>
                                 </tr>
@@ -161,7 +163,7 @@
                                 <tr>
                                     <td>Quinta</td>
                                     <td>{{horario.primeira_entrada}}</td>
-                                    <td>{{horario.primeira_saida</td>
+                                    <td>{{horario.primeira_saida}}</td>
                                     <td>{{horario.segunda_entrada}}</td>
                                     <td>{{horario.segunda_saida}}</td>
                                 </tr>
@@ -170,7 +172,7 @@
                                 <tr>
                                     <td>Sexta</td>
                                     <td>{{horario.primeira_entrada}}</td>
-                                    <td>{{horario.primeira_saida</td>
+                                    <td>{{horario.primeira_saida}}</td>
                                     <td>{{horario.segunda_entrada}}</td>
                                     <td>{{horario.segunda_saida}}</td>
                                 </tr>
@@ -178,8 +180,8 @@
                             {% if horario.dia_da_semana == "sabado" %}
                                 <tr>
                                     <td>Sábado</td>
-                                    <td>{{horario.primeira_entrada}}/td>
-                                    <td>{{horario.primeira_saida</td>
+                                    <td>{{horario.primeira_entrada}}</td>
+                                    <td>{{horario.primeira_saida}}</td>
                                     <td>{{horario.segunda_entrada}}</td>
                                     <td>{{horario.segunda_saida}}</td>
                                 </tr>
@@ -188,7 +190,7 @@
                                 <tr>
                                     <td>Domingo</td>
                                     <td>{{horario.primeira_entrada}}</td>
-                                    <td>{{horario.primeira_saida</td>
+                                    <td>{{horario.primeira_saida}}</td>
                                     <td>{{horario.segunda_entrada}}</td>
                                     <td>{{horario.segunda_saida}}</td>
                                 </tr>

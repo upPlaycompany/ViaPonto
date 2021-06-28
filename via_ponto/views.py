@@ -229,6 +229,30 @@ def login_colaborador(request):
     return render(request, "login_colaborador.html")
 
 
+def fail_default_colaborador(request, token):
+    conexao = requests.api.request(
+        "GET",
+        "https://parseapi.back4app.com/users/me",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+            "X-Parse-Session-Token": f"{token}",
+        },
+    )
+    usuario = conexao.json()
+    if str(usuario["sessionToken"]) != f"{token}":
+        return redirect("login")
+    elif usuario["gestor"] == True:
+        return redirect("login")
+    elif usuario["admin"] == True:
+        return redirect("login")
+    else:
+        pass
+    key = [{"id": token, "user": usuario["username"]}]
+
+    return render(request, "fail_default_colaborador.html", {"lista": key})
+
+
 def dashboard_colaborador(request, token):
     conexao = requests.api.request(
         "GET",
@@ -255,7 +279,7 @@ def dashboard_colaborador(request, token):
 
     # PEGAR DO SERVIDOR
     data_hora = datetime.now()
-    data = data_hora.strftime("%d/%m/%Y")
+    data_do_dia = data_hora.strftime("%d/%m/%Y")
 
     req_cargo = requests.api.request(
         "GET",
@@ -279,7 +303,7 @@ def dashboard_colaborador(request, token):
 
     req_turno = requests.api.request(
         "GET",
-        f"https://parseapi.back4app.com/classes/Turno?where=%7B%20%22id_departamento%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{departamento_id}%22%20%7D%20%7D",
+        f"https://parseapi.back4app.com/classes/Turno?where=%7B%20%22id_departamento%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Departamento%22%2C%20%22objectId%22%3A%20%22{departamento_id}%22%20%7D%20%7D",
         headers={
             "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
             "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
@@ -290,7 +314,7 @@ def dashboard_colaborador(request, token):
 
     req_ponto = requests.api.request(
         "GET",
-        f"https://parseapi.back4app.com/classes/Ponto?where=%7B%20%22id_funcionario%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{usuario_id}%22%20%7D%20%7D",
+        f"https://parseapi.back4app.com/classes/Ponto?where=%7B%20%22id_funcionario%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22_User%22%2C%20%22objectId%22%3A%20%22{usuario_id}%22%20%7D%20%7D",
         headers={
             "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
             "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
@@ -298,10 +322,15 @@ def dashboard_colaborador(request, token):
     )
     res_ponto = req_ponto.json()
     ponto = [x for x in res_ponto["results"]]
-    print(ponto)
-    print(turno)
 
-    return render(request, "dashboard_colaborador.html", {"lista": key, "user": usuario, "cargo": carg, "departamento": dep, "horarios": turno, "pontos": ponto})
+    for x in ponto:
+        data = x["createdAt"]
+        data = data[:10]
+        date = datetime.strptime(data, "%Y-%m-%d").date()
+        date = date.strftime("%d/%m/%Y")
+        x["createdAt"] = date
+
+    return render(request, "dashboard_colaborador.html", {"lista": key, "user": usuario, "cargo": carg, "departamento": dep, "horarios": turno, "pontos": ponto, "data": data_do_dia})
 
 
 def edit_perfil(request, token):
@@ -324,6 +353,66 @@ def edit_perfil(request, token):
     else:
         pass
     key = [{"id": token, "user": usuario["username"]}]
+    usuario_id = usuario["objectId"]
+
+    data = (usuario.get('data_nasc', ""))
+    if data != "":
+        date = datetime.strptime(data, "%d/%m/%Y").date()
+        data = date.strftime("%Y-%m-%d")
+        usuario["data_nasc"] = data
+
+    if request.method == "POST":
+        username = request.POST["username"]
+        nome = request.POST["nome"]
+        datanasc = request.POST["datanasc"]
+        if datanasc != "":
+            date = datetime.strptime(datanasc, "%Y-%m-%d").date()
+            data = date.strftime("%d/%m/%Y")
+            datanasc = data
+
+        celular = request.POST["celular"]
+        email_colab = request.POST["email"]
+        # Endereço do Colaborador
+        cep = request.POST["cep"]
+        uf = request.POST["uf"]
+        cidade = request.POST["cidade"]
+        logradouro = request.POST["logradouro"]
+        bairro = request.POST["bairro"]
+        numero = request.POST["numero"]
+
+        req_user = requests.api.request(
+            "PUT",
+            f"https://parseapi.back4app.com/classes/_User/{usuario_id}",
+            headers={
+                "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                "X-Parse-Session-Token": f"{token}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "username": f"{username}",
+                "nome": f"{nome}",
+                "data_nasc": f"{datanasc}",
+                "email_colab": f"{email_colab}",
+                "email": f"{email_colab}",
+                "celular": f"{celular}",
+                "cep": f"{cep}",
+                "uf": f"{uf}",
+                "cidade": f"{cidade}",
+                "logradouro": f"{logradouro}",
+                "bairro": f"{bairro}",
+                "numero": f"{numero}",
+            },
+        )
+
+        req_user.json()
+
+        status = str(req_user.status_code)
+
+        if status == "200":
+            return redirect("dashboard_colaborador", token=token)
+        else:
+            return redirect("fail_default_colaborador", token=token)
 
     return render(request, "edit_perfil_colaborador.html", {"lista": key, "user": usuario})
 
@@ -352,7 +441,7 @@ def list_ponto(request, token):
 
     req_ponto = requests.api.request(
         "GET",
-        f"https://parseapi.back4app.com/classes/Ponto?where=%7B%20%22id_funcionario%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{usuario_id}%22%20%7D%20%7D",
+        f"https://parseapi.back4app.com/classes/Ponto?where=%7B%20%22id_funcionario%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22_User%22%2C%20%22objectId%22%3A%20%22{usuario_id}%22%20%7D%20%7D",
         headers={
             "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
             "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
@@ -570,7 +659,7 @@ def registrar_ponto(request, token):
     if status == "201":
         return redirect("dashboard", token=token)
     else:
-        return redirect("fail_default", token=token)
+        return redirect("fail_default_colaborador", token=token)
 
 
 # GESTOR DASHBOARD
@@ -1053,7 +1142,6 @@ def edit_feriado(request, token, id):
     date = datetime.strptime(data, "%d/%m/%Y").date()
     data = date.strftime("%Y-%m-%d")
     res_fer["data"] = data
-    print(data)
 
     if request.method == "POST":
         nome = request.POST["nome_feriado"]

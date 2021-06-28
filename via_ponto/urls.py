@@ -15,6 +15,7 @@ urlpatterns = [
     path('fail/<str:token>/', views.fail_default, name='fail_default'),
     # COLABORADOR DASHBOARD
     path('login/colaborador/', views.login_colaborador, name='login_colaborador'),
+    path('fail/colaborador/<str:token>/', views.fail_default_colaborador, name='fail_default_colaborador'),
     path('dashboard/colaborador/<str:token>/', views.dashboard_colaborador, name='dashboard_colaborador'),
     path('perfil/colaborador/edit/<str:token>/', views.edit_perfil, name='edit_perfil'),
     path('ponto/colaborador/list/<str:token>/', views.list_ponto, name='list_ponto'),
