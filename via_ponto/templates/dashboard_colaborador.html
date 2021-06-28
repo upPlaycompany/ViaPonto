@@ -6,6 +6,197 @@
     <a href="{% url 'registro_ponto' token=key.id %}"><button class="btn-ponto">REGISTRO PONTO</button></a>
 {% endblock %}
 
+{% block extra_style %}
+    <style>
+        .border {
+            border: 2px solid #6bc9ca !important;
+            border-radius: 15px;
+            padding: 15px;
+        }
+
+        .border:nth-child(1) {
+            margin-right: 15px;
+        }
+
+        .div-flex {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .div-flex h1 {
+            margin-bottom: 0;
+        }
+
+        .rTable {
+            text-align: center;
+        }
+
+        .rTable thead {
+            background-color: #6bc9ca;
+            font-weight: bold;
+            color: white;
+            font-size: 1em;
+        }
+
+        .rTable tbody tr:nth-child(2n){
+            background: #98FB98;
+        }
+
+        .td-1 {
+            width: 20%;
+        }
+        .td-2 {
+            width: 20%;
+        }
+        .td-3 {
+            width: 60%;
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
-    
+    <div class="card shadow mb-5">
+        <div class="card-header py-3 flex-container">
+            <div id="faltas" class="table-responsive border div-flex">
+                <h1 class="title">Faltas</h1>
+                <h1>08:00 Hrs</h1>
+            </div>
+            
+            <div id="hora-extras" class="table-responsive border div-flex">
+                <h1 class="title">Hora Extra</h1>
+                <h1>01:33 Hrs</h1>
+            </div>
+        </div>
+        <div class="card-body flex-container">
+            <div id="registros" class="table-responsive border">
+                <div class="div-flex mb-4">
+                    <h1 class="title">Registros do dia</h1>
+                    {% for key in lista %}
+                        <a href="">
+                            <button class="btn btn-info btn-lg" type="button">Todos Registros</button>
+                        </a>
+                    {% endfor %}
+                </div>
+
+                <table class="rTable table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Registro</th>
+                            <th>Horas</th>
+                            <th>Local</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for ponto in pontos %}
+                            <tr>
+                                <td class="td-1">{{ponto.registro}}</td>
+                                <td class="td-2">{{ponto.horario}}</td>
+                                <td class="td-3">{{ponto.local_registro}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="perfil" class="table-responsive border">
+                <div class="div-flex mb-4">
+                    <h1 class="title">Perfil</h1>
+                    {% for key in lista %}
+                        <a href="">
+                            <button class="btn btn-info btn-lg" type="button">Editar</button>
+                        </a>
+                    {% endfor %}
+                </div>
+                <h4><span class="text">Nome: </span>{{user.nome}}</h4>
+                <h4><span class="text">Email: </span>{{user.email}}</h4>
+                <h4><span class="text">Celular: </span>{{user.celular}}</h4>
+                <h4><span class="text">Usuário: </span>{{user.username}}</h4>
+                <h4><span class="text">Cargo: </span>{{cargo.nome}}</h4>
+                <h4><span class="text">Departamento: </span>{{departamento.nome}}</h4>
+
+                <h2 class="subtitle">Horários</h2>
+                <table class="rTable table table-bordered" id="dataTable" width="100%" cellspacing="0" >
+                    <thead>
+                        <tr>
+                            <th>Dia da Semana</th>
+                            <th>1ª Entrada</th>
+                            <th>1ª Saída</th>
+                            <th>2ª Entrada</th>
+                            <th>2ª Saída</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for horario in horarios %}
+                            {% if horario.dia_da_semana == "segunda" %}
+                                <tr>
+                                    <td>Segunda</td>
+                                    <td>{{horario.primeira_entrada}}</td>
+                                    <td>{{horario.primeira_saida</td>
+                                    <td>{{horario.segunda_entrada}}</td>
+                                    <td>{{horario.segunda_saida}}</td>
+                                </tr>
+                            {% endif %}
+
+                            {% if horario.dia_da_semana == "terca" %}
+                                <tr>
+                                    <td>Terça</td>
+                                    <td>{{horario.primeira_entrada}}</td>
+                                    <td>{{horario.primeira_saida</td>
+                                    <td>{{horario.segunda_entrada}}</td>
+                                    <td>{{horario.segunda_saida}}</td>
+                                </tr>
+                            {% endif %}
+                            {% if horario.dia_da_semana == "quarta" %}
+                                <tr>
+                                    <td>Quarta</td>
+                                    <td>{{horario.primeira_entrada}}</td>
+                                    <td>{{horario.primeira_saida</td>
+                                    <td>{{horario.segunda_entrada}}</td>
+                                    <td>{{horario.segunda_saida}}</td>
+                                </tr>
+                            {% endif %}
+                            {% if horario.dia_da_semana == "quinta" %}
+                                <tr>
+                                    <td>Quinta</td>
+                                    <td>{{horario.primeira_entrada}}</td>
+                                    <td>{{horario.primeira_saida</td>
+                                    <td>{{horario.segunda_entrada}}</td>
+                                    <td>{{horario.segunda_saida}}</td>
+                                </tr>
+                            {% endif %}
+                            {% if horario.dia_da_semana == "sexta" %}
+                                <tr>
+                                    <td>Sexta</td>
+                                    <td>{{horario.primeira_entrada}}</td>
+                                    <td>{{horario.primeira_saida</td>
+                                    <td>{{horario.segunda_entrada}}</td>
+                                    <td>{{horario.segunda_saida}}</td>
+                                </tr>
+                            {% endif %}
+                            {% if horario.dia_da_semana == "sabado" %}
+                                <tr>
+                                    <td>Sábado</td>
+                                    <td>{{horario.primeira_entrada}}/td>
+                                    <td>{{horario.primeira_saida</td>
+                                    <td>{{horario.segunda_entrada}}</td>
+                                    <td>{{horario.segunda_saida}}</td>
+                                </tr>
+                            {% endif %}
+                            {% if horario.dia_da_semana == "domingo" %}
+                                <tr>
+                                    <td>Domingo</td>
+                                    <td>{{horario.primeira_entrada}}</td>
+                                    <td>{{horario.primeira_saida</td>
+                                    <td>{{horario.segunda_entrada}}</td>
+                                    <td>{{horario.segunda_saida}}</td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 {% endblock %}
