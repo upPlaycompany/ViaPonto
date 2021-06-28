@@ -304,6 +304,153 @@ def dashboard_colaborador(request, token):
     return render(request, "dashboard_colaborador.html", {"lista": key, "user": usuario, "cargo": carg, "departamento": dep, "horarios": turno, "pontos": ponto})
 
 
+def edit_perfil(request, token):
+    conexao = requests.api.request(
+        "GET",
+        "https://parseapi.back4app.com/users/me",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+            "X-Parse-Session-Token": f"{token}",
+        },
+    )
+    usuario = conexao.json()
+    if str(usuario["sessionToken"]) != f"{token}":
+        return redirect("login")
+    elif usuario["gestor"] == True:
+        return redirect("login")
+    elif usuario["admin"] == True:
+        return redirect("login")
+    else:
+        pass
+    key = [{"id": token, "user": usuario["username"]}]
+
+    return render(request, "edit_perfil_colaborador.html", {"lista": key, "user": usuario})
+
+
+def list_ponto(request, token):
+    conexao = requests.api.request(
+        "GET",
+        "https://parseapi.back4app.com/users/me",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+            "X-Parse-Session-Token": f"{token}",
+        },
+    )
+    usuario = conexao.json()
+    if str(usuario["sessionToken"]) != f"{token}":
+        return redirect("login")
+    elif usuario["gestor"] == True:
+        return redirect("login")
+    elif usuario["admin"] == True:
+        return redirect("login")
+    else:
+        pass
+    key = [{"id": token, "user": usuario["username"]}]
+    usuario_id = usuario["objectId"]
+
+    req_ponto = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/Ponto?where=%7B%20%22id_funcionario%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{usuario_id}%22%20%7D%20%7D",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    res_ponto = req_ponto.json()
+    ponto = [x for x in res_ponto["results"]]
+
+    for x in ponto:
+        data = x["createdAt"]
+        data = data[:10]
+        date = datetime.strptime(data, "%Y-%m-%d").date()
+        date = date.strftime("%d/%m/%Y")
+        x["createdAt"] = date
+
+    start_date = request.GET.get("start_date")
+    end_date = request.GET.get("end_date")
+
+    if start_date and end_date:
+        start = datetime.strptime(start_date, "%Y-%m-%d").date()
+        end = datetime.strptime(end_date, "%Y-%m-%d").date()
+        start_data = start.strftime("%d/%m/%Y")
+        end_data = end.strftime("%d/%m/%Y")
+        dia_start = start_data.day
+        mes_start = start_data.month
+        ano_start = start_data.year
+        dia_end = end_data.day
+        mes_end = end_data.month
+        ano_end = end_data.year
+
+        if mes_start == mes_end:
+            if mes_start < 10:
+                mes_start = f"0{mes_start}"
+
+            lista = list(range(dia_start, dia_end + 1))
+            a = len(lista)
+
+            datas = tuple(
+                [
+                    f"0{lista[x]}" + "/" + f"{mes_start}" + "/" + f"{ano_start}"
+                    if lista[x] < 10
+                    else f"{lista[x]}" + "/" + f"{mes_start}" + "/" + f"{ano_start}"
+                    for x in range(a)
+                ]
+            )
+        elif mes_start < mes_end:
+            if mes_start < 10:
+                mes_start = f"0{mes_start}"
+            if mes_end < 10:
+                mes_end = f"0{mes_end}"
+
+            lista = list(range(dia_start, 32))
+            lista2 = list(range(1, dia_end + 1))
+            a = len(lista)
+            a2 = len(lista2)
+
+            datas = tuple(
+                [
+                    f"0{lista[x]}" + "/" + f"{mes_start}" + "/" + f"{ano_start}"
+                    if lista[x] < 10
+                    else f"{lista[x]}" + "/" + f"{mes_start}" + "/" + f"{ano_start}"
+                    for x in range(a)
+                ]
+            )
+            datas2 = tuple(
+                [
+                    f"0{lista2[x]}" + "/" + f"{mes_end}" + "/" + f"{ano_end}"
+                    if lista2[x] < 10
+                    else f"{lista2[x]}" + "/" + f"{mes_end}" + "/" + f"{ano_end}"
+                    for x in range(a2)
+                ]
+            )
+            datas += datas2
+
+        ponto_date = [
+            {
+                "createdAt": x["createdAt"],
+                "horario": x["horario"],
+                "registro": x["registro"],
+                "local_registro": x["local_registro"],
+            }
+            if str(x["createdAt"]) in datas
+            else {
+                "createdAt": "sem registro",
+                "horario": "sem registro",
+                "registro": "sem registro",
+                "local_registro": "sem registro",
+            }
+            for x in ponto
+        ]
+    else:
+        ponto_date = ponto
+        start = "0"
+        end = "0"
+
+    return render( request, "list_ponto_colaborador.html",{"lista": key, "pontos": ponto_date, "start_data": start, "end_data": end})
+
+
 def registro_ponto(request, token):
     conexao = requests.api.request(
         "GET",

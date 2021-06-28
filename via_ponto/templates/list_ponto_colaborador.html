@@ -1,0 +1,77 @@
+{% extends 'base_colaborador.html' %}
+
+{% block title %} VIA PONTO - Registros de Ponto {% endblock title %}
+
+{% block extra_style %}
+<style>
+  .card-body .row {
+    margin-bottom: 30px;
+  }
+
+  .rTable {
+    text-align: center;
+  }
+
+  .rTable thead {
+    background-color: #20953B;
+    font-weight: bold;
+    color: white;
+    font-size: 1em;
+  }
+
+  .rTable tbody tr:nth-child(2n) {
+    background: #98FB98;
+  }
+
+  .div-flex {
+    display: flex;
+    justify-content: space-between;
+  }
+</style>
+{% endblock %}
+
+{% block button %}
+<a href="{% url 'dashboard_colaborador' token=key.id %}"><button class="btn-ponto">DASHBOARD</button></a>
+{% endblock %}
+
+{% block content %}
+<div class="card shadow mb-4">
+  <div class="card-header py-3 div-flex">
+    <h1 class="title">Registros de Ponto</h1>
+    <div class="">
+      <form class="form-inline my-2 my-lg-0 pull-right">
+        <label>Data Inicial</label>
+        <input class="form-control ml-sm-2 mr-sm-2" name="start_date" type="date" />
+        <label>Data Final</label>
+        <input class="form-control ml-sm-2 mr-sm-2" name="end_date" type="date" />
+        <button class="btn btn-primary my-2 my-sm-0" type="submit">Atualizar</button>
+      </form>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="rTable table table-bordered" id="dataTable" width="100%" cellspacing="0">
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Registro</th>
+            <th>Horas</th>
+            <th>Local</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for ponto in pontos %}
+          <tr>
+            <td>{{ ponto.createdAt }}</td>
+            <td>{{ ponto.registro }}</td>
+            <td>{{ ponto.horario }}</td>
+            <td>{{ ponto.local_registro }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

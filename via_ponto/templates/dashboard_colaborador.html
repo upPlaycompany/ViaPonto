@@ -72,7 +72,7 @@
                 <div class="div-flex mb-4">
                     <h1 class="title">Registros do dia</h1>
                     {% for key in lista %}
-                        <a href="">
+                        <a href="{% url 'list_ponto' token=key.id %}">
                             <button class="btn btn-info btn-lg" type="button">Todos Registros</button>
                         </a>
                     {% endfor %}
@@ -103,7 +103,7 @@
                 <div class="div-flex mb-4">
                     <h1 class="title">Perfil</h1>
                     {% for key in lista %}
-                        <a href="">
+                        <a href="{% url 'edit_perfil' token=key.id %}">
                             <button class="btn btn-info btn-lg" type="button">Editar</button>
                         </a>
                     {% endfor %}
