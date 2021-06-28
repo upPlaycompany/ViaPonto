@@ -19,8 +19,8 @@ urlpatterns = [
     path('dashboard/colaborador/<str:token>/', views.dashboard_colaborador, name='dashboard_colaborador'),
     path('perfil/colaborador/edit/<str:token>/', views.edit_perfil, name='edit_perfil'),
     path('ponto/colaborador/list/<str:token>/', views.list_ponto, name='list_ponto'),
-    path('ponto/colaborador/<str:token>/', views.registro_ponto, name='registro_ponto'),
-    path('ponto/colaborador/registrar/<str:token>/', views.registrar_ponto, name='registrar_ponto'),
+    path('ponto/colaborador/registrar/<str:token>/', views.registro_ponto, name='registro_ponto'),
+    path('ponto/colaborador/fail/<str:token>/', views.fail_registro_ponto, name='fail_registro_ponto'),
 
     # GESTOR DASHBOARD
     path('login/gestor/', views.login_gestor, name='login_gestor'),
