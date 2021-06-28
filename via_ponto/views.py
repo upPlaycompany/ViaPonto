@@ -594,40 +594,71 @@ def registrar_ponto(request, token):
     indice_week = data_hora.weekday()
 
     # DADOS DO PONTO
-    data = data_hora.strftime("%d/%m/%Y")
+    data_do_dia = data_hora.strftime("%d/%m/%Y")
     hora = data_hora.strftime("%H:%M")
     weekday = DAYS[indice_week]
     registro = ""
 
-    req_turno = requests.api.request('GET', f"https://parseapi.back4app.com/classes/Turno?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{departamento_id}%22%20%7D%20%7D",
+    req_ponto = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/Ponto?where=%7B%20%22id_funcionario%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22_User%22%2C%20%22objectId%22%3A%20%22{usuario_id}%22%20%7D%20%7D",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    res_ponto = req_ponto.json()
+    pontos = [x for x in res_ponto["results"]]
+
+    for x in pontos:
+        data = x["createdAt"]
+        data = data[:10]
+        date = datetime.strptime(data, "%Y-%m-%d").date()
+        date = date.strftime("%d/%m/%Y")
+        x["createdAt"] = date
+
+    total_pontos = 0
+    for ponto in pontos:
+        if ponto["createdAt"] == data_do_dia:
+            total_pontos += 1
+
+    req_turno = requests.api.request('GET', f"https://parseapi.back4app.com/classes/Turno?where=%7B%22id_departamento%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Departamento%22%2C%20%22objectId%22%3A%20%22{departamento_id}%22%20%7D%20%7D",
                                     headers={
                                         "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
                                         "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
     res_turno = req_turno.json()
     turnos = [x for x in res_turno['results']]
-
+    print(turnos)
     for turno in turnos:
         if turno["dia_da_semana"] == weekday:
             if turno["primeira_entrada"] != "nao definido":
-                if hora >= turno["primeira_entrada"] and hora <= turno["primeira_saida"]:
-                    print("Primeira Entrada: ", hora)
-                    registro = "1ª Entrada"
+                if total_pontos == 0:
+                    if hora >= turno["primeira_entrada"] and hora <= turno["primeira_saida"]:
+                        print("Primeira Entrada: ", hora)
+                        registro = "1ª Entrada"
 
             if turno["primeira_saida"] != "nao definido":
-                if hora >= turno["primeira_saida"] and hora <= turno["segunda_entrada"]:
-                    print("Primeira Saída: ", hora)
-                    registro = "1ª Saída"
+                if total_pontos == 1:
+                    if hora <= turno["segunda_entrada"]:
+                        print("Primeira Saída: ", hora)
+                        registro = "1ª Saída"
 
             if turno["segunda_entrada"] != "nao definido":
-                if hora >= turno["segunda_entrada"] and hora <= turno["segunda_saida"]:
-                    print("Segunda Entrada", hora)
-                    registro = "2ª Entrada"
+                if total_pontos == 2:
+                    if hora >= turno["segunda_entrada"] and hora <= turno["segunda_saida"]:
+                        print("Segunda Entrada", hora)
+                        registro = "2ª Entrada"
 
             if turno["segunda_saida"] != "nao definido":
-                if hora >= turno["segunda_saida"] and hora <= turno["segunda_saida"] + "00:30":
-                    print("Segunda Saída", hora)
-                    registro = "2ª Saída"
+                if total_pontos == 3:
+                    if hora <= turno["segunda_saida"] or hora >= turno["segunda_saida"]:
+                        print("Segunda Saída", hora)
+                        registro = "2ª Saída"
 
+    print("Data", data_do_dia)
+    print("Dia", weekday)
+    print("Registro", registro)
+    print("Horario", hora)
     # SALVAR O PONTO NO BANCO
     req_ponto = requests.api.request(
         "POST",
@@ -639,10 +670,10 @@ def registrar_ponto(request, token):
         },
         json={
             "registro": f"{registro}",
-            "data": f"{data}",
+            "data": f"{data_do_dia}",
             "dia_da_semana": f"{weekday}",
             "horario": f"{hora}",
-            # "local_do_registro": f"{local_do_registro}",
+            # "local_registro": f"{local_do_registro}",
             "id_empresa": {
                 "__type": "Pointer",
                 "className": "Empresa",
@@ -657,7 +688,7 @@ def registrar_ponto(request, token):
     )
     status = str(req_ponto.status_code)
     if status == "201":
-        return redirect("dashboard", token=token)
+        return redirect("dashboard_colaborador", token=token)
     else:
         return redirect("fail_default_colaborador", token=token)
 
