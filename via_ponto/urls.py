@@ -58,9 +58,9 @@ urlpatterns = [
     path('colaborador/demitir/<str:token>/<str:id>/', views.demitir_colaborador, name='demitir_colaborador'),
     path('colaborador/edit/<str:token>/<str:id>/', views.edit_colaborador, name='edit_colaborador'),
     path('demitidos/<str:token>/', views.list_demitidos, name='list_demitidos'),
-
-
-    path('pontos-colaborador/<str:token>/<str:id_user>/', views.pontos_colaborador, name='pontos_colaborador'),
+    # RELATORIOS
+    path('espelho/registros/<str:token>/', views.espelho_registros, name='espelho_registros'),
+    path('relatorio/pontos/<str:token>/<str:id_user>/', views.relatorio_pontos, name='relatorio_pontos'),
     path('relatorio-func/<str:token>/', views.gerar_relatorio_func, name='gerar_relatorio_func'),
     path('relatorio-ponto/<str:token>/<str:id_user>/<str:start_date>/<str:end_date>/', views.gerar_relatorio_ponto, name='gerar_relatorio_ponto'),
 

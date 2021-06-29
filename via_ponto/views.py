@@ -581,7 +581,7 @@ def registro_ponto(request, token):
         data_do_dia = data_hora.strftime("%d/%m/%Y")
         hora = data_hora.strftime("%H:%M")
         weekday = DAYS[indice_week]
-        local_registro = f"{rua}"+ " " + f"{bairro}" + " - " + f"{cidade}" + " / " + f"{estado}"
+        local_registro = f"{rua}" + ", " + f"{bairro}" + " - " + f"{cidade}" + " / " + f"{estado}"
         registro = ""
 
         req_ponto = requests.api.request(
@@ -603,9 +603,22 @@ def registro_ponto(request, token):
             x["createdAt"] = date
 
         total_pontos = 0
+        primeira_entrada = False
+        primeira_saida = False
+        segunda_entrada = False
+        segunda_saida = False
+
         for ponto in pontos:
             if ponto["createdAt"] == data_do_dia:
                 total_pontos += 1
+                if ponto["registro"] == "1ª Entrada":
+                    primeira_entrada = True
+                if ponto["registro"] == "1ª Saída":
+                    primeira_saida = True
+                if ponto["registro"] == "2ª Entrada":
+                    segunda_entrada = True
+                if ponto["registro"] == "2ª Saída":
+                    segunda_saida = True
 
         req_turno = requests.api.request('GET', f"https://parseapi.back4app.com/classes/Turno?where=%7B%22id_departamento%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Departamento%22%2C%20%22objectId%22%3A%20%22{departamento_id}%22%20%7D%20%7D",
                                         headers={
@@ -623,19 +636,19 @@ def registro_ponto(request, token):
                             registro = "1ª Entrada"
 
                 if turno["primeira_saida"] != "nao definido":
-                    if total_pontos == 1:
+                    if total_pontos == 1 and primeira_entrada == True:
                         if hora <= turno["segunda_entrada"]:
                             print("Primeira Saída: ", hora)
                             registro = "1ª Saída"
 
                 if turno["segunda_entrada"] != "nao definido":
-                    if total_pontos == 2:
+                    if total_pontos == 2 and primeira_saida == True or total_pontos == 0:
                         if hora >= turno["segunda_entrada"] and hora <= turno["segunda_saida"]:
                             print("Segunda Entrada", hora)
                             registro = "2ª Entrada"
 
                 if turno["segunda_saida"] != "nao definido":
-                    if total_pontos == 3:
+                    if total_pontos == 3 and segunda_entrada == True or total_pontos == 1 and segunda_entrada == True:
                         if hora <= turno["segunda_saida"] or hora >= turno["segunda_saida"]:
                             print("Segunda Saída", hora)
                             registro = "2ª Saída"
@@ -1092,6 +1105,17 @@ def list_feriado(request, token):
     key = [{"id": token, "user": response["username"]}]
     empresa_id = response["id_empresa"]["objectId"]
 
+    req_dep = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/Departamento?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    res_dep = req_dep.json()
+    departamento = [x for x in res_dep["results"]]
+
     req_fer = requests.api.request(
         "GET",
         f"https://parseapi.back4app.com/classes/Feriado?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
@@ -1103,7 +1127,7 @@ def list_feriado(request, token):
     res_fer = req_fer.json()
     feriado = [x for x in res_fer["results"]]
 
-    return render(request, "list_feriado.html", {"lista": key, "feriados": feriado})
+    return render(request, "list_feriado.html", {"lista": key, "feriados": feriado, "departamentos": departamento})
 
 
 def cadastro_feriado(request, token):
@@ -1126,9 +1150,21 @@ def cadastro_feriado(request, token):
     key = [{"id": token, "user": response["username"]}]
     empresa_id = response["id_empresa"]["objectId"]
 
+    req_dep = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/Departamento?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    res_dep = req_dep.json()
+    departamento = [x for x in res_dep["results"]]
+
     if request.method == "POST":
         nome = request.POST["nome_feriado"]
         data = request.POST["data_feriado"]
+        departamento_id = request.POST["departamento"]
         date = datetime.strptime(data, "%Y-%m-%d").date()
         date = date.strftime("%d/%m/%Y")
 
@@ -1148,6 +1184,11 @@ def cadastro_feriado(request, token):
                     "className": "Empresa",
                     "objectId": empresa_id,
                 },
+                "id_departamento": {
+                    "__type": "Pointer",
+                    "className": "Departamento",
+                    "objectId": departamento_id,
+                },
             },
         )
         status = str(req_fer.status_code)
@@ -1156,7 +1197,7 @@ def cadastro_feriado(request, token):
         else:
             return redirect("fail_default", token=token)
 
-    return render(request, "cadastro_feriado.html", {"lista": key})
+    return render(request, "cadastro_feriado.html", {"lista": key, "departamentos": departamento})
 
 
 def edit_feriado(request, token, id):
@@ -1179,6 +1220,17 @@ def edit_feriado(request, token, id):
     key = [{"id": token, "user": response["username"]}]
     empresa_id = response["id_empresa"]["objectId"]
 
+    req_dep = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/Departamento?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    res_dep = req_dep.json()
+    departamento = [x for x in res_dep["results"]]
+
     req_fer = requests.api.request(
         "GET",
         f"https://parseapi.back4app.com/classes/Feriado/{id}",
@@ -1197,6 +1249,7 @@ def edit_feriado(request, token, id):
     if request.method == "POST":
         nome = request.POST["nome_feriado"]
         data = request.POST["data_feriado"]
+        departamento_id = request.POST["departamento"]
         date = datetime.strptime(data, "%Y-%m-%d").date()
         date = date.strftime("%d/%m/%Y")
 
@@ -1211,10 +1264,10 @@ def edit_feriado(request, token, id):
             json={
                 "nome": f"{nome}",
                 "data": f"{date}",
-                "id_empresa": {
+                "id_departamento": {
                     "__type": "Pointer",
-                    "className": "Empresa",
-                    "objectId": empresa_id,
+                    "className": "Departamento",
+                    "objectId": departamento_id,
                 },
             },
         )
@@ -1224,7 +1277,7 @@ def edit_feriado(request, token, id):
         else:
             return redirect("fail_default", token=token)
 
-    return render(request, "edit_feriado.html", {"lista": key, "feriado": res_fer})
+    return render(request, "edit_feriado.html", {"lista": key, "feriado": res_fer, "departamentos": departamento})
 
 
 def delete_feriado(request, token, id):
@@ -1771,6 +1824,17 @@ def list_local(request, token):
     key = [{"id": token, "user": response["username"]}]
     empresa_id = response["id_empresa"]["objectId"]
 
+    req_dep = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/Departamento?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    res_dep = req_dep.json()
+    departamento = [x for x in res_dep["results"]]
+
     req_local = requests.api.request(
         "GET",
         f"https://parseapi.back4app.com/classes/Local?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
@@ -1782,7 +1846,7 @@ def list_local(request, token):
     res_local = req_local.json()
     local = [x for x in res_local["results"]]
 
-    return render(request, "list_local.html", {"lista": key, "locais": local})
+    return render(request, "list_local.html", {"lista": key, "locais": local, "departamentos": departamento})
 
 
 def cadastro_local(request, token):
@@ -1805,8 +1869,20 @@ def cadastro_local(request, token):
     key = [{"id": token, "user": response["username"]}]
     empresa_id = response["id_empresa"]["objectId"]
 
+    req_dep = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/Departamento?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    res_dep = req_dep.json()
+    departamento = [x for x in res_dep["results"]]
+
     if request.method == "POST":
         nome = request.POST["nome_local"]
+        departamento_id = request.POST["departamento"]
         cep = request.POST["cep"]
         uf = request.POST["uf"]
         cidade = request.POST["cidade"]
@@ -1835,6 +1911,11 @@ def cadastro_local(request, token):
                     "className": "Empresa",
                     "objectId": empresa_id,
                 },
+                "id_departamento": {
+                    "__type": "Pointer",
+                    "className": "Departamento",
+                    "objectId": departamento_id,
+                },
             },
         )
         status = str(req_cargo.status_code)
@@ -1843,7 +1924,7 @@ def cadastro_local(request, token):
         else:
             return redirect("fail_default", token=token)
 
-    return render(request, "cadastro_local.html", {"lista": key})
+    return render(request, "cadastro_local.html", {"lista": key, "departamentos": departamento})
 
 
 def edit_local(request, token, id):
@@ -1866,6 +1947,17 @@ def edit_local(request, token, id):
     key = [{"id": token, "user": response["username"]}]
     empresa_id = response["id_empresa"]["objectId"]
 
+    req_dep = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/Departamento?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    res_dep = req_dep.json()
+    departamento = [x for x in res_dep["results"]]
+
     req_local = requests.api.request(
         "GET",
         f"https://parseapi.back4app.com/classes/Local/{id}",
@@ -1878,6 +1970,7 @@ def edit_local(request, token, id):
 
     if request.method == "POST":
         nome = request.POST["nome_local"]
+        departamento_id = request.POST["departamento"]
         cep = request.POST["cep"]
         uf = request.POST["uf"]
         cidade = request.POST["cidade"]
@@ -1901,10 +1994,10 @@ def edit_local(request, token, id):
                 "logradouro": f"{logradouro}",
                 "bairro": f"{bairro}",
                 "numero": f"{numero}",
-                "id_empresa": {
+                "id_departamento": {
                     "__type": "Pointer",
-                    "className": "Empresa",
-                    "objectId": empresa_id,
+                    "className": "Departamento",
+                    "objectId": departamento_id,
                 },
             },
         )
@@ -1914,7 +2007,7 @@ def edit_local(request, token, id):
         else:
             return redirect("fail_default", token=token)
 
-    return render(request, "edit_local.html", {"lista": key, "local": res_local})
+    return render(request, "edit_local.html", {"lista": key, "local": res_local, "departamentos": departamento})
 
 
 def delete_local(request, token, id):
@@ -2578,7 +2671,7 @@ def list_demitidos(request, token):
 
 
 # RELATÓRIOS
-def pontos_colaborador(request, token, id_user):
+def espelho_registros(request, token):
     conexao = requests.api.request(
         "GET",
         "https://parseapi.back4app.com/users/me",
@@ -2600,7 +2693,7 @@ def pontos_colaborador(request, token, id_user):
 
     req_user = requests.api.request(
         "GET",
-        f"https://parseapi.back4app.com/classes/_User",
+        f"https://parseapi.back4app.com/classes/_User?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
         headers={
             "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
             "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
@@ -2609,9 +2702,84 @@ def pontos_colaborador(request, token, id_user):
     res_user = req_user.json()
     colaborador = [x for x in res_user["results"]]
 
+    req_cargo = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/Cargo?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    res_cargo = req_cargo.json()
+    cargo = [x for x in res_cargo["results"]]
+
+    req_dep = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/Departamento?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    res_dep = req_dep.json()
+    departamento = [x for x in res_dep["results"]]
+
+    if request.method == "POST":
+        departamento_id = request.POST["departamento"]
+
+        req_user = requests.api.request(
+            "GET",
+            f"https://parseapi.back4app.com/classes/_User?where=%7B%22id_departamento%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Departamento%22%2C%20%22objectId%22%3A%20%22{departamento_id}%22%20%7D%20%7D",
+            headers={
+                "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+            },
+        )
+        res_user = req_user.json()
+        colaborador = [x for x in res_user["results"]]
+
+        status = str(res_user.status_code)
+        if status == "200":
+            return redirect("espelho_registros.html", token=token)
+        else:
+            return redirect("fail_default", token=token)
+
+    return render(request, "espelho_registros.html", {"lista": key, "colaboradores": colaborador, "cargos": cargo, "departamentos": departamento})
+
+
+def relatorio_pontos(request, token, id_user):
+    conexao = requests.api.request(
+        "GET",
+        "https://parseapi.back4app.com/users/me",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+            "X-Parse-Session-Token": f"{token}",
+        },
+    )
+    response = conexao.json()
+    if str(response["sessionToken"]) != f"{token}":
+        return redirect("login")
+    elif response["gestor"] == False:
+        return redirect("login")
+    else:
+        pass
+    key = [{"id": token, "user": response["username"]}]
+    empresa_id = response["id_empresa"]["objectId"]
+
+    req_user = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/_User/{id_user}",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    colab = req_user.json()
+
     req_ponto = requests.api.request(
         "GET",
-        f"https://parseapi.back4app.com/classes/Ponto",
+        f"https://parseapi.back4app.com/classes/Ponto?where=%7B%20%22id_funcionario%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22_User%22%2C%20%22objectId%22%3A%20%22{id_user}%22%20%7D%20%7D",
         headers={
             "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
             "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
@@ -2633,14 +2801,16 @@ def pontos_colaborador(request, token, id_user):
     if start_date and end_date:
         start = datetime.strptime(start_date, "%Y-%m-%d").date()
         end = datetime.strptime(end_date, "%Y-%m-%d").date()
-        start_data = start.strftime("%d/%m/%Y")
-        end_data = end.strftime("%d/%m/%Y")
-        dia_start = start_data.day
-        mes_start = start_data.month
-        ano_start = start_data.year
-        dia_end = end_data.day
-        mes_end = end_data.month
-        ano_end = end_data.year
+
+        start_data = start.strftime("%Y-%m-%d")
+        end_data = end.strftime("%Y-%m-%d")
+
+        dia_start = start.day
+        mes_start = start.month
+        ano_start = start.year
+        dia_end = end.day
+        mes_end = end.month
+        ano_end = end.year
 
         if mes_start == mes_end:
             if mes_start < 10:
@@ -2686,44 +2856,17 @@ def pontos_colaborador(request, token, id_user):
             )
             datas += datas2
 
-        ponto_date = [
-            {
-                "createdAt": x["createdAt"],
-                "id_funcionario": {"objectId": x["id_funcionario"]["objectId"]},
-                "horario": x["horario"],
-                "registro": x["registro"],
-                "local_registro": x["local_registro"],
-            }
-            if str(x["createdAt"]) in datas
-            else {
-                "createdAt": "sem registro",
-                "id_funcionario": {"objectId": "sem registro"},
-                "horario": "sem registro",
-                "registro": "sem registro",
-                "local_registro": "sem registro",
-            }
-            for x in ponto
-        ]
+        ponto_date = [{"createdAt": x["createdAt"], "id_funcionario": {"objectId": x["id_funcionario"]["objectId"]}, "dia_da_semana": x["dia_da_semana"], "horario": x["horario"], "registro": x["registro"], "local_registro": x["local_registro"] } if str(x["createdAt"]) in datas else {"createdAt": "sem registro", "id_funcionario": {"objectId": "sem registro"}, "dia_da_semana": "sem registro", "horario": "sem registro", "registro": "sem registro", "local_registro": "sem registro" } for x in ponto]
     else:
         ponto_date = ponto
         start = "0"
         end = "0"
+    print(start, end)
 
-    return render(
-        request,
-        "pontos_colaborador.html",
-        {
-            "lista": key,
-            "colaboradores": colaborador,
-            "id_emp": empresa_id,
-            "Id_user": id_user,
-            "pontos": ponto_date,
-            "start_data": start,
-            "end_data": end,
-        },
-    )
+    return render(request, "relatorio_pontos.html", {"lista": key, "colaborador": colab, "Id_user": id_user, "pontos": ponto_date, "start_data": start, "end_data": end, "start_date": start_data, "end_date": end_data})
 
 
+# GERAR PDF
 def gerar_relatorio_func(request, token):
     conexao = requests.api.request(
         "GET",
