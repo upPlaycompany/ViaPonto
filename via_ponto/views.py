@@ -229,7 +229,7 @@ def login_colaborador(request):
     return render(request, "login_colaborador.html")
 
 
-def dashboard_colaborador(request, token):
+def fail_default_colaborador(request, token):
     conexao = requests.api.request(
         "GET",
         "https://parseapi.back4app.com/users/me",
@@ -250,7 +250,294 @@ def dashboard_colaborador(request, token):
         pass
     key = [{"id": token, "user": usuario["username"]}]
 
-    return render(request, "dashboard_colaborador.html", {"lista": key})
+    return render(request, "fail_default_colaborador.html", {"lista": key})
+
+
+def dashboard_colaborador(request, token):
+    conexao = requests.api.request(
+        "GET",
+        "https://parseapi.back4app.com/users/me",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+            "X-Parse-Session-Token": f"{token}",
+        },
+    )
+    usuario = conexao.json()
+    if str(usuario["sessionToken"]) != f"{token}":
+        return redirect("login")
+    elif usuario["gestor"] == True:
+        return redirect("login")
+    elif usuario["admin"] == True:
+        return redirect("login")
+    else:
+        pass
+    key = [{"id": token, "user": usuario["username"]}]
+    usuario_id = usuario["objectId"]
+    cargo_id = usuario["id_cargo"]["objectId"]
+    departamento_id = usuario["id_departamento"]["objectId"]
+
+    # PEGAR DO SERVIDOR
+    data_hora = datetime.now()
+    data_do_dia = data_hora.strftime("%d/%m/%Y")
+
+    req_cargo = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/Cargo/{cargo_id}",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    carg = req_cargo.json()
+
+    req_dep = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/Departamento/{departamento_id}",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    dep = req_dep.json()
+
+    req_turno = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/Turno?where=%7B%20%22id_departamento%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Departamento%22%2C%20%22objectId%22%3A%20%22{departamento_id}%22%20%7D%20%7D",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    res_turno = req_turno.json()
+    turno = [x for x in res_turno["results"]]
+
+    req_ponto = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/Ponto?where=%7B%20%22id_funcionario%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22_User%22%2C%20%22objectId%22%3A%20%22{usuario_id}%22%20%7D%20%7D",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    res_ponto = req_ponto.json()
+    ponto = [x for x in res_ponto["results"]]
+
+    for x in ponto:
+        data = x["createdAt"]
+        data = data[:10]
+        date = datetime.strptime(data, "%Y-%m-%d").date()
+        date = date.strftime("%d/%m/%Y")
+        x["createdAt"] = date
+
+    return render(request, "dashboard_colaborador.html", {"lista": key, "user": usuario, "cargo": carg, "departamento": dep, "horarios": turno, "pontos": ponto, "data": data_do_dia})
+
+
+def edit_perfil(request, token):
+    conexao = requests.api.request(
+        "GET",
+        "https://parseapi.back4app.com/users/me",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+            "X-Parse-Session-Token": f"{token}",
+        },
+    )
+    usuario = conexao.json()
+    if str(usuario["sessionToken"]) != f"{token}":
+        return redirect("login")
+    elif usuario["gestor"] == True:
+        return redirect("login")
+    elif usuario["admin"] == True:
+        return redirect("login")
+    else:
+        pass
+    key = [{"id": token, "user": usuario["username"]}]
+    usuario_id = usuario["objectId"]
+
+    data = (usuario.get('data_nasc', ""))
+    if data != "":
+        date = datetime.strptime(data, "%d/%m/%Y").date()
+        data = date.strftime("%Y-%m-%d")
+        usuario["data_nasc"] = data
+
+    if request.method == "POST":
+        username = request.POST["username"]
+        nome = request.POST["nome"]
+        datanasc = request.POST["datanasc"]
+        if datanasc != "":
+            date = datetime.strptime(datanasc, "%Y-%m-%d").date()
+            data = date.strftime("%d/%m/%Y")
+            datanasc = data
+
+        celular = request.POST["celular"]
+        email_colab = request.POST["email"]
+        # Endereço do Colaborador
+        cep = request.POST["cep"]
+        uf = request.POST["uf"]
+        cidade = request.POST["cidade"]
+        logradouro = request.POST["logradouro"]
+        bairro = request.POST["bairro"]
+        numero = request.POST["numero"]
+
+        req_user = requests.api.request(
+            "PUT",
+            f"https://parseapi.back4app.com/classes/_User/{usuario_id}",
+            headers={
+                "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                "X-Parse-Session-Token": f"{token}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "username": f"{username}",
+                "nome": f"{nome}",
+                "data_nasc": f"{datanasc}",
+                "email_colab": f"{email_colab}",
+                "email": f"{email_colab}",
+                "celular": f"{celular}",
+                "cep": f"{cep}",
+                "uf": f"{uf}",
+                "cidade": f"{cidade}",
+                "logradouro": f"{logradouro}",
+                "bairro": f"{bairro}",
+                "numero": f"{numero}",
+            },
+        )
+
+        req_user.json()
+
+        status = str(req_user.status_code)
+
+        if status == "200":
+            return redirect("dashboard_colaborador", token=token)
+        else:
+            return redirect("fail_default_colaborador", token=token)
+
+    return render(request, "edit_perfil_colaborador.html", {"lista": key, "user": usuario})
+
+
+def list_ponto(request, token):
+    conexao = requests.api.request(
+        "GET",
+        "https://parseapi.back4app.com/users/me",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+            "X-Parse-Session-Token": f"{token}",
+        },
+    )
+    usuario = conexao.json()
+    if str(usuario["sessionToken"]) != f"{token}":
+        return redirect("login")
+    elif usuario["gestor"] == True:
+        return redirect("login")
+    elif usuario["admin"] == True:
+        return redirect("login")
+    else:
+        pass
+    key = [{"id": token, "user": usuario["username"]}]
+    usuario_id = usuario["objectId"]
+
+    req_ponto = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/Ponto?where=%7B%20%22id_funcionario%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22_User%22%2C%20%22objectId%22%3A%20%22{usuario_id}%22%20%7D%20%7D",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    res_ponto = req_ponto.json()
+    ponto = [x for x in res_ponto["results"]]
+
+    for x in ponto:
+        data = x["createdAt"]
+        data = data[:10]
+        date = datetime.strptime(data, "%Y-%m-%d").date()
+        date = date.strftime("%d/%m/%Y")
+        x["createdAt"] = date
+
+    start_date = request.GET.get("start_date")
+    end_date = request.GET.get("end_date")
+
+    if start_date and end_date:
+        start = datetime.strptime(start_date, "%Y-%m-%d").date()
+        end = datetime.strptime(end_date, "%Y-%m-%d").date()
+        start_data = start.strftime("%d/%m/%Y")
+        end_data = end.strftime("%d/%m/%Y")
+        dia_start = start_data.day
+        mes_start = start_data.month
+        ano_start = start_data.year
+        dia_end = end_data.day
+        mes_end = end_data.month
+        ano_end = end_data.year
+
+        if mes_start == mes_end:
+            if mes_start < 10:
+                mes_start = f"0{mes_start}"
+
+            lista = list(range(dia_start, dia_end + 1))
+            a = len(lista)
+
+            datas = tuple(
+                [
+                    f"0{lista[x]}" + "/" + f"{mes_start}" + "/" + f"{ano_start}"
+                    if lista[x] < 10
+                    else f"{lista[x]}" + "/" + f"{mes_start}" + "/" + f"{ano_start}"
+                    for x in range(a)
+                ]
+            )
+        elif mes_start < mes_end:
+            if mes_start < 10:
+                mes_start = f"0{mes_start}"
+            if mes_end < 10:
+                mes_end = f"0{mes_end}"
+
+            lista = list(range(dia_start, 32))
+            lista2 = list(range(1, dia_end + 1))
+            a = len(lista)
+            a2 = len(lista2)
+
+            datas = tuple(
+                [
+                    f"0{lista[x]}" + "/" + f"{mes_start}" + "/" + f"{ano_start}"
+                    if lista[x] < 10
+                    else f"{lista[x]}" + "/" + f"{mes_start}" + "/" + f"{ano_start}"
+                    for x in range(a)
+                ]
+            )
+            datas2 = tuple(
+                [
+                    f"0{lista2[x]}" + "/" + f"{mes_end}" + "/" + f"{ano_end}"
+                    if lista2[x] < 10
+                    else f"{lista2[x]}" + "/" + f"{mes_end}" + "/" + f"{ano_end}"
+                    for x in range(a2)
+                ]
+            )
+            datas += datas2
+
+        ponto_date = [
+            {
+                "createdAt": x["createdAt"],
+                "horario": x["horario"],
+                "registro": x["registro"],
+                "local_registro": x["local_registro"],
+            }
+            if str(x["createdAt"]) in datas
+            else {
+                "createdAt": "sem registro",
+                "horario": "sem registro",
+                "registro": "sem registro",
+                "local_registro": "sem registro",
+            }
+            for x in ponto
+        ]
+    else:
+        ponto_date = ponto
+        start = "0"
+        end = "0"
+
+    return render( request, "list_ponto_colaborador.html",{"lista": key, "pontos": ponto_date, "start_data": start, "end_data": end})
 
 
 def registro_ponto(request, token):
@@ -273,11 +560,136 @@ def registro_ponto(request, token):
     else:
         pass
     key = [{"id": token, "user": usuario["username"]}]
+    usuario_id = usuario["objectId"]
+    empresa_id = usuario["id_empresa"]["objectId"]
+    departamento_id = usuario["id_departamento"]["objectId"]
+    DAYS = ["segunda", "terca", "quarta", "quinta", "sexta", "sabado", "domingo"]
+
+    if request.method == "POST":
+        lat = request.POST["lat"]
+        long = request.POST["long"]
+        rua = request.POST["rua"]
+        bairro = request.POST["bairro"]
+        cidade = request.POST["cidade"]
+        estado = request.POST["estado"]
+
+        # PEGAR DO SERVIDOR
+        data_hora = datetime.now()
+        indice_week = data_hora.weekday()
+
+        # DADOS DO PONTO
+        data_do_dia = data_hora.strftime("%d/%m/%Y")
+        hora = data_hora.strftime("%H:%M")
+        weekday = DAYS[indice_week]
+        local_registro = f"{rua}"+ " " + f"{bairro}" + " - " + f"{cidade}" + " / " + f"{estado}"
+        registro = ""
+
+        req_ponto = requests.api.request(
+            "GET",
+            f"https://parseapi.back4app.com/classes/Ponto?where=%7B%20%22id_funcionario%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22_User%22%2C%20%22objectId%22%3A%20%22{usuario_id}%22%20%7D%20%7D",
+            headers={
+                "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+            },
+        )
+        res_ponto = req_ponto.json()
+        pontos = [x for x in res_ponto["results"]]
+
+        for x in pontos:
+            data = x["createdAt"]
+            data = data[:10]
+            date = datetime.strptime(data, "%Y-%m-%d").date()
+            date = date.strftime("%d/%m/%Y")
+            x["createdAt"] = date
+
+        total_pontos = 0
+        for ponto in pontos:
+            if ponto["createdAt"] == data_do_dia:
+                total_pontos += 1
+
+        req_turno = requests.api.request('GET', f"https://parseapi.back4app.com/classes/Turno?where=%7B%22id_departamento%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Departamento%22%2C%20%22objectId%22%3A%20%22{departamento_id}%22%20%7D%20%7D",
+                                        headers={
+                                            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
+        res_turno = req_turno.json()
+        turnos = [x for x in res_turno['results']]
+
+        for turno in turnos:
+            if turno["dia_da_semana"] == weekday:
+                if turno["primeira_entrada"] != "nao definido":
+                    if total_pontos == 0:
+                        if hora >= turno["primeira_entrada"] and hora <= turno["primeira_saida"]:
+                            print("Primeira Entrada: ", hora)
+                            registro = "1ª Entrada"
+
+                if turno["primeira_saida"] != "nao definido":
+                    if total_pontos == 1:
+                        if hora <= turno["segunda_entrada"]:
+                            print("Primeira Saída: ", hora)
+                            registro = "1ª Saída"
+
+                if turno["segunda_entrada"] != "nao definido":
+                    if total_pontos == 2:
+                        if hora >= turno["segunda_entrada"] and hora <= turno["segunda_saida"]:
+                            print("Segunda Entrada", hora)
+                            registro = "2ª Entrada"
+
+                if turno["segunda_saida"] != "nao definido":
+                    if total_pontos == 3:
+                        if hora <= turno["segunda_saida"] or hora >= turno["segunda_saida"]:
+                            print("Segunda Saída", hora)
+                            registro = "2ª Saída"
+
+        print("Data", data_do_dia)
+        print("Dia", weekday)
+        print("Registro", registro)
+        print("Horario", hora)
+        print("Total pontos", total_pontos)
+
+        if total_pontos == 4:
+            return redirect("fail_registro_ponto", token=token)
+
+        # SALVAR O REGISTRO DO PONTO NO BANCO
+        if registro != "":
+            req_ponto = requests.api.request(
+                "POST",
+                f"https://parseapi.back4app.com/classes/Ponto",
+                headers={
+                    "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                    "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                    "Content-Type": "application/json",
+                },
+                json={
+                    "registro": f"{registro}",
+                    "data": f"{data_do_dia}",
+                    "dia_da_semana": f"{weekday}",
+                    "horario": f"{hora}",
+                    "local_registro": f"{local_registro}",
+                    "lat_long": {"__type": "GeoPoint", "latitude": f"{lat}", "longitude": f"{long}"},
+                    "id_empresa": {
+                        "__type": "Pointer",
+                        "className": "Empresa",
+                        "objectId": empresa_id,
+                    },
+                    "id_funcionario": {
+                        "__type": "Pointer",
+                        "className": "_User",
+                        "objectId": usuario_id,
+                    },
+                },
+            )
+            status = str(req_ponto.status_code)
+            if status == "201":
+                return redirect("dashboard_colaborador", token=token)
+            else:
+                return redirect("fail_default_colaborador", token=token)
+
+        return redirect("fail_default_colaborador", token=token)
 
     return render(request, "registro_ponto.html", {"lista": key})
 
 
-def registrar_ponto(request, token):
+def fail_registro_ponto(request, token):
     conexao = requests.api.request(
         "GET",
         "https://parseapi.back4app.com/users/me",
@@ -297,40 +709,8 @@ def registrar_ponto(request, token):
     else:
         pass
     key = [{"id": token, "user": usuario["username"]}]
-    departamento_id = usuario["id_departamento"]["objectId"]
-    DAYS = ["segunda", "terca", "quarta", "quinta", "sexta", "sabado", "domingo"]
 
-    data_hora = datetime.now()
-    print("Data e hora: ", data_hora)
-    indice_week = data_hora.weekday()
-    data = data_hora.strftime("%d/%m/%Y")
-    hora = data_hora.strftime("%H:%M")
-    weekday = DAYS[indice_week]
-    print("Data ", data, "Hora ", hora)
-    print("Dia semana ", weekday)
-
-    # req_turno = requests.api.request('GET', f"https://parseapi.back4app.com/classes/Turno?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{departamento_id}%22%20%7D%20%7D",
-    #                                 headers={
-    #                                     "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
-    #                                     "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
-    # res_turno = req_turno.json()
-    # turnos = [x for x in res_turno['results']]
-
-    for turno in turnos:
-        if turno["dia_da_semana"] == weekday:
-            if hora >= turno["primeira_entrada"] and hora <= turno["primeira_saida"]:
-                print("Primeira Entrada: ", hora)
-            if hora >= turno["primeira_saida"] and hora <= turno["segunda_entrada"]:
-                print("Primeira Saída: ", hora)
-            if hora >= turno["segunda_entrada"] and hora <= turno["segunda_saida"]:
-                print("Segunda Entrada")
-            if (
-                hora >= turno["segunda_saida"]
-                and hora <= turno["segunda_saida"] + "00:30"
-            ):
-                print("Segunda Saída")
-
-    return render(request, "registro_ponto.html", {"lista": key})
+    return render(request, "fail_registro_ponto.html", {"lista": key})
 
 
 # GESTOR DASHBOARD
@@ -813,7 +1193,6 @@ def edit_feriado(request, token, id):
     date = datetime.strptime(data, "%d/%m/%Y").date()
     data = date.strftime("%Y-%m-%d")
     res_fer["data"] = data
-    print(data)
 
     if request.method == "POST":
         nome = request.POST["nome_feriado"]
@@ -925,11 +1304,7 @@ def list_horario(request, token):
     res_turno = req_turno.json()
     turno = [x for x in res_turno["results"]]
 
-    return render(
-        request,
-        "list_horario.html",
-        {"lista": key, "turnos": turno, "departamentos": departamento},
-    )
+    return render(request, "list_horario.html", {"lista": key, "turnos": turno, "departamentos": departamento})
 
 
 def cadastro_horario(request, token):

@@ -31,11 +31,42 @@
         <div class="text-center text" id="weekday"></div>
         <div class="text-center text" id="data-hora"></div>
         <div class="text-center button">
-            {% for key in lista %}
-                <a href="{% url 'registrar_ponto' token=key.id %}">
-                    <button class="btn btn-info btn-lg" type="button">REGISTRAR PONTO</button>
-                </a>
-            {% endfor %}
+            <form method="POST" class="mb-7" enctype="multipart/form-data"> {% csrf_token %}
+                <div class="form-row">
+                        <input
+                            type="hidden"
+                            id="latId"
+                            name="lat"
+                        >
+                        <input
+                            type="hidden"
+                            id="longId"
+                            name="long"
+                        >
+                        <input
+                            type="hidden"
+                            id="ruaId"
+                            name="rua"
+                        >
+                        <input
+                            type="hidden"
+                            id="bairroId"
+                            name="bairro"
+                        >
+                        <input
+                            type="hidden"
+                            id="cidadeId"
+                            name="cidade"
+                        >
+                        <input
+                            type="hidden"
+                            id="estadoId"
+                            name="estado"
+                        >
+                    </div>
+                    <button class="btn btn-info btn-lg" type="submit">REGISTRAR PONTO</button>
+            </form>
+            
         </div>
     </div>
 </div>
@@ -63,5 +94,34 @@
             // Exibe na tela usando a div#data-hora
             document.getElementById('data-hora').innerHTML = dataHora;
         }, 1000);
+    </script>
+    <script>
+        navigator.geolocation.getCurrentPosition(function(posicao) {
+            var url = "https://nominatim.openstreetmap.org/reverse.php?lat="+posicao.coords.latitude+"&lon="+posicao.coords.longitude+"&zoom=16&format=jsonv2";
+            
+            async function getLocation() {
+                await fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        cidade = data.address.city;
+                        rua = data.address.road;
+                        bairro = data.address.suburb;
+                        estado = data.address.state;
+                    })
+                    .catch(() => {
+                        console.error("Não deu")
+                    })
+
+                document.getElementById('latId').value = posicao.coords.latitude;
+                document.getElementById('longId').value = posicao.coords.longitude;
+                document.getElementById('cidadeId').value = cidade;
+                document.getElementById('ruaId').value = rua;
+                document.getElementById('bairroId').value= bairro;
+                document.getElementById('estadoId').value = estado;
+            }
+            
+            getLocation();
+        });
+
     </script>
 {% endblock %}
