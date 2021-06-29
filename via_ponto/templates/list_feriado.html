@@ -22,14 +22,15 @@
         }
 
         .td-1 {
-            width: 40%;
+            width: 30%;
         }
-
         .td-2 {
-            width: 40%;
+            width: 25%;
         }
-
         .td-3 {
+            width: 25%;
+        }
+        .td-4 {
             width: 20%;
         }
     </style>
@@ -59,6 +60,7 @@
                         <tr>
                             <th>NOME</th>
                             <th>DATA</th>
+                            <th>Departamento</th>
                             <th>AÇÕES</th>
                         </tr>
                     </thead>
@@ -68,7 +70,16 @@
                             <tr>
                                 <td class="td-1">{{ feriado.nome }}</td>
                                 <td class="td-2">{{ feriado.data }}</td>
-                                <td class="td-3">
+                                {% if feriado.id_departamento.objectId == 'nao definido' %}
+                                    <td class="td-3">Não possui</td>
+                                {% else %}
+                                    {% for departamento in departamentos %}
+                                        {% if departamento.objectId == feriado.id_departamento.objectId %}
+                                            <td class="td-3">{{ departamento.nome }}</td>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                                <td class="td-4">
                                     {% for key in lista %}
                                         <a href="{% url 'edit_feriado' token=key.id id=feriado.objectId %}">
                                             <i style="color: #6bc9ca; font-size: 20px;" class="fas fa-pencil-alt"></i>

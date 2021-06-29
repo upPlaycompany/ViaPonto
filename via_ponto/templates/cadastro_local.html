@@ -6,13 +6,26 @@
     
     <form method="POST" class="mb-7" enctype="multipart/form-data"> {% csrf_token %}
         <div class="form-row">
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-6">
                 <label>Nome do Local</label>
                 <input 
                     type="text"
                     class="form-control"
                     name="nome_local"
                 >
+            </div>
+            <div class="form-group col-md-6">
+                <div class="input-group" style="margin-top: 30px;">
+                    <div class="input-group-prepend">
+                      <label class="input-group-text" for="departamento">Departamento</label>
+                    </div>
+                    <select class="custom-select" name="departamento" id="departamento">
+                        <option selected>Selecione um departamento</option>
+                        {% for departamento in departamentos %}
+                            <option value="{{departamento.objectId}}">{{ departamento.nome }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
             </div>
         </div>
         <div class="form-row">
