@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %} VIA PONTO - Relatorio de Pontos {% endblock title %}
+{% block title %}VIA PONTO - Relatorio de Pontos {% endblock title %}
 
 {% block extra_style %}
 <style>
@@ -23,9 +23,12 @@
     background: #98FB98;
   }
 
-  .div-flex {
-    display: flex;
-    justify-content: space-between;
+  .input-group {
+    margin-top: 28px;
+  }
+
+  .input-group form button {
+    margin-left: 24px;
   }
 </style>
 {% endblock %}
@@ -33,55 +36,59 @@
 {% block content %}
 <div class="card shadow mb-4">
   <div class="card-header py-3 div-flex">
-    <div>
-      <h1 class="title">Folha de Ponto</h1>
-      <h3 class="text">Nome: {{ colaborador.nome }}</h3>
-    </div>
-    <div>
-      {% for key in lista %}
-        <a href="{% url 'gerar_relatorio_ponto' token=key.id id_user=Id_user start_date=start_data end_date=end_data %}"
-          target="_blank">
-          <button class="btn btn-info btn-lg" type="button">Gerar PDF</button>
-        </a>
-      {% endfor %}
-    </div>
-    
-  </div>
-  <div class="card-body">
-    <div class="row">
-      <div class="col-md-8">
+    <h1 class="title">RELATÓRIO DE PONTOS</h1>
+    <div class="">
+      <div class="input-group">
         <form class="form-inline my-2 my-lg-0 pull-right">
-          <label>Data Inicial</label>
-          <input class="form-control ml-sm-2 mr-sm-2" name="start_date" type="date" value="{{ start_date }}" />
-          <label>Data Final</label>
-          <input class="form-control ml-sm-2 mr-sm-2" name="end_date" type="date" value="{{ end_date }}" />
+          <div class="input-group-prepend">
+            <label class="input-group-text" for="departamento">Departamento</label>
+          </div>
+          <select class="custom-select" name="departamento" id="departamento">
+              <option selected>Selecione um departamento</option>
+              {% for departamento in departamentos %}
+                  <option value="{{departamento.objectId}}">{{ departamento.nome }}</option>
+              {% endfor %}
+          </select>
           <button class="btn btn-primary my-2 my-sm-0" type="submit">Atualizar</button>
         </form>
       </div>
     </div>
+  </div>
+  <div class="card-body">
     <div class="table-responsive">
       <table class="rTable table table-bordered" id="dataTable" width="100%" cellspacing="0">
         <thead>
           <tr>
-            <th>Data</th>
-            <th>Dia da Semana</th>
-            <th>Registro</th>
-            <th>Horas</th>
-            <th>Local do Registro</th>
+            <th>Nome</th>
+            <th>CPF</th>
+            <th>Cargo</th>
+            <th>Departamento</th>
           </tr>
         </thead>
 
         <tbody>
-          {% for ponto in pontos %}
-            {% if ponto.createdAt != "sem registro" %}
-              <tr>
-                <td>{{ ponto.createdAt }}</td>
-                <td>{{ ponto.dia_da_semana }}</td>
-                <td>{{ ponto.registro }}</td>
-                <td>{{ ponto.horario }}</td>
-                <td>{{ ponto.local_registro }}</td>
-              </tr>
-            {% endif %}
+          {% for colaborador in colaboradores %}
+            <tr>
+              {% for key in lista %}
+                <td>
+                  <a href="{% url 'registros_ponto' token=key.id id_user=colaborador.objectId %}">
+                    {{ colaborador.nome }}
+                  </a>
+                </td>
+              {% endfor %}
+              <td>{{ colaborador.cpf }}</td>
+              {% for cargo in cargos %}
+                {% if cargo.objectId == colaborador.id_cargo.objectId %}
+                  <td>{{ cargo.nome }}</td>
+                {% endif %}
+              {% endfor %}
+
+              {% for departamento in departamentos %}
+                {% if departamento.objectId == colaborador.id_departamento.objectId %}
+                  <td>{{ departamento.nome }}</td>
+                {% endif %}
+              {% endfor %}
+            </tr>
           {% endfor %}
         </tbody>
       </table>

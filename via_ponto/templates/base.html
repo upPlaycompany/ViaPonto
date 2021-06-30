@@ -151,9 +151,11 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Ações</h6>
                         {% for key in lista %}
+                            <a class="collapse-item" href="{% url 'relatorio_pontos' token=key.id %}">Relatório de Pontos</a>
+                        {% endfor %}
+                        {% for key in lista %}
                             <a class="collapse-item" href="{% url 'espelho_registros' token=key.id %}">Espelho de Registros</a>
                         {% endfor %}
-                        
                     </div>
                 </div>
             </li>

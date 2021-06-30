@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}VIA PONTO - Espelho de Registros {% endblock title %}
+{% block title %}VIA PONTO - Espelho Registros {% endblock title %}
 
 {% block extra_style %}
 <style>
@@ -36,7 +36,7 @@
 {% block content %}
 <div class="card shadow mb-4">
   <div class="card-header py-3 div-flex">
-    <h1 class="title">Espelho de Registros</h1>
+    <h1 class="title">ESPELHO DE REGISTROS</h1>
     <div class="">
       <div class="input-group">
         <form class="form-inline my-2 my-lg-0 pull-right">
@@ -71,7 +71,7 @@
             <tr>
               {% for key in lista %}
                 <td>
-                  <a href="{% url 'relatorio_pontos' token=key.id id_user=colaborador.objectId %}">
+                  <a href="{% url 'folha_ponto' token=key.id id_user=colaborador.objectId %}">
                     {{ colaborador.nome }}
                   </a>
                 </td>

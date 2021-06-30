@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Folha de Ponto</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px;
+        }
+        
+        .title {
+            margin-top: 25px;
+            margin-bottom: 8px;
+            font-size: 20px;
+            text-align: center;
+        }
+
+        .content {
+            width: 900px;
+            display: block;
+            margin: auto;
+        }
+
+        table {
+            border-bottom: 2px solid black;
+            border-collapse: collapse;
+            margin-bottom: -2px;
+        }
+
+        th, td {
+            border: 2px solid black;
+            border-collapse: collapse;
+        }
+
+        
+
+        .rTable {
+            width: 100%;
+            
+        }
+
+        .rTable thead { 
+            font-weight: bold;
+            text-align: center;
+            background: #ddd;
+        }
+
+        .rTable th, .rTable td {
+            padding: 7px 4px;
+        }
+
+        #td-center td {
+            text-align: center;
+        }
+
+        @media print {
+            body {-webkit-print-color-adjust: exact;}
+        }
+
+        .th-1 {
+            width: 33%;
+        }
+        .th-2 {
+            width: 33%;
+        }
+        .th-3 {
+            width: 33%;
+        }
+
+        /* Tabela de Pontos */
+        .tb-1 {
+            width: 8%;
+        }
+        .tb-2 {
+            width: 16%;
+        }
+        .tb-3 {
+            width: 16%;
+        }
+        .tb-4 {
+            width: 16%;
+        }
+        .tb-5 {
+            width: 16%;
+        }
+        .tb-6 {
+            width: 24%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content">
+        <h1 class="title">FOLHA DE PONTO (MES - ANO)</h1>
+        <table class="rTable">
+            <thead>
+                <tr>
+                    <th colspan="3">DADOS DA EMPRESA</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="2"><strong>Nome:</strong> {{ }}</td>
+                    <td><strong>CNPJ:</strong> {{  }}</td>
+                </tr>
+                <tr>
+                    <td colspan="2"><strong>Endereço:</strong> {{  }}</td>
+                    <td><strong>Bairro:</strong> {{  }}</td>
+                </tr>
+                <tr>
+                    <td class="th-1"><strong>Cidade:</strong> {{  }}</td>
+                    <td class="th-2"><strong>Estado:</strong> {{  }}</td>
+                    <td class="th-3"><strong>CEP:</strong> {{  }}</td>
+
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="rTable">
+            <thead>
+                <tr>
+                    <th colspan="3">DADOS DO COLABORADOR</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="2"><strong>Nome:</strong> {{ }}</td>
+                    <td><strong>CPF:</strong> {{  }}</td>
+                </tr>
+                <tr>
+                    <td class="th-1"><strong>PIS:</strong> {{  }}</td>
+                    <td class="th-2"><strong>Cargo:</strong> {{  }}</td>
+                    <td class="th-3"><strong>Departamento:</strong> {{  }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="rTable">
+            <thead>
+                <tr>
+                    <th>Dia</th>
+                    <th>1ª Entrada</th>
+                    <th>1ª Saída</th>
+                    <th>2ª Entrada</th>
+                    <th>2ª Saída</th>
+                    <th>OBS</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr id="td-center">
+                    <td class="tb-1">{{  }}</td>
+                    <td class="tb-2">{{ }}</td>
+                    <td class="tb-3">{{  }}</td>
+                    <td class="tb-4">{{  }}</td>
+                    <td class="tb-5">{{  }}</td>
+                    <td class="tb-6">{{  }}</td>
+                </tr>
+
+                <tr>
+                    <td colspan="6"><strong>Assinatura do colaborador:</strong> {{}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
