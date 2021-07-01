@@ -2999,77 +2999,94 @@ def folha_ponto(request, token, id_user):
         date = date.strftime("%d/%m/%Y")
         x["createdAt"] = date
 
-    start_date = request.GET.get("start_date")
-    end_date = request.GET.get("end_date")
+    mes_lista = [
+        {
+            "num": "01",
+            "nome": "Janeiro",
+        },
+        {
+            "num": "02",
+            "nome": "Fevereiro",
+        },
+        {
+            "num": "03",
+            "nome": "Março",
+        },
+        {
+            "num": "04",
+            "nome": "Abril",
+        },
+        {
+            "num": "05",
+            "nome": "Maio",
+        },
+        {
+            "num": "06",
+            "nome": "Junho",
+        },
+        {
+            "num": "07",
+            "nome": "Julho",
+        },
+        {
+            "num": "08",
+            "nome": "Agosto",
+        },
+        {
+            "num": "09",
+            "nome": "Setembro",
+        },
+        {
+            "num": "10",
+            "nome": "Outubro",
+        },
+        {
+            "num": "11",
+            "nome": "Novembro",
+        },
+        {
+            "num": "12",
+            "nome": "Dezembro",
+        },
+    ]
 
-    if start_date and end_date:
-        start = datetime.strptime(start_date, "%Y-%m-%d").date()
-        end = datetime.strptime(end_date, "%Y-%m-%d").date()
+    mes_select = request.GET.get("mes")
 
-        start_data = start.strftime("%Y-%m-%d")
-        end_data = end.strftime("%Y-%m-%d")
+    if mes_select:
+        data_atual = datetime.today()
+        
+        ano = data_atual.year
+        dias_mes = ""
 
-        dia_start = start.day
-        mes_start = start.month
-        ano_start = start.year
-        dia_end = end.day
-        mes_end = end.month
-        ano_end = end.year
+        if mes_select == "01" or mes_select == "03" or mes_select == "05" or mes_select == "07" or mes_select == "08" or mes_select == "10" or mes_select == "12":
+            dias_mes = 31
+        elif mes_select == "02":
+            if ano % 100 != 0 and ano % 4 == 0 or ano % 400 == 0:
+                # É UM ANO BISSEXTO
+                dias_mes = 29
+            else:
+                # NÃO É UM ANO BISSEXTO
+                dias_mes = 28
+        elif mes_select == "04" or mes_select == "06" or mes_select == "09" or mes_select == "11":
+            dias_mes = 30
 
-        if mes_start == mes_end:
-            if mes_start < 10:
-                mes_start = f"0{mes_start}"
+        dias = list(range(1, dias_mes + 1))
+        total_dias = len(dias)
 
-            lista = list(range(dia_start, dia_end + 1))
-            a = len(lista)
+        datas = tuple(
+            [
+                f"0{dias[x]}" + "/" + f"{mes_select}" + "/" + f"{ano}"
+                if dias[x] < 10
+                else f"{dias[x]}" + "/" + f"{mes_select}" + "/" + f"{ano}"
+                for x in range(total_dias)
+            ]
+        )
 
-            datas = tuple(
-                [
-                    f"0{lista[x]}" + "/" + f"{mes_start}" + "/" + f"{ano_start}"
-                    if lista[x] < 10
-                    else f"{lista[x]}" + "/" + f"{mes_start}" + "/" + f"{ano_start}"
-                    for x in range(a)
-                ]
-            )
-        elif mes_start < mes_end:
-            if mes_start < 10:
-                mes_start = f"0{mes_start}"
-            if mes_end < 10:
-                mes_end = f"0{mes_end}"
-
-            lista = list(range(dia_start, 32))
-            lista2 = list(range(1, dia_end + 1))
-            a = len(lista)
-            a2 = len(lista2)
-
-            datas = tuple(
-                [
-                    f"0{lista[x]}" + "/" + f"{mes_start}" + "/" + f"{ano_start}"
-                    if lista[x] < 10
-                    else f"{lista[x]}" + "/" + f"{mes_start}" + "/" + f"{ano_start}"
-                    for x in range(a)
-                ]
-            )
-            datas2 = tuple(
-                [
-                    f"0{lista2[x]}" + "/" + f"{mes_end}" + "/" + f"{ano_end}"
-                    if lista2[x] < 10
-                    else f"{lista2[x]}" + "/" + f"{mes_end}" + "/" + f"{ano_end}"
-                    for x in range(a2)
-                ]
-            )
-            datas += datas2
-
-        ponto_date = [{"createdAt": x["createdAt"], "id_funcionario": {"objectId": x["id_funcionario"]["objectId"]}, "dia_da_semana": x["dia_da_semana"], "horario": x["horario"], "registro": x["registro"], "local_registro": x["local_registro"] } if str(x["createdAt"]) in datas else {"createdAt": "sem registro", "id_funcionario": {"objectId": "sem registro"}, "dia_da_semana": "sem registro", "horario": "sem registro", "registro": "sem registro", "local_registro": "sem registro" } for x in ponto]
+        ponto_mes = [{"createdAt": x["createdAt"], "id_funcionario": {"objectId": x["id_funcionario"]["objectId"]}, "dia_da_semana": x["dia_da_semana"], "horario": x["horario"], "registro": x["registro"], "local_registro": x["local_registro"] } if str(x["createdAt"]) in datas else {"createdAt": "sem registro", "id_funcionario": {"objectId": "sem registro"}, "dia_da_semana": "sem registro", "horario": "sem registro", "registro": "sem registro", "local_registro": "sem registro" } for x in ponto]
     else:
-        ponto_date = ponto
-        start = "0"
-        end = "0"
-        start_data = ""
-        end_data = ""
-    print(start, end)
+        ponto_mes = ponto
 
-    return render(request, "folha_ponto.html", {"lista": key, "colaborador": colab, "Id_user": id_user, "pontos": ponto_date, "start_data": start, "end_data": end, "start_date": start_data, "end_date": end_data})
+    return render(request, "folha_ponto.html", {"lista": key, "colaborador": colab, "Id_user": id_user, "pontos": ponto_mes, "mes_sel": mes_select, "meses": mes_lista})
 
 
 # GERAR PDF
@@ -3262,6 +3279,200 @@ def gerar_relatorio_ponto(request, token, id_user, start_date, end_date):
         encoding="utf-8",
     )
 
+
+def gerar_folha_ponto(request, token, id_user, mes):
+    conexao = requests.api.request(
+        "GET",
+        "https://parseapi.back4app.com/users/me",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+            "X-Parse-Session-Token": f"{token}",
+        },
+    )
+    response = conexao.json()
+    if str(response["sessionToken"]) != f"{token}":
+        return redirect("login")
+    elif response["gestor"] == False:
+        return redirect("login")
+    else:
+        pass
+    empresa_id = response["id_empresa"]["objectId"]
+
+    req_emp = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/Empresa/{empresa_id}",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    emp = req_emp.json()
+
+    req_cargo = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/Cargo?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    res_cargo = req_cargo.json()
+    cargo = [x for x in res_cargo["results"]]
+
+    req_dep = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/Departamento?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    res_dep = req_dep.json()
+    departamento = [x for x in res_dep["results"]]
+
+    req_user = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/_User/{id_user}",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    colab = req_user.json()
+
+    req_ponto = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/Ponto?where=%7B%20%22id_funcionario%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22_User%22%2C%20%22objectId%22%3A%20%22{id_user}%22%20%7D%20%7D",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    res_ponto = req_ponto.json()
+    ponto = [x for x in res_ponto["results"]]
+
+    for x in ponto:
+        data = x["createdAt"]
+        data = data[:10]
+        dia = data[:2]
+        date = datetime.strptime(data, "%Y-%m-%d").date()
+        date = date.strftime("%d/%m/%Y")
+        x["createdAt"] = date
+        x["data"] = dia
+
+    mes_lista = [
+        {
+            "num": "01",
+            "nome": "Janeiro",
+        },
+        {
+            "num": "02",
+            "nome": "Fevereiro",
+        },
+        {
+            "num": "03",
+            "nome": "Março",
+        },
+        {
+            "num": "04",
+            "nome": "Abril",
+        },
+        {
+            "num": "05",
+            "nome": "Maio",
+        },
+        {
+            "num": "06",
+            "nome": "Junho",
+        },
+        {
+            "num": "07",
+            "nome": "Julho",
+        },
+        {
+            "num": "08",
+            "nome": "Agosto",
+        },
+        {
+            "num": "09",
+            "nome": "Setembro",
+        },
+        {
+            "num": "10",
+            "nome": "Outubro",
+        },
+        {
+            "num": "11",
+            "nome": "Novembro",
+        },
+        {
+            "num": "12",
+            "nome": "Dezembro",
+        },
+    ]
+
+    if mes != "None":
+        for m in mes_lista:
+            if m["num"] == mes:
+                mes_nome = m["nome"]
+
+        mes_select = mes
+
+        data_atual = datetime.today()
+        
+        ano_atual = data_atual.year
+        dias_mes = ""
+
+        if mes_select == "01" or mes_select == "03" or mes_select == "05" or mes_select == "07" or mes_select == "08" or mes_select == "10" or mes_select == "12":
+            dias_mes = 31
+        elif mes_select == "02":
+            if ano_atual % 100 != 0 and ano_atual % 4 == 0 or ano_atual % 400 == 0:
+                # É UM ANO BISSEXTO
+                dias_mes = 29
+            else:
+                # NÃO É UM ANO BISSEXTO
+                dias_mes = 28
+        elif mes_select == "04" or mes_select == "06" or mes_select == "09" or mes_select == "11":
+            dias_mes = 30
+
+        dias = list(range(1, dias_mes + 1))
+        total_dias = len(dias)
+
+        
+
+
+        datas = tuple(
+            [
+                f"0{dias[x]}" + "/" + f"{mes_select}" + "/" + f"{ano_atual}"
+                if dias[x] < 10
+                else f"{dias[x]}" + "/" + f"{mes_select}" + "/" + f"{ano_atual}"
+                for x in range(total_dias)
+            ]
+        )
+
+        ponto_mes = [{"createdAt": x["createdAt"], "id_funcionario": {"objectId": x["id_funcionario"]["objectId"]}, "dia": x["data"], "horario": x["horario"], "registro": x["registro"], "local_registro": x["local_registro"] } if str(x["createdAt"]) in datas else {"createdAt": "sem registro", "id_funcionario": {"objectId": "sem registro"}, "dia": "sem registro", "horario": "sem registro", "registro": "sem registro" } for x in ponto]
+    else:
+        ponto_mes = ponto
+        return redirect("fail_default", token=token)
+
+    return rendering.render_to_pdf_response(
+        request=request,
+        context={
+            "empresa": emp,
+            "cargos": cargo,
+            "departamentos": departamento,
+            "colaborador": colab,
+            "pontos": ponto_mes,
+            "nome_mes": mes_nome,
+            "mes": mes_select,
+            "ano": ano_atual,
+            "meses": mes_lista,
+            "total_days": range(total_dias + 1),
+        },
+        template="pdf-folha-ponto.html",
+        encoding="utf-8",
+    )
 
 # ÁREA ADMINISTRATIVA #
 def base_admin(request, token):

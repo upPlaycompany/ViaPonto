@@ -12,13 +12,12 @@
             padding: 0;
             box-sizing: border-box;
             font-family: Arial, Helvetica, sans-serif;
-            font-size: 14px;
+            font-size: 11px;
         }
         
         .title {
-            margin-top: 25px;
-            margin-bottom: 8px;
-            font-size: 20px;
+            margin-bottom: 2px;
+            font-size: 16px;
             text-align: center;
         }
 
@@ -39,8 +38,6 @@
             border-collapse: collapse;
         }
 
-        
-
         .rTable {
             width: 100%;
             
@@ -49,15 +46,19 @@
         .rTable thead { 
             font-weight: bold;
             text-align: center;
-            background: #ddd;
         }
 
         .rTable th, .rTable td {
-            padding: 7px 4px;
+            padding-top: 4px;
+        }
+
+        .rTable td {
+            padding-left: 4px;
         }
 
         #td-center td {
             text-align: center;
+            padding-left: 0;
         }
 
         @media print {
@@ -76,7 +77,7 @@
 
         /* Tabela de Pontos */
         .tb-1 {
-            width: 8%;
+            width: 10%;
         }
         .tb-2 {
             width: 16%;
@@ -91,60 +92,68 @@
             width: 16%;
         }
         .tb-6 {
-            width: 24%;
+            width: 25%;
         }
     </style>
 </head>
 
 <body>
     <div class="content">
-        <h1 class="title">FOLHA DE PONTO (MES - ANO)</h1>
+        <h1 class="title">FOLHA DE PONTO ({{ nome_mes }} - {{ ano }})</h1>
         <table class="rTable">
             <thead>
-                <tr>
+                <tr style="background-color: #ddd;">
                     <th colspan="3">DADOS DA EMPRESA</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td colspan="2"><strong>Nome:</strong> {{ }}</td>
-                    <td><strong>CNPJ:</strong> {{  }}</td>
+                    <td colspan="2"><strong>Nome:</strong> {{ empresa.razaosocial }}</td>
+                    <td><strong>CNPJ:</strong> {{ empresa.cnpj }}</td>
                 </tr>
                 <tr>
-                    <td colspan="2"><strong>Endereço:</strong> {{  }}</td>
-                    <td><strong>Bairro:</strong> {{  }}</td>
+                    <td colspan="2"><strong>Endereço:</strong> {{ empresa.logradouro }}</td>
+                    <td><strong>Bairro:</strong> {{ empresa.bairro }}</td>
                 </tr>
                 <tr>
-                    <td class="th-1"><strong>Cidade:</strong> {{  }}</td>
-                    <td class="th-2"><strong>Estado:</strong> {{  }}</td>
-                    <td class="th-3"><strong>CEP:</strong> {{  }}</td>
-
+                    <td class="th-1"><strong>Cidade:</strong> {{ empresa.cidade }}</td>
+                    <td class="th-2"><strong>Estado:</strong> {{ empresa.uf }}</td>
+                    <td class="th-3"><strong>CEP:</strong> {{ empresa.cep }}</td>
                 </tr>
             </tbody>
         </table>
 
         <table class="rTable">
             <thead>
-                <tr>
+                <tr style="background-color: #ddd;">
                     <th colspan="3">DADOS DO COLABORADOR</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td colspan="2"><strong>Nome:</strong> {{ }}</td>
-                    <td><strong>CPF:</strong> {{  }}</td>
+                    <td colspan="2"><strong>Nome:</strong> {{ colaborador.nome }}</td>
+                    <td><strong>CPF:</strong> {{ colaborador.cpf }}</td>
                 </tr>
                 <tr>
-                    <td class="th-1"><strong>PIS:</strong> {{  }}</td>
-                    <td class="th-2"><strong>Cargo:</strong> {{  }}</td>
-                    <td class="th-3"><strong>Departamento:</strong> {{  }}</td>
+                    <td class="th-1"><strong>PIS:</strong> {{ colaborador.pis }}</td>
+                    {% for cargo in cargos %}
+                        {% if cargo.objectId == colaborador.id_cargo.objectId %}
+                            <td class="th-2"><strong>Cargo:</strong> {{ cargo.nome }}</td>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% for departamento in departamentos %}
+                        {% if departamento.objectId == colaborador.id_departamento.objectId %}
+                            <td class="th-3"><strong>Departamento:</strong> {{ departamento.nome }}</td>
+                        {% endif %}
+                    {% endfor %}
                 </tr>
             </tbody>
         </table>
 
         <table class="rTable">
             <thead>
-                <tr>
+                <tr style="background-color: #ddd;">
                     <th>Dia</th>
                     <th>1ª Entrada</th>
                     <th>1ª Saída</th>
@@ -154,17 +163,30 @@
                 </tr>
             </thead>
             <tbody>
-                <tr id="td-center">
-                    <td class="tb-1">{{  }}</td>
-                    <td class="tb-2">{{ }}</td>
-                    <td class="tb-3">{{  }}</td>
-                    <td class="tb-4">{{  }}</td>
-                    <td class="tb-5">{{  }}</td>
-                    <td class="tb-6">{{  }}</td>
-                </tr>
+                {% for dia in total_days %}
+                    {% if dia != "0" %}
+                        <tr id="td-center">
+                            <td class="tb-1">{{ dia }}</td>
+                            {% for ponto in pontos %}
+                                {% if ponto.dia == dia %}
+                                    {% if ponto.registro == "1ª Entrada" %}
+                                        <td class="tb-2">{{ ponto.horario }}</td>
+                                    {% else %}
+                                        <td class="tb-2"> </td>
+                                    {% endif %}
+                                {% endif%}
+                            {% endfor %}
+                        </tr>
+                    {% endif%}
+                {% endfor %}
+
+                
+                
+                        
+                    
 
                 <tr>
-                    <td colspan="6"><strong>Assinatura do colaborador:</strong> {{}}</td>
+                    <td colspan="6"><strong>Assinatura do colaborador:</strong> </td>
                 </tr>
             </tbody>
         </table>

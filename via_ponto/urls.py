@@ -63,8 +63,10 @@ urlpatterns = [
     path('registros/ponto/<str:token>/<str:id_user>/', views.registros_ponto, name='registros_ponto'),
     path('espelho/registros/<str:token>/', views.espelho_registros, name='espelho_registros'),
     path('folha/ponto/<str:token>/<str:id_user>/', views.folha_ponto, name='folha_ponto'),
+    # PDFs
+    path('folha/ponto/pdf/<str:token>/<str:id_user>/<str:mes>/', views.gerar_folha_ponto, name='gerar_folha_ponto'),
     path('relatorio-func/<str:token>/', views.gerar_relatorio_func, name='gerar_relatorio_func'),
-    path('relatorio-ponto/<str:token>/<str:id_user>/<str:start_date>/<str:end_date>/', views.gerar_relatorio_ponto, name='gerar_relatorio_ponto'),
+    path('relatorio-ponto/<str:token>/<str:id_user>/', views.gerar_relatorio_ponto, name='gerar_relatorio_ponto'),
 
 
     # ÁREA ADMINSTRATIVA

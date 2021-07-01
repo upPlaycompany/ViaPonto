@@ -39,38 +39,34 @@
     </div>
     <div>
       {% for key in lista %}
-        <a href="{% url 'gerar_relatorio_ponto' token=key.id id_user=Id_user start_date=start_data end_date=end_data %}"
+        <a href="{% url 'gerar_folha_ponto' token=key.id id_user=Id_user mes=mes_sel %}"
           target="_blank">
           <button class="btn btn-info btn-lg" type="button">Gerar PDF</button>
         </a>
       {% endfor %}
     </div>
-    
   </div>
+
   <div class="card-body">
     <div class="row">
-      <div class="col-md-8">
-        <form class="form-inline my-2 my-lg-0 pull-right">
-          <label>Mês</label>
-          <select>
-            <option>Escolha o mês</option>
-            <option value="01">Janeiro</option>
-            <option value="02">Fevereiro</option>
-            <option value="03">Março</option>
-            <option value="04">Abril</option>
-            <option value="05">Maio</option>
-            <option value="06">Junho</option>
-            <option value="07">Julho</option>
-            <option value="08">Agosto</option>
-            <option value="09">Setembro</option>
-            <option value="10">Outubro</option>
-            <option value="11">Novembro</option>
-            <option value="12">Dezembro</option>
-          </select>
-          <label>Data Final</label>
-          <input class="form-control ml-sm-2 mr-sm-2" name="end_date" type="date" value="{{ end_date }}" />
-          <button class="btn btn-primary my-2 my-sm-0" type="submit">Atualizar</button>
-        </form>
+      <div class="div-flex ml-3">
+        <div class="input-group">
+          <form class="form-inline my-2 my-lg-0 pull-right">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="mes">Mês</label>
+            </div>
+            <select class="custom-select" name="mes" id="mes">
+              {% for m in meses %}
+                  {% if m.num != mes_sel %}
+                      <option value="{{m.num}}">{{ m.nome }}</option>
+                  {% else %}
+                      <option value="{{m.num}}" selected>{{ m.nome }}</option>
+                  {% endif %}
+              {% endfor %}
+            </select>
+            <button class="btn btn-primary my-2 ml-3 my-sm-0" type="submit">Atualizar</button>
+          </form>
+        </div>
       </div>
     </div>
     <div class="table-responsive">
