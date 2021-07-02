@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %} VIA PONTO - Total registrados {% endblock title %}
+
+{% block extra_style %}
+<style>
+  .card-body .row {
+    margin-bottom: 30px;
+  }
+
+  .rTable {
+    text-align: center;
+  }
+
+  .rTable thead {
+    background-color: #20953B;
+    font-weight: bold;
+    color: white;
+    font-size: 1em;
+  }
+
+  .rTable tbody tr:nth-child(2n) {
+    background: #98FB98;
+  }
+
+  .div-flex {
+    display: flex;
+    justify-content: space-between;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="card shadow mb-4">
+  <div class="card-header py-3 div-flex">
+    <div>
+      <h1 class="title">Total registrados de hoje</h1>
+    </div>
+  </div>
+
+  <div class="card-body">
+    
+    <div class="table-responsive">
+      <table class="rTable table table-bordered" id="dataTable" width="100%" cellspacing="0">
+        <thead>
+          <tr>
+            <th>Colaborador</th>
+            <th>Registro</th>
+            <th>Horas</th>
+            <th>Local do Registro</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for ponto in pontos %}
+            {% if ponto.createdAt != "sem registro" %}
+              <tr>
+                {% for colaborador in colaboradores %}
+                  {% if colaborador.objectId == ponto.id_funcionario.objectId %}
+                    <td>{{ colaborador.nome }}</td>
+                  {% endif %}
+                {% endfor %}
+                <td>{{ ponto.registro }}</td>
+                <td>{{ ponto.horario }}</td>
+                <td>{{ ponto.local_registro }}</td>
+              </tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

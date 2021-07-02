@@ -25,6 +25,8 @@ urlpatterns = [
     # GESTOR DASHBOARD
     path('login/gestor/', views.login_gestor, name='login_gestor'),
     path('dashboard/<str:token>/', views.dashboard, name='dashboard'),
+    path('total/registrados/<str:token>/', views.total_registrados, name='total_registrados'),
+    path('total/pendentes/<str:token>/', views.total_pendentes, name='total_pendentes'),
     # EMPREGADOR
     path('empresa/edit/<str:token>/', views.edit_empresa, name='edit_empresa'),
     path('empresa/success/<str:token>/', views.edit_empresa_success, name='edit_empresa_success'),

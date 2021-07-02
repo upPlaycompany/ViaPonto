@@ -1,10 +1,6 @@
 from django.shortcuts import render
-from django.contrib import auth as autent
-from django.contrib.auth import authenticate, logout
-from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 import datetime
 from datetime import datetime
 from easy_pdf import rendering
@@ -580,6 +576,9 @@ def registro_ponto(request, token):
         cidade = request.POST["cidade"]
         estado = request.POST["estado"]
 
+        if rua == "" or bairro == "" or cidade or estado == "":
+            return redirect("fail_default_colaborador", token=token)
+        
         # PEGAR DO SERVIDOR
         data_hora = datetime.now()
         indice_week = data_hora.weekday()
@@ -685,7 +684,6 @@ def registro_ponto(request, token):
                     "dia_da_semana": f"{weekday}",
                     "horario": f"{hora}",
                     "local_registro": f"{local_registro}",
-                    "lat_long": {"__type": "GeoPoint", "latitude": f"{lat}", "longitude": f"{long}"},
                     "id_empresa": {
                         "__type": "Pointer",
                         "className": "Empresa",
@@ -780,8 +778,237 @@ def dashboard(request, token):
     else:
         pass
     key = [{"id": token, "user": usuario["username"]}]
+    empresa_id = usuario["id_empresa"]["objectId"]
+    data_atual = datetime.today()
+    data_do_dia = data_atual.strftime("%d/%m/%Y")
 
-    return render(request, "dashboard.html", {"lista": key})
+    req_user = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/_User?where=%7B%20%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    res_user = req_user.json()
+    colab = [x for x in res_user["results"]]
+
+    total_demitidos = 0
+    for col in colab:
+        if col["demitido"] == True or col["gestor"] == True:
+            total_demitidos += 1
+
+    num_colab = len(colab) - total_demitidos
+
+    req_ponto = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/Ponto?where=%7B%20%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    res_ponto = req_ponto.json()
+    ponto = [x for x in res_ponto["results"]]
+
+    for x in ponto:
+        data = x["createdAt"]
+        data = data[:10]
+        date = datetime.strptime(data, "%Y-%m-%d").date()
+        date = date.strftime("%d/%m/%Y")
+        x["createdAt"] = date
+
+    data_atual = datetime.today()
+    data_do_dia = data_atual.strftime("%d/%m/%Y")
+
+    ponto_dia = [{"createdAt": x["createdAt"], "id_funcionario": {"objectId": x["id_funcionario"]["objectId"]}, "dia_da_semana": x["dia_da_semana"], "horario": x["horario"], "registro": x["registro"], "local_registro": x["local_registro"] } if str(x["createdAt"]) in data_do_dia else {"createdAt": "sem registro", "id_funcionario": {"objectId": "sem registro"}, "dia_da_semana": "sem registro", "horario": "sem registro", "registro": "sem registro", "local_registro": "sem registro" } for x in ponto]
+
+    total_prim_entrada = 0
+    total_prim_saida = 0
+    total_seg_entrada = 0
+    total_seg_saida = 0
+
+    for p in ponto_dia:
+        if p["createdAt"] != "sem registro":
+            if p["registro"] == "1ª Entrada":
+                total_prim_entrada += 1
+            if p["registro"] == "1ª Saída":
+                total_prim_saida += 1
+            if p["registro"] == "2ª Entrada":
+                total_seg_entrada += 1
+            if p["registro"] == "2ª Saída":
+                total_seg_saida += 1
+
+    total_pend_1 = num_colab - total_prim_entrada
+    total_pend_2 = num_colab - total_prim_saida
+    total_pend_3 = num_colab - total_seg_entrada
+    total_pend_4 = num_colab - total_seg_saida
+
+    return render(request, "dashboard.html", {"lista": key, "total_colab": num_colab, "data": data_do_dia, "total_ent1": total_prim_entrada, "total_sai1": total_prim_saida, "total_ent2": total_seg_entrada, "total_sai2": total_seg_saida, "total_pend1": total_pend_1, "total_pend2": total_pend_2, "total_pend3": total_pend_3, "total_pend4": total_pend_4})
+
+
+def total_registrados(request, token):
+    conexao = requests.api.request(
+        "GET",
+        "https://parseapi.back4app.com/users/me",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+            "X-Parse-Session-Token": f"{token}",
+        },
+    )
+    response = conexao.json()
+    if str(response["sessionToken"]) != f"{token}":
+        return redirect("login")
+    elif response["gestor"] == False:
+        return redirect("login")
+    else:
+        pass
+    key = [{"id": token, "user": response["username"]}]
+    empresa_id = response["id_empresa"]["objectId"]
+
+    req_user = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/_User?where=%7B%20%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    res_user = req_user.json()
+    colab = [x for x in res_user["results"]]
+
+    req_ponto = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/Ponto?where=%7B%20%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    res_ponto = req_ponto.json()
+    ponto = [x for x in res_ponto["results"]]
+
+    for x in ponto:
+        data = x["createdAt"]
+        data = data[:10]
+        date = datetime.strptime(data, "%Y-%m-%d").date()
+        date = date.strftime("%d/%m/%Y")
+        x["createdAt"] = date
+
+    data_atual = datetime.today()
+    data_do_dia = data_atual.strftime("%d/%m/%Y")
+
+    ponto_dia = [{"createdAt": x["createdAt"], "id_funcionario": {"objectId": x["id_funcionario"]["objectId"]}, "dia_da_semana": x["dia_da_semana"], "horario": x["horario"], "registro": x["registro"], "local_registro": x["local_registro"] } if str(x["createdAt"]) in data_do_dia else {"createdAt": "sem registro", "id_funcionario": {"objectId": "sem registro"}, "dia_da_semana": "sem registro", "horario": "sem registro", "registro": "sem registro", "local_registro": "sem registro" } for x in ponto]
+
+    return render(request, "total_registrados.html", {"lista": key, "pontos": ponto_dia, "colaboradores": colab})
+
+
+def total_pendentes(request, token):
+    conexao = requests.api.request(
+        "GET",
+        "https://parseapi.back4app.com/users/me",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+            "X-Parse-Session-Token": f"{token}",
+        },
+    )
+    response = conexao.json()
+    if str(response["sessionToken"]) != f"{token}":
+        return redirect("login")
+    elif response["gestor"] == False:
+        return redirect("login")
+    else:
+        pass
+    key = [{"id": token, "user": response["username"]}]
+    empresa_id = response["id_empresa"]["objectId"]
+
+    req_user = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/_User?where=%7B%20%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    res_user = req_user.json()
+    colab = [x for x in res_user["results"]]
+
+    req_ponto = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/Ponto?where=%7B%20%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    res_ponto = req_ponto.json()
+    ponto = [x for x in res_ponto["results"]]
+
+    for p in ponto:
+        data = p["createdAt"]
+        data = data[:10]
+        date = datetime.strptime(data, "%Y-%m-%d").date()
+        date = date.strftime("%d/%m/%Y")
+        p["createdAt"] = date
+
+    # PEGAR DO SERVIDOR
+    data_hora = datetime.now()
+    data_do_dia = data_hora.strftime("%d/%m/%Y")
+
+    ponto_dia = [{"createdAt": x["createdAt"], "id_funcionario": {"objectId": x["id_funcionario"]["objectId"]}, "dia_da_semana": x["dia_da_semana"], "horario": x["horario"], "registro": x["registro"], "local_registro": x["local_registro"] } if str(x["createdAt"]) in data_do_dia else {"createdAt": "sem registro", "id_funcionario": {"objectId": "sem registro"}, "dia_da_semana": "sem registro", "horario": "sem registro", "registro": "sem registro", "local_registro": "sem registro" } for x in ponto]
+
+    pendentes_prim_entrada = []
+    pendentes_prim_saida = []
+    pendentes_seg_entrada = []
+    pendentes_seg_saida = []
+
+    for colaborador in colab:
+        if colaborador["demitido"] != True and colaborador["gestor"] != True:
+            primeira_entrada = False
+            primeira_saida = False
+            segunda_entrada = False
+            total_pontos = 0
+            for ponto in ponto_dia:
+                if ponto["id_funcionario"]["objectId"] == colaborador["objectId"]:
+                    total_pontos += 1
+                    if ponto["registro"] == "1ª Entrada":
+                        primeira_entrada = True
+                    if ponto["registro"] == "1ª Saída":
+                        primeira_saida = True
+                    if ponto["registro"] == "2ª Entrada":
+                        segunda_entrada = True
+            if total_pontos == 0:
+                colabId = colaborador["objectId"]
+                pendentes_prim_entrada.append(colabId)
+            
+            elif total_pontos == 1 and primeira_entrada == True:
+                colabId2 = colaborador["objectId"]
+                pendentes_prim_saida.append(colabId2)
+            
+            elif total_pontos == 2 and primeira_saida == True:
+                colabId3 = colaborador["objectId"]
+                pendentes_seg_entrada.append(colabId3)
+            
+            elif total_pontos == 3 and segunda_entrada == True:
+                colabId4 = colaborador["objectId"]
+                pendentes_seg_saida.append(colabId4)
+
+    total_p1 = len(pendentes_prim_entrada)
+    total_p2 = len(pendentes_prim_saida)
+    total_p3 = len(pendentes_seg_entrada)
+    total_p4 = len(pendentes_seg_saida)
+    if total_p1 == 0:
+        pendentes_prim_entrada = ""
+    if total_p2 == 0:
+        pendentes_prim_saida = ""
+    if total_p3 == 0:
+        pendentes_seg_entrada = ""
+    if total_p4 == 0:
+        pendentes_seg_saida = ""
+
+    return render(request, "total_pendentes.html", {"lista": key, "pontos": ponto_dia,"colaboradores": colab, "pendentes1": pendentes_prim_entrada, "pendentes2": pendentes_prim_saida, "pendentes3": pendentes_seg_entrada, "pendentes4": pendentes_seg_saida})
 
 
 # EMPREGADOR
@@ -3439,9 +3666,6 @@ def gerar_folha_ponto(request, token, id_user, mes):
         dias = list(range(1, dias_mes + 1))
         total_dias = len(dias)
 
-        
-
-
         datas = tuple(
             [
                 f"0{dias[x]}" + "/" + f"{mes_select}" + "/" + f"{ano_atual}"
@@ -3473,6 +3697,7 @@ def gerar_folha_ponto(request, token, id_user, mes):
         template="pdf-folha-ponto.html",
         encoding="utf-8",
     )
+
 
 # ÁREA ADMINISTRATIVA #
 def base_admin(request, token):
