@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+
+{% block title %} VIA PONTO - Total pendentes {% endblock title %}
+
+{% block extra_style %}
+<style>
+  .card-body .row {
+    margin-bottom: 30px;
+  }
+
+  .rTable {
+    text-align: center;
+  }
+
+  .rTable thead {
+    background-color: #20953B;
+    font-weight: bold;
+    color: white;
+    font-size: 1em;
+  }
+
+  .rTable tbody tr:nth-child(2n) {
+    background: #98FB98;
+  }
+
+  .div-flex {
+    display: flex;
+    justify-content: space-between;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="card shadow mb-4">
+  <div class="card-header py-3 div-flex">
+    <div>
+      <h1 class="title">Total pendentes de hoje</h1>
+    </div>
+  </div>
+
+  <div class="card-body">
+    {% if pendentes1 != "" %}
+    <h2 class="text">Pendentes 1ª Entrada</h2>
+    <div class="table-responsive">
+      <table class="rTable table table-bordered" id="dataTable" width="100%" cellspacing="0">
+        <thead>
+          <tr>
+            <th>Colaborador</th>
+            <th>CPF</th>
+            <th>Cargo</th>
+            <th>Departamento</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for colaborador in colaboradores %}
+            {% for pend in pendentes1 %}
+              {% if colaborador.objectId == pend %}
+                <tr>
+                  <td>{{ colaborador.nome }}</td>
+                  <td>{{ colaborador.cpf }}</td>
+                  <td>{{ colaborador.id_cargo.objectId }}</td>
+                  <td>{{ colaborador.id_departamento.objectId }}</td>
+                </tr>
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+
+    {% if pendentes2 != "" %}
+    <h2 class="text">Pendentes 1ª Saída</h2>
+    <div class="table-responsive">
+      <table class="rTable table table-bordered" id="dataTable" width="100%" cellspacing="0">
+        <thead>
+          <tr>
+            <th>Colaborador</th>
+            <th>CPF</th>
+            <th>Cargo</th>
+            <th>Departamento</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for colaborador in colaboradores %}
+            {% for pend in pendentes2 %}
+              {% if colaborador.objectId == pend %}
+                <tr>
+                  <td>{{ colaborador.nome }}</td>
+                  <td>{{ colaborador.cpf }}</td>
+                  <td>{{ colaborador.id_cargo.objectId }}</td>
+                  <td>{{ colaborador.id_departamento.objectId }}</td>
+                </tr>
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+
+    {% if pendentes3 != "" %}
+    <h2 class="text">Pendentes 2ª Entrada</h2>
+    <div class="table-responsive">
+      <table class="rTable table table-bordered" id="dataTable" width="100%" cellspacing="0">
+        <thead>
+          <tr>
+            <th>Colaborador</th>
+            <th>CPF</th>
+            <th>Cargo</th>
+            <th>Departamento</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for colaborador in colaboradores %}
+            {% for pend in pendentes3 %}
+              {% if colaborador.objectId == pend %}
+                <tr>
+                  <td>{{ colaborador.nome }}</td>
+                  <td>{{ colaborador.cpf }}</td>
+                  <td>{{ colaborador.id_cargo.objectId }}</td>
+                  <td>{{ colaborador.id_departamento.objectId }}</td>
+                </tr>
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+
+    {% if pendentes4 != "" %}
+    <h2 class="text">Pendentes 2ª Saída</h2>
+    <div class="table-responsive">
+      <table class="rTable table table-bordered" id="dataTable" width="100%" cellspacing="0">
+        <thead>
+          <tr>
+            <th>Colaborador</th>
+            <th>CPF</th>
+            <th>Cargo</th>
+            <th>Departamento</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for colaborador in colaboradores %}
+            {% for pend in pendentes4 %}
+              {% if colaborador.objectId == pend %}
+                <tr>
+                  <td>{{ colaborador.nome }}</td>
+                  <td>{{ colaborador.cpf }}</td>
+                  <td>{{ colaborador.id_cargo.objectId }}</td>
+                  <td>{{ colaborador.id_departamento.objectId }}</td>
+                </tr>
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

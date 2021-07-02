@@ -6,7 +6,7 @@
     
     <form method="POST" class="mb-7" enctype="multipart/form-data"> {% csrf_token %}
         <div class="form-row">
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-3">
                 <label>Nome Feriado</label>
                 <input
                     type="text"
@@ -16,7 +16,7 @@
                     required
                 >
             </div>
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-3">
               <label>Data Feriado</label>
               <input
                   type="date"
@@ -25,6 +25,23 @@
                   value="{{feriado.data}}"
                   required
               >
+            </div>
+            <div class="form-group col-md-6">
+                <div class="input-group" style="margin-top: 30px;">
+                    <div class="input-group-prepend">
+                      <label class="input-group-text" for="departamento">Departamento</label>
+                    </div>
+                    <select class="custom-select" name="departamento" id="departamento">
+                        {% for departamento in departamentos %}
+                            {% if departamento.objectId != feriado.id_departamento.objectId %}
+                                <option value="{{departamento.objectId}}">{{ departamento.nome }}</option>
+                            
+                            {% else %}
+                                <option value="{{departamento.objectId}}" selected>{{ departamento.nome }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
             </div>
         </div>
         <button type="submit" class="btn btn-info btn-lg">SALVAR</button>

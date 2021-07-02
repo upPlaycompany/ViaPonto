@@ -2,10 +2,189 @@
 
 {% block title %} VIA PONTO - Página Inicial {% endblock title %}
 
+{% block extra_style %}
+    <style>
+        .border {
+            border: 2px solid #6bc9ca !important;
+            border-radius: 15px;
+            padding: 15px;
+        }
+
+        .border:nth-child(1) {
+            margin-right: 15px;
+        }
+
+        .div-flex {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .div-flex h1 {
+            margin-bottom: 0;
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
-    <h2 style="color: #21963b; font-weight: bold;">Seja Bem vindo a Área de Empresa do VIA PONTO!</h2>
+    <div class="card shadow mb-5">
+        <div class="card-header py-3 flex-container">
+            <div id="faltas" class="table-responsive border div-flex">
+                <h1 class="title">Colaboradores</h1>
+                <h1>{{ total_colab }}</h1>
+            </div>
+            
+            <div id="hora-extras" class="table-responsive border div-flex">
+                <h1 class="title">Data</h1>
+                <h1>{{ data }}</h1>
+            </div>
+        </div>
 
-    <br> <br>
-
-    <h3 style="color: #6bc9ca; font-weight: bold;">Todas as funcionalidades estão na barra de navegação à esquerda!</h3>
+        <div class="card-body">
+            <h1 class="title">Registros de hoje</h1>
+            <div class="flex-container">
+                <div id="registros" class="table-responsive border">
+                    <div class="div-flex mb-4">
+                        <h2 class="title">Total registrados</h2>
+                        {% for key in lista %}
+                            <a href="{% url 'total_registrados' token=key.id %}">
+                                <button class="btn btn-info btn-lg" type="button">Todos Registros</button>
+                            </a>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-2">
+                        <div class="card border-left-success shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col">
+                                        <div class="h5 font-weight-bold text-primary text-uppercase mb-1">
+                                            1ª Entrada
+                                        </div>
+                                        
+                                        <div class="h4 mb-0 font-weight-bold text-gray-800">{{ total_ent1 }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <div class="card border-left-success shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col">
+                                        <div class="h5 font-weight-bold text-primary text-uppercase mb-1">
+                                            1ª Saída
+                                        </div>
+                                        
+                                        <div class="h4 mb-0 font-weight-bold text-gray-800">{{ total_sai1 }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <div class="card border-left-success shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col">
+                                        <div class="h5 font-weight-bold text-primary text-uppercase mb-1">
+                                            2ª Entrada
+                                        </div>
+                                        
+                                        <div class="h4 mb-0 font-weight-bold text-gray-800">{{ total_ent2 }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <div class="card border-left-success shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col">
+                                        <div class="h5 font-weight-bold text-primary text-uppercase mb-1">
+                                            2ª Saída
+                                        </div>
+                                        
+                                        <div class="h4 mb-0 font-weight-bold text-gray-800">{{ total_sai2 }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div id="perfil" class="table-responsive border">
+                    <div class="div-flex mb-4">
+                        <h2 class="title">Total pendentes</h2>
+                        {% for key in lista %}
+                            <a href="{% url 'total_pendentes' token=key.id %}">
+                                <button class="btn btn-info btn-lg" type="button">Todos Registros</button>
+                            </a>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-2">
+                        <div class="card border-left-danger shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col">
+                                        <div class="h5 font-weight-bold text-primary text-uppercase mb-1">
+                                            1ª Entrada
+                                        </div>
+                                        
+                                        <div class="h4 mb-0 font-weight-bold text-gray-800">{{total_pend1}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <div class="card border-left-danger shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col">
+                                        <div class="h5 font-weight-bold text-primary text-uppercase mb-1">
+                                            1ª Saída
+                                        </div>
+                                        
+                                        <div class="h4 mb-0 font-weight-bold text-gray-800">{{total_pend2}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <div class="card border-left-danger shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col">
+                                        <div class="h5 font-weight-bold text-primary text-uppercase mb-1">
+                                            2ª Entrada
+                                        </div>
+                                        
+                                        <div class="h4 mb-0 font-weight-bold text-gray-800">{{total_pend3}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <div class="card border-left-danger shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col">
+                                        <div class="h5 font-weight-bold text-primary text-uppercase mb-1">
+                                            2ª Saída
+                                        </div>
+                                        
+                                        <div class="h4 mb-0 font-weight-bold text-gray-800">{{total_pend4}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
 {% endblock %}

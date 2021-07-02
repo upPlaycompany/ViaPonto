@@ -25,6 +25,8 @@ urlpatterns = [
     # GESTOR DASHBOARD
     path('login/gestor/', views.login_gestor, name='login_gestor'),
     path('dashboard/<str:token>/', views.dashboard, name='dashboard'),
+    path('total/registrados/<str:token>/', views.total_registrados, name='total_registrados'),
+    path('total/pendentes/<str:token>/', views.total_pendentes, name='total_pendentes'),
     # EMPREGADOR
     path('empresa/edit/<str:token>/', views.edit_empresa, name='edit_empresa'),
     path('empresa/success/<str:token>/', views.edit_empresa_success, name='edit_empresa_success'),
@@ -58,11 +60,15 @@ urlpatterns = [
     path('colaborador/demitir/<str:token>/<str:id>/', views.demitir_colaborador, name='demitir_colaborador'),
     path('colaborador/edit/<str:token>/<str:id>/', views.edit_colaborador, name='edit_colaborador'),
     path('demitidos/<str:token>/', views.list_demitidos, name='list_demitidos'),
-
-
-    path('pontos-colaborador/<str:token>/<str:id_user>/', views.pontos_colaborador, name='pontos_colaborador'),
+    # RELATORIOS
+    path('relatorio/pontos/<str:token>/', views.relatorio_pontos, name='relatorio_pontos'),
+    path('registros/ponto/<str:token>/<str:id_user>/', views.registros_ponto, name='registros_ponto'),
+    path('espelho/registros/<str:token>/', views.espelho_registros, name='espelho_registros'),
+    path('folha/ponto/<str:token>/<str:id_user>/', views.folha_ponto, name='folha_ponto'),
+    # PDFs
+    path('folha/ponto/pdf/<str:token>/<str:id_user>/<str:mes>/', views.gerar_folha_ponto, name='gerar_folha_ponto'),
     path('relatorio-func/<str:token>/', views.gerar_relatorio_func, name='gerar_relatorio_func'),
-    path('relatorio-ponto/<str:token>/<str:id_user>/<str:start_date>/<str:end_date>/', views.gerar_relatorio_ponto, name='gerar_relatorio_ponto'),
+    path('relatorio-ponto/<str:token>/<str:id_user>/', views.gerar_relatorio_ponto, name='gerar_relatorio_ponto'),
 
 
     # ÁREA ADMINSTRATIVA

@@ -22,13 +22,14 @@
         }
 
         .td-1 {
-            width: 40%;
+            width: 30%;
         }
-
         .td-2 {
-            width: 40%;
+            width: 25%;
         }
-
+        .td-3 {
+            width: 25%;
+        }
         .td-3 {
             width: 20%;
         }
@@ -52,6 +53,7 @@
                         <tr>
                             <th>NOME</th>
                             <th>CEP</th>
+                            <th>Departamento</th>
                             <th>AÇÕES</th>
                         </tr>
                     </thead>
@@ -61,6 +63,15 @@
                             <tr>
                                 <td class="td-1">{{ local.nome }}</td>
                                 <td class="td-2">{{ local.cep }}</td>
+                                {% if local.id_departamento.objectId == 'nao definido' %}
+                                    <td class="td-3">Não possui</td>
+                                {% else %}
+                                    {% for departamento in departamentos %}
+                                        {% if departamento.objectId == local.id_departamento.objectId %}
+                                            <td class="td-3">{{ departamento.nome }}</td>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
                                 <td class="td-3">
                                     {% for key in lista %}
                                         <a href="{% url 'edit_local' token=key.id id=local.objectId %}">

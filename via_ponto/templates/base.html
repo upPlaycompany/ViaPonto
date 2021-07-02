@@ -129,7 +129,7 @@
                 </div>
             </li>
 
-            <hr class="sidebar-divider my-0">
+            <!-- <hr class="sidebar-divider my-0">
             <li class="navlink nav-item">
                 {% for key in lista %}
                     <a class="nav-link collapsed" href="">
@@ -137,7 +137,7 @@
                         <span>REGISTRO PONTO</span>
                     </a>
                 {% endfor %}
-            </li>
+            </li> -->
 
             <hr class="sidebar-divider my-0">
             <li class="navlink nav-item">
@@ -151,16 +151,10 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Ações</h6>
                         {% for key in lista %}
-                            <a class="collapse-item" href="">Espelho de Registros</a>
+                            <a class="collapse-item" href="{% url 'relatorio_pontos' token=key.id %}">Relatório de Pontos</a>
                         {% endfor %}
                         {% for key in lista %}
-                            <a class="collapse-item" href="">Pontos com Fotos</a>
-                        {% endfor %}
-                        {% for key in lista %}
-                            <a class="collapse-item" href="">Pontos de Trabalho</a>
-                        {% endfor %}
-                        {% for key in lista %}
-                            <a class="collapse-item" href="">Faltas por Período</a>
+                            <a class="collapse-item" href="{% url 'espelho_registros' token=key.id %}">Espelho de Registros</a>
                         {% endfor %}
                     </div>
                 </div>

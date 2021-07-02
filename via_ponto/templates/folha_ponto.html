@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block title %} VIA PONTO - Registros de Ponto {% endblock title %}
+
+{% block extra_style %}
+<style>
+  .card-body .row {
+    margin-bottom: 30px;
+  }
+
+  .rTable {
+    text-align: center;
+  }
+
+  .rTable thead {
+    background-color: #20953B;
+    font-weight: bold;
+    color: white;
+    font-size: 1em;
+  }
+
+  .rTable tbody tr:nth-child(2n) {
+    background: #98FB98;
+  }
+
+  .div-flex {
+    display: flex;
+    justify-content: space-between;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="card shadow mb-4">
+  <div class="card-header py-3 div-flex">
+    <div>
+      <h1 class="title">Folha de Ponto</h1>
+      <h3 class="text">Nome: {{ colaborador.nome }}</h3>
+    </div>
+    <div>
+      {% for key in lista %}
+        <a href="{% url 'gerar_folha_ponto' token=key.id id_user=Id_user mes=mes_sel %}"
+          target="_blank">
+          <button class="btn btn-info btn-lg" type="button">Gerar PDF</button>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div class="row">
+      <div class="div-flex ml-3">
+        <div class="input-group">
+          <form class="form-inline my-2 my-lg-0 pull-right">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="mes">Mês</label>
+            </div>
+            <select class="custom-select" name="mes" id="mes">
+              {% for m in meses %}
+                  {% if m.num != mes_sel %}
+                      <option value="{{m.num}}">{{ m.nome }}</option>
+                  {% else %}
+                      <option value="{{m.num}}" selected>{{ m.nome }}</option>
+                  {% endif %}
+              {% endfor %}
+            </select>
+            <button class="btn btn-primary my-2 ml-3 my-sm-0" type="submit">Atualizar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="table-responsive">
+      <table class="rTable table table-bordered" id="dataTable" width="100%" cellspacing="0">
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Dia da Semana</th>
+            <th>Registro</th>
+            <th>Horas</th>
+            <th>Local do Registro</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for ponto in pontos %}
+            {% if ponto.createdAt != "sem registro" %}
+              <tr>
+                <td>{{ ponto.createdAt }}</td>
+                <td>{{ ponto.dia_da_semana }}</td>
+                <td>{{ ponto.registro }}</td>
+                <td>{{ ponto.horario }}</td>
+                <td>{{ ponto.local_registro }}</td>
+              </tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
