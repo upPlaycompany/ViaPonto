@@ -15,9 +15,12 @@
     padding: 0 2%;
 }
 
+.text-center {
+    text-align: center;
+}
+
 html, body {
-    height: 100%;
-    overflow: hidden;
+    
 }
 
 li, a, button {
@@ -122,4 +125,284 @@ button:hover {
     font-size: 14px;
     line-height: 20px;
     font-weight: bold;
+}
+
+.content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2%;
+}
+
+.text {
+    font-size: 18px;
+}
+
+#como-funciona {
+    margin: 140px 0;
+}
+
+#como-funciona h2 {
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+#como-funciona h3 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#como-funciona ol {
+    list-style-type: none;
+}
+
+#como-funciona ol li {
+    font-size: 20px;
+    margin-bottom: 5px;
+    
+}
+
+#qualidades {
+    margin: 140px 0;
+}
+
+#qualidades h2 {
+    text-transform: uppercase;
+    margin-bottom: 14px;
+}
+
+#qualidades h3 {
+    margin-bottom: 40px;
+}
+
+#qualidades .card {
+    margin-left: 10px;
+}
+
+#qualidades .card h4 {
+    margin-bottom: 16px;
+}
+
+#qualidades .card p {
+    text-justify: justify;
+    
+}
+
+#ferramentas {
+    margin: 140px 0;
+}
+
+#ferramentas h2 {
+    text-transform: uppercase;
+    margin-bottom: 14px;
+}
+
+#ferramentas h3 {
+    margin-bottom: 40px;
+}
+
+#ferramentas .cards {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 60px;
+}
+
+#ferramentas .painel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-top: 40px;
+}
+
+#ferramentas .painel p {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+#ferramentas .painel .text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#ferramentas .painel .img {
+    display: flex;
+    justify-content: center;
+}
+
+#ferramentas .painel .img img {
+    width: 70%;
+}
+
+
+#banner-app {
+    background-image: url(../img/banner-app.png);
+    background-size: 100% 85%;
+    background-repeat: no-repeat;
+    height: 600px;
+}
+
+#banner-app .text-app h2 {
+    font-size: 32px;
+    color: white;
+    text-transform: uppercase;
+    padding-top: 40px;
+    margin-bottom: 14px;
+}
+
+#banner-app .flex-app {
+    margin-top: 40px;
+    display: flex;
+    justify-content: space-around;
+}
+
+#banner-app .flex-app p {
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 40px;
+}
+
+#banner-app .flex-app .img-loja {
+    display: flex;
+    justify-content: center;
+}
+
+#banner-app .flex-app .img-loja img {
+    width: 180px;
+    text-align: center;
+    margin-top: 25px;
+}
+
+#banner-app .img img {
+    width: 180px;
+}
+
+#pacotes {
+    margin-top: 60px;
+    margin-bottom: 140px;
+}
+
+#pacotes .title{
+    text-transform: uppercase;
+    margin-bottom: 14px;
+}
+
+#pacotes .text {
+    margin-top: 20px;
+    margin-bottom: 40px;
+}
+
+#pacotes .border {
+    border: 2px solid #6bc9ca !important;
+    border-radius: 15px;
+    padding: 15px;
+    margin-right: 15px;
+}
+
+#pacotes .border:nth-child(4) {
+    margin-right: 0;
+}
+
+#pacotes .flex-container h3 {
+    text-align: center;
+    font-size: 40px;
+    font-weight: bold;
+}
+
+#pacotes .flex-container h4 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+#pacotes .flex-container .text1 {
+    font-size: 16px;
+    margin-bottom: 5px;
+    text-align: justify;
+    color: #6bc9ca;
+}
+
+#pacotes .flex-container .text {
+    font-size: 16px;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+#pacotes .flex-container .btn1,
+#pacotes .flex-container .btn2 {
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+#pacotes .flex-container .btn3,
+#pacotes .flex-container .btn4 {
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+#pacotes .flex-container button {
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+#ajuda h2 {
+    text-transform: uppercase;
+    margin-bottom: 14px;
+}
+
+#ajuda h4 {
+    margin-bottom: 20px;
+}
+
+#ajuda .perguntas {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 0 2%;
+}
+
+#ajuda .perguntas .item {
+    margin-top: 20px;
+}
+
+#ajuda .perguntas .item p {
+    margin-left: 20px;
+}
+
+footer {
+    display: flex;
+    max-width: 1200px;
+    margin: 120px auto;
+    padding: 0 2%;
+}
+
+footer .content{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-bottom: 40px;
+}
+
+footer .content .text .img {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+footer .content .text .img img {
+    width: 40%;
+}
+
+footer .content .text div p {
+    text-align: center;
+}
+
+footer .content .contato .title {
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+footer .content .contato div p {
+    text-align: center;
 }

@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/global.css' %}">
     <link rel="stylesheet" href="{% static 'css/home.css' %}">
     <title>VIA PONTO</title>
 </head>
@@ -12,23 +13,22 @@
     <div id="container">
         <header>
             <div class="center">
-                <img src="../static/img/logo.png" alt="Logo Via Ponto" class="logo">
+                <img src="{% static 'img/logo.png' %}" alt="Logo Via Ponto" class="logo">
                 <nav>
                     <ul class="nav__links">
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#">Como Funciona</a></li>
-                        <li><a href="#">Ferramentas</a></li>
-                        <li><a href="#">Pacotes</a></li>
-                        <li><a href="#">Ajuda</a></li>
-                        <li><a href="#">Ponto Online</a></li>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#como-funciona">Como Funciona</a></li>
+                        <li><a href="#ferramentas">Ferramentas</a></li>
+                        <li><a href="#pacotes">Pacotes</a></li>
+                        <li><a href="#ajuda">Ajuda</a></li>
                     </ul>
                 </nav>
                 <a href="{% url 'register' %}" class="cta"><button class="btn_register">Criar sua Conta</button></a>
                 <a href="{% url 'login_tipo' %}" class="cta"><button class="btn_login">Entrar</button></a>
             </div>
-            
         </header>
-        <section class="banner">
+
+        <section id="home" class="banner">
             <div class="center">
                 <div class="text">
                     <h1>Ponto eletrônico digital<br>
@@ -37,7 +37,7 @@
                     </h1>
                     <p>Ferramenta de acordo com a Portaria 373 e seguindo as orientações da<br>
                         portaria 1510. Reduza os custos da sua empresa e aumente a<br>
-                        produtividade dos seus colobaradores
+                        produtividade dos seus colaboradores
                     </p>
                 </div>
                 <div class="img">
@@ -45,6 +45,235 @@
                 </div>
             </div>
         </section>
+
+        <main>
+            <section id="como-funciona" class="">
+                <div class="content">
+                    <h2 class="title text-center">Conheça o ViaPonto</h2>
+                    <h2 class="title text-center">a ferramenta de controle de ponto em forma digital</h2>
+                    <h3 class="subtitle text-center">Fácil e prático de usar</h3>
+                    <ol class="text text-center">
+                        <li>1. Cadastre sua empresa</li>
+                        <li>2. Inclua seus colaboradores e horários</li>
+                        <li>
+                            3. Oriente seus colaboradores a registrar o ponto via aplicativo
+                            ou web
+                        </li>
+                    </ol>
+                    <h3 class="subtitle text-center">E pronto o ViaPonto é fácil assim.</h3>
+                </div>
+                
+            </section>
+
+            <section id="qualidades">
+                <div class="content">
+                    <h2 class="title text-center">Qualidades</h2>
+                    <h3 class="subtitle text-center">Economize dinheiro e aborrecimentos com nosso app</h2>
+                    <div class="flex-container">
+                        <div class="card">
+                            <h4 class="subtitle text-center">Agilidade</h4>
+                            <p class="text">
+                                Registro de ponto de forma simples e
+                                objetiva com ferramentas práticas
+                                para fechamento mensal
+                            </p>
+                        </div>
+                        <div class="card">
+                            <h4 class="subtitle text-center">Qualidade</h4>
+                            <p class="text">
+                                Qualidade e eficiencia nos calculos e
+                                gráficos além de relatórios gerenciai, com
+                                destaques nas divergencias.
+                            </p>
+                        </div>
+                        <div class="card">
+                            <h4 class="subtitle text-center">Eficiencia</h4>
+                            <p class="text">
+                                Colaboradores e gestores com acesso online
+                                24 horas, aos registros e localizações efetuadas
+                                no aplicativo ou web.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="ferramentas">
+                <div class="content">
+                    <h2 class="title text-center">Ferramentas</h2>
+                    <h3 class="subtitle text-center">
+                        O app ViaPonto reduz os custos do gestor e
+                        eleva a produtividade dos colaboradores
+                    </h3>
+                    <div class="cards">
+                        <div class="card">
+                            <p class="text text-center">PONTO</p>
+                        </div>
+                        <div class="card">
+                            <p class="text text-center">FERRAMENTAS</p>
+                        </div>
+                        <div class="card">
+                            <p class="text text-center">RELATÓRIOS</p>
+                        </div>
+                    </div>
+                    <h2 class="subtitle text-center">Acompanhamento dos pontos <br> registrados em tempo REAL</h2>
+                    <div class="painel">
+                        <div class="text">
+                            <p class="text">PAINEL COM DASHBOARD DE REGISTROS</p>
+                            <p class="text">PONTOS COM AVISO DE DIVERGENCIAS</p>
+                            <p class="text">CALCULOS DE HORAS EXTRAS</p>
+                        </div>
+                        <div class="img">
+                            <img src="{% static 'img/grafico-mapa.png' %}" alt="">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="banner-app">
+                <div class="text-app">
+                    <h2 class="text-center">Vamos Instalar Agora?</h2>
+                    <div class="flex-app">
+                        <div>
+                            <p class="text-center">
+                                Após o cadastro no site faça o gerenciamento <br>
+                                dos seus colaborados em sua mão, esse app <br>
+                                também está disponivel para os colaboradores.
+                            </p>
+                            <div class="img-loja">
+                                <img src="{% static 'img/loja-app.png' %}" alt="">
+                            </div>
+                        </div>
+                        <div class="img">
+                            <img src="{% static 'img/celular-app.png' %}" alt="Imagem do app no celular">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="pacotes">
+                <div class="content">
+                    <h2 class="title text-center">Pacotes</h2>
+                    <p class="text text-center">
+                        Você terá vantagem de ter suporte via chat ou whatsapp, <br>
+                        Nosso pacote de suporte é ideal para o tamanho da sua empresa.
+                    </p>
+                    <div class="flex-container">
+                        <div class="border">
+                            <h3 class="title">39,90</h3>
+                            <h4 class="subtitle">Básico</h4>
+                            <p class="text1">
+                                Plano ideal para empregadas domésticas
+                                e empresas com até 2 colaboradores.
+                            </p>
+                            <p class="text">Suporte via email</p>
+                            <div class="btn1">
+                                <button>ASSINAR</button>
+                            </div>
+                            
+                        </div>
+                        <div class="border">
+                            <h3 class="title">59,90</h3>
+                            <h4 class="subtitle">Especial</h4>
+                            <p class="text1">
+                                Plano ideal para empresas com até
+                                10 colaboradores no mesmo local.
+                            </p>
+                            <p class="text">Suporte via email e whatsapp</p>
+                            <div class="btn2">
+                                <button>ASSINAR</button>
+                            </div>
+                            
+                        </div>
+                        <div class="border">
+                            <h3 class="title">69,90</h3>
+                            <h4 class="subtitle">Premium</h4>
+                            <p class="text1">
+                                Plano ideal para empresas com até 20
+                                colaboradores com mais de uma localização.
+                            </p>
+                            <p class="text">
+                                Suporte via email, whatsapp e
+                                telefone.
+                            </p>
+                            <div class="btn3">
+                                <button>ASSINAR</button>
+                            </div>
+                            
+                        </div>
+                        <div class="border">
+                            <h3 class="title">99,99</h3>
+                            <h4 class="subtitle">Premium Plus</h4>
+                            <p class="text1">
+                                Plano ideal para empresas com até 100
+                                colaboradores com mais de uma localização.
+                            </p>
+                            <p class="text">Suporte via email, whatsapp e telefone.</p>
+                            <div class="btn4">
+                                <button>ASSINAR</button>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+                
+            </section>
+
+            <section id="ajuda">
+                <h2 class="title text-center">Perguntas Frequentes</h2>
+                <h4 class="subtitle text-center">Tire suas dúvidas por esse canal sobre o app</h4>
+                <div class="perguntas">
+                    <div class="item">
+                        <h3 class="subtitle">O ViaPonto é permitido pelo Ministério do Trabalho?</h3>
+                        <p class="text">
+                            O VIAPONTO é permitido pela portaria 373 do MTE, que libera o uso de meios alternativos para controle de jornada de trabalho
+                            autorizados por convenção ou acordo coletivo de trabalho.
+                        </p>
+                    </div>
+                    <div class="item">
+                        <h3 class="subtitle">Existe alguma cobrança após cadastro no site ou app?</h3>
+                        <p class="text"></p>
+                    </div>
+                    <div class="item">
+                        <h3 class="subtitle">Tenho apenas um colaborador, posso utilizar o app?</h3>
+                        <p class="text"></p>
+                    </div>
+                    <div class="item">
+                        <h3 class="subtitle">Desejo tirar dúvidas detalhadas sobre o VIAPONTO, como de fazer?</h3>
+                        <p class="text"></p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <div class="content">
+                <div class="text">
+                    <div class="img">
+                        <img src="{% static 'img/logo.png' %}" alt="Logo viaponto">
+                    </div>
+                    <div>
+                        <p class="text">
+                            Controle de Ponto Eletrônico de forma simples e fácil. <br>
+                            Muito eficiente para gestão de equipe.
+                        </p>
+                    </div>
+                </div>
+                <div class="contato">
+                    <h3 class="title">CONTATO</h3>
+                    <div>
+                        <p class="text">Fale conosco pelo whatsapp</p>
+                        <p class="text">Será um prazer atende-lo.</p>
+                        <p class="text">
+                            Se preferir mande um email para
+                            contato@viaponto.com.br
+                        </p>
+                    </div>
+                    
+                </div>
+            </div>
+            
+        </footer>
     </div>
 </body>
 </html>
