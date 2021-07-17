@@ -1,6 +1,6 @@
-{% extends 'index_admin.html' %}
+{% extends 'admin_base.html' %}
 
-{% block title %} Dados da Empresa {% endblock title %}
+{% block title %} VIA PONTO - Administrativo {% endblock title %}
 
 {% block content %}
     <div class="card shadow mb-4">
@@ -12,40 +12,38 @@
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0" >
                     <thead>
                         <tr>
-                            <th>Nome da empresa</th>
+                            <th>Razão Social</th>
                             <th>CNPJ</th>
-                            <th>CEP da empresa</th>
                             <th>Celular</th>
                             <th>Email</th>
-                            <th>Telefone comercial</th>
-                            <th>Logradouro</th>
-                            <th>Número</th>
-                            <th>Bairro</th>
-                            <th>Estado</th>
+                            <th>Telefone</th>
                             <th>IE</th>
-                            <th>Razão Social</th>
                             <th>Atividade</th>
+                            <th>CEP</th>
+                            <th>Cidade</th>
+                            <th>Estado</th>
+                            <th>Logradouro</th>
+                            <th>Bairro</th>
+                            <th>Número</th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        {% for dap in lista2 %}
-                            <tr>
-                                <td>{{ dap.nome_empresa }}</td>
-                                <td>{{ dap.cnpj }}</td>
-                                <td>{{ dap.cep }}</td>
-                                <td>{{ dap.celular_empresa }}</td>
-                                <td>{{ dap.email_empresa }}</td>
-                                <td>{{ dap.tel_comercial }}</td>
-                                <td>{{ dap.logradouro }}</td>
-                                <td>{{ dap.numero }}</td>
-                                <td>{{ dap.bairro }}</td>
-                                <td>{{ dap.uf }}</td>
-                                <td>{{ dap.ie }}</td>
-                                <td>{{ dap.razaosocial }}</td>
-                                <td>{{ dap.atividade }}</td>
-                            </tr>
-                        {% endfor %}
+                        <tr>
+                            <td>{{ empresa.razaosocial }}</td>
+                            <td>{{ empresa.cnpj }}</td>
+                            <td>{{ empresa.celular_empresa }}</td>
+                            <td>{{ empresa.email_empresa }}</td>
+                            <td>{{ empresa.tel_comercial }}</td>
+                            <td>{{ empresa.ie }}</td>
+                            <td>{{ empresa.atividade }}</td>
+                            <td>{{ empresa.cep }}</td>
+                            <td>{{ empresa.cidade }}</td>
+                            <td>{{ empresa.uf }}</td>
+                            <td>{{ empresa.logradouro }}</td>
+                            <td>{{ empresa.bairro }}</td>
+                            <td>{{ empresa.numero }}</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>

@@ -223,7 +223,7 @@ def login_colaborador(request):
         status = str(conexao.status_code)
 
         if status == "200" and response["admin"] == True:
-            return redirect("base_admin", token=response["sessionToken"])
+            return redirect("admin_dashboard", token=response["sessionToken"])
         elif status == "200" and response["gestor"] == False:
             return redirect("dashboard_colaborador", token=response["sessionToken"])
         else:
@@ -749,7 +749,7 @@ def login_gestor(request):
         status = str(conexao.status_code)
 
         if status == "200" and response["admin"] == True:
-            return redirect("base_admin", token=response["sessionToken"])
+            return redirect("admin_dashboard", token=response["sessionToken"])
         elif status == "200" and response["gestor"] == True:
             return redirect("dashboard", token=response["sessionToken"])
         else:
@@ -3700,7 +3700,7 @@ def gerar_folha_ponto(request, token, id_user, mes):
 
 
 # ÁREA ADMINISTRATIVA #
-def base_admin(request, token):
+def admin_dashboard(request, token):
     conexao = requests.api.request(
         "GET",
         "https://parseapi.back4app.com/users/me",
@@ -3713,15 +3713,13 @@ def base_admin(request, token):
     response = conexao.json()
     if str(response["sessionToken"]) != f"{token}":
         return redirect("login")
-    elif response["gestor"] == False or response["gestor"] == True:
-        return redirect("login")
     elif response["admin"] == False:
         return redirect("login")
     else:
         pass
     key = [{"id": token, "user": response["username"]}]
 
-    conexao1 = requests.api.request(
+    req_user = requests.api.request(
         "GET",
         f"https://parseapi.back4app.com/classes/_User",
         headers={
@@ -3729,10 +3727,11 @@ def base_admin(request, token):
             "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
         },
     )
-    user = conexao1.json()
-    usuario = [x for x in user["results"]]
-    num_usuario = [{"numero_usuario": len(usuario) - 1}]
-    conexao2 = requests.api.request(
+    res_user = req_user.json()
+    usuario = [x for x in res_user["results"]]
+    num_usuario = len(usuario) - 1
+
+    req_emp = requests.api.request(
         "GET",
         f"https://parseapi.back4app.com/classes/Empresa",
         headers={
@@ -3741,41 +3740,15 @@ def base_admin(request, token):
             "accept": "application/json",
         },
     )
-
-    emp = conexao2.json()
-    empresa = [x for x in emp["results"]]
-    num_empresa = [{"numero_empresa": len(empresa)}]
-    key = [{"id": token, "user": abc["username"]}]
+    res_emp = req_emp.json()
+    empresa = [x for x in res_emp["results"]]
+    num_empresa = len(empresa)
 
     return render(
         request,
-        "admin_base.html",
+        "admin_dashboard.html",
         {"lista": key, "usuarios": num_usuario, "empresas": num_empresa},
     )
-
-
-def dashboard_admin(request, token):
-    conexao = requests.api.request(
-        "GET",
-        "https://parseapi.back4app.com/users/me",
-        headers={
-            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
-            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
-            "X-Parse-Session-Token": f"{token}",
-        },
-    )
-    response = conexao.json()
-    if str(response["sessionToken"]) != f"{token}":
-        return redirect("login")
-    elif response["gestor"] == False or response["gestor"] == True:
-        return redirect("login")
-    elif response["admin"] == False:
-        return redirect("login")
-    else:
-        pass
-    key = [{"id": token, "user": response["username"]}]
-
-    return render(request, "admin_dashboard.html", {"lista": key})
 
 
 def list_empresa(request, token):
@@ -3791,14 +3764,13 @@ def list_empresa(request, token):
     response = conexao.json()
     if str(response["sessionToken"]) != f"{token}":
         return redirect("login")
-    elif response["gestor"] == False or response["gestor"] == True:
-        return redirect("login")
     elif response["admin"] == False:
         return redirect("login")
     else:
         pass
     key = [{"id": token, "user": response["username"]}]
-    conexao1 = requests.api.request(
+
+    req_empresa = requests.api.request(
         "GET",
         f"https://parseapi.back4app.com/classes/Empresa",
         headers={
@@ -3807,13 +3779,11 @@ def list_empresa(request, token):
             "accept": "application/json",
         },
     )
+    res_empresa = req_empresa.json()
 
-    key = [{"id": token, "user": abc["username"]}]
-    dop = conexao1.json()
-    dap = [x for x in dop["results"]]
-    a = len(dap)
-    [dap[x].update({"token": token}) for x in range(a)]
-    return render(request, "list_empresa.html", {"lista": key, "lista2": dap})
+    empresa = [x for x in res_empresa["results"]]
+
+    return render(request, "list_empresa.html", {"lista": key, "empresas": empresa})
 
 
 def detail_empresa(request, token, id):
@@ -3829,23 +3799,21 @@ def detail_empresa(request, token, id):
     response = conexao.json()
     if str(response["sessionToken"]) != f"{token}":
         return redirect("login")
-    elif response["gestor"] == False or response["gestor"] == True:
-        return redirect("login")
     elif response["admin"] == False:
         return redirect("login")
     else:
         pass
     key = [{"id": token, "user": response["username"]}]
-    conexao1 = requests.api.request(
+
+    req_emp = requests.api.request(
         "GET",
-        f"https://parseapi.back4app.com/classes/Empresa?where=%7B%22objectId%22%3A%20%22{id}%22%7D",
+        f"https://parseapi.back4app.com/classes/Empresa/{id}",
         headers={
             "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
             "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
             "accept": "application/json",
         },
     )
-    key = [{"id": token, "user": abc["username"]}]
-    dop = conexao1.json()
-    dap = [x for x in dop["results"]]
-    return render(request, "detail_empresa.html", {"lista": key, "lista2": dap})
+    res_emp = req_emp.json()
+
+    return render(request, "detail_empresa.html", {"lista": key, "empresa": res_emp})

@@ -1,49 +1,117 @@
-{% extends 'index_admin.html' %}
+<!DOCTYPE html>
+{% load static %}
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
 
-{% block title %}
-VIA PONTO - Página Inicial
-{% endblock title %}
+  <title>
+    {% block title %}
+    {% endblock title %}
+  </title>
 
-{% block content %}
-    <h2>Seja Bem Vindo a Área Administrativa do VIA PONTO!</h2>
-  <h2>Dashboard</h2>
-<!-- Content Row -->
-<div class="row">
+  <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+  <link
+    href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+    rel="stylesheet">
 
-    <!-- Earnings (Monthly) Card Example -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-primary shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                            Usuários cadastrados no sistema
-                        </div>
-                        {% for user in usuarios %}
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ user.numero_usuario }}</div>
-                        {% endfor %}
-                    </div>
+  <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
+</head>
 
-                </div>
-            </div>
+<body id="page-top">
+  <div id="wrapper">
+    <ul class="navbar-nav bg-gradient sidebar sidebar accordion" id="accordionSidebar"
+      style="background-color: #1dbf73; opacity: 70%;">
+      <br>
+      {% for key in lista %}
+      <div>
+        <a class="d-flex align-items-center justify-content-center" href="{% url 'admin_dashboard' token=key.id %}">
+          <img src="{% static '/img/logo_inicial.png' %}" width="90%;" style="padding-left: 5%;">
+        </a>
+      </div>
+      {% endfor %}
+      <br>
+      <hr class="sidebar-divider my-0">
+      <li class="nav-item">
+        {% for key in lista %}
+        <a class="nav-link collapsed" href="{% url 'admin_dashboard' token=key.id %}" style="color: black;">
+          <i class="fas fa-fw fa-paper-plane"></i>
+          <span>Dashboard</span>
+        </a>
+        {% endfor %}
+      </li>
+      <hr class="sidebar-divider my-0">
+      <li class="nav-item">
+        <a style="color: black;" class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+          aria-expanded="true" aria-controls="collapseTwo">
+          <i class="fas fa-fw fa-cog"></i>
+          <span>Empresas</span>
+        </a>
+        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Ações</h6>
+            {% for key in lista %}
+              <a class="collapse-item" href="{% url 'list_empresa' token=key.id %}">Listar Empresas</a>
+            {% endfor %}
+          </div>
         </div>
-    </div>
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-warning shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                            Empresas cadastradas no sistema
-                        </div>
-                        {% for emp in empresas %}
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ emp.numero_empresa }}</div>
-                        {% endfor %}
-                    </div>
+      </li>
+      <hr class="sidebar-divider my-2">
+      <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+      </div>
+    </ul>
 
-                </div>
-            </div>
+    <div id="content-wrapper" class="d-flex flex-column">
+      <div id="content">
+        <nav class="navbar navbar-expand navbar-light topbar mb-5 static-top shadow"
+          style="background-color: #1dbf73; opacity: 70%">
+
+          <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+            <i class="fa fa-bars"></i>
+          </button>
+          <ul class="navbar-nav ml-auto">
+            <div class="topbar-divider d-none d-sm-block"></div>
+            <li class="nav-item dropdown no-arrow">
+              {% for key in lista %}
+              <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                <span class="mr-2 d-none d-lg-inline text-grey-600 small">
+                  {{ key.user }}
+                </span>
+
+                <img class="img-profile rounded-circle" src="{% static 'img/undraw_profile.svg' %}">
+              </a>
+              {% endfor %}
+              <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                {% for key in lista %}
+                <a class="dropdown-item" href="{% url 'deslogar' token=key.id %}">
+                  <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Logout
+                </a>
+                {% endfor %}
+              </div>
+            </li>
+          </ul>
+        </nav>
+        <div class="container-fluid mb-5">
+          {% block content %}
+          {% endblock %}
         </div>
+      </div>
     </div>
-</div>
-{% endblock %}
+  </div>
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+  <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
+</body>
+</html>

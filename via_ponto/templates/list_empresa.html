@@ -1,6 +1,6 @@
-{% extends 'index_admin.html' %}
+{% extends 'admin_base.html' %}
 
-{% block title %} Lista de Empresas {% endblock title %}
+{% block title %} VIA PONTO - Administrativo {% endblock title %}
 
 {% block content %}
     <div class="card shadow mb-4">
@@ -17,23 +17,23 @@
                             <th>CEP</th>
                             <th>Celular</th>
                             <th>Email</th>
-                            <th>Ações</th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        {% for dap in lista2 %}
+                        {% for empresa in empresas %}
                             <tr>
-                                <td>{{ dap.nome_empresa }}</td>
-                                <td>{{ dap.cnpj }}</td>
-                                <td>{{ dap.cep }}</td>
-                                <td>{{ dap.celular_empresa }}</td>
-                                <td>{{ dap.email_empresa }}</td>
                                 <td>
-                                    <a href="{% url 'ver_empresa' token=dap.token id=dap.objectId %}">
-                                        <button type="button" class="btn btn-success">Dados Empresa</button>
-                                    </a>
+                                    {% for key in lista %}
+                                        <a href="{% url 'detail_empresa' token=key.id id=empresa.objectId %}">
+                                            {{ empresa.razaosocial }}
+                                        </a>
+                                    {% endfor %}
                                 </td>
+                                <td>{{ empresa.cnpj }}</td>
+                                <td>{{ empresa.cep }}</td>
+                                <td>{{ empresa.celular_empresa }}</td>
+                                <td>{{ empresa.email_empresa }}</td>
                             </tr>
                         {% endfor %}
                     </tbody>

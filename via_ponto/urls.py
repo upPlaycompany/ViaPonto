@@ -72,7 +72,7 @@ urlpatterns = [
 
 
     # ÁREA ADMINSTRATIVA
-    path('base_admin/<str:token>/', views.base_admin, name='base_admin'),
+    path('admin/dashboard/<str:token>/', views.admin_dashboard, name='admin_dashboard'),
     path('empresa/<str:token>/', views.list_empresa, name='list_empresa'),
     path('detail-empresa/<str:token>/<str:id>/', views.detail_empresa, name='detail_empresa'),
 ]
