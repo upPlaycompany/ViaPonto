@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}VIA PONTO - Editar ponto pendente{% endblock title %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-xl-5 col-lg-12 col-md-9">
+    <div class="card o-hidden border-0 shadow-lg my-5">
+      <div class="card-body p-0">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="p-5">
+              <div class="">
+                <h3 class="h2 title text-center mb-2">EDITAR PONTO PENDENTE</h3>
+                <br>
+                <h4><span class="text">Nome: </span>{{colaborador.nome}}</h4>
+                <h4><span class="text">Email: </span>{{colaborador.email}}</h4>
+                <h4><span class="text">Celular: </span>{{colaborador.celular}}</h4>
+                <br>
+
+                <form class="text-center" method="POST" class="mb-7" enctype="multipart/form-data"> {% csrf_token %}
+                  <div>
+                    <h4>Selecione o motivo da pendencia para salvar no ponto</h4>
+                    <div class="form-g">
+                      <select class="custom-select" name="motivo_pendente" id="motivo_pendente">
+                        {% for motivo in motivos %}
+                          <option value="{{motivo.nome}}">{{ motivo.nome }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                  <br>
+                  <button type="submit" class="btn btn-info btn-lg">SALVAR</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

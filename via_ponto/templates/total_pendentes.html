@@ -56,10 +56,34 @@
             {% for pend in pendentes1 %}
               {% if colaborador.objectId == pend %}
                 <tr>
-                  <td>{{ colaborador.nome }}</td>
+                  <td>
+                    {% for key in lista %}
+                      <a href="{% url 'edit_ponto_pendente' token=key.id id_colab=colaborador.objectId registro='1ª Entrada' %}">
+                        {{ colaborador.nome }}
+                      </a>
+                    {% endfor %}
+                  </td>
                   <td>{{ colaborador.cpf }}</td>
-                  <td>{{ colaborador.id_cargo.objectId }}</td>
-                  <td>{{ colaborador.id_departamento.objectId }}</td>
+
+                  {% if colaborador.id_cargo.objectId == 'nao definido' %}
+                    <td>Não possui</td>
+                  {% else %}
+                      {% for cargo in cargos %}
+                          {% if cargo.objectId == colaborador.id_cargo.objectId %}
+                            <td>{{ cargo.nome }}</td>
+                          {% endif %}
+                      {% endfor %}
+                  {% endif %}
+
+                  {% if colaborador.id_departamento.objectId == 'nao definido' %}
+                    <td>Não possui</td>
+                  {% else %}
+                      {% for departamento in departamentos %}
+                          {% if departamento.objectId == colaborador.id_departamento.objectId %}
+                              <td>{{ departamento.nome }}</td>
+                          {% endif %}
+                      {% endfor %}
+                  {% endif %}
                 </tr>
               {% endif %}
             {% endfor %}
@@ -86,10 +110,33 @@
             {% for pend in pendentes2 %}
               {% if colaborador.objectId == pend %}
                 <tr>
-                  <td>{{ colaborador.nome }}</td>
+                  <td>
+                    {% for key in lista %}
+                      <a href="{% url 'edit_ponto_pendente' token=key.id id_colab=colaborador.objectId registro='1ª Saída' %}">
+                        {{ colaborador.nome }}
+                      </a>
+                    {% endfor %}
+                  </td>
                   <td>{{ colaborador.cpf }}</td>
-                  <td>{{ colaborador.id_cargo.objectId }}</td>
-                  <td>{{ colaborador.id_departamento.objectId }}</td>
+                  {% if colaborador.id_cargo.objectId == 'nao definido' %}
+                    <td>Não possui</td>
+                  {% else %}
+                      {% for cargo in cargos %}
+                          {% if cargo.objectId == colaborador.id_cargo.objectId %}
+                            <td>{{ cargo.nome }}</td>
+                          {% endif %}
+                      {% endfor %}
+                  {% endif %}
+
+                  {% if colaborador.id_departamento.objectId == 'nao definido' %}
+                    <td>Não possui</td>
+                  {% else %}
+                      {% for departamento in departamentos %}
+                          {% if departamento.objectId == colaborador.id_departamento.objectId %}
+                              <td>{{ departamento.nome }}</td>
+                          {% endif %}
+                      {% endfor %}
+                  {% endif %}
                 </tr>
               {% endif %}
             {% endfor %}
@@ -116,10 +163,33 @@
             {% for pend in pendentes3 %}
               {% if colaborador.objectId == pend %}
                 <tr>
-                  <td>{{ colaborador.nome }}</td>
+                  <td>
+                    {% for key in lista %}
+                      <a href="{% url 'edit_ponto_pendente' token=key.id id_colab=colaborador.objectId registro='2ª Entrada' %}">
+                        {{ colaborador.nome }}
+                      </a>
+                    {% endfor %}
+                  </td>
                   <td>{{ colaborador.cpf }}</td>
-                  <td>{{ colaborador.id_cargo.objectId }}</td>
-                  <td>{{ colaborador.id_departamento.objectId }}</td>
+                  {% if colaborador.id_cargo.objectId == 'nao definido' %}
+                    <td>Não possui</td>
+                  {% else %}
+                      {% for cargo in cargos %}
+                          {% if cargo.objectId == colaborador.id_cargo.objectId %}
+                            <td>{{ cargo.nome }}</td>
+                          {% endif %}
+                      {% endfor %}
+                  {% endif %}
+
+                  {% if colaborador.id_departamento.objectId == 'nao definido' %}
+                    <td>Não possui</td>
+                  {% else %}
+                      {% for departamento in departamentos %}
+                          {% if departamento.objectId == colaborador.id_departamento.objectId %}
+                              <td>{{ departamento.nome }}</td>
+                          {% endif %}
+                      {% endfor %}
+                  {% endif %}
                 </tr>
               {% endif %}
             {% endfor %}
@@ -146,10 +216,33 @@
             {% for pend in pendentes4 %}
               {% if colaborador.objectId == pend %}
                 <tr>
-                  <td>{{ colaborador.nome }}</td>
+                  <td>
+                    {% for key in lista %}
+                      <a href="{% url 'edit_ponto_pendente' token=key.id id_colab=colaborador.objectId registro='2ª Saída' %}">
+                        {{ colaborador.nome }}
+                      </a>
+                    {% endfor %}
+                  </td>
                   <td>{{ colaborador.cpf }}</td>
-                  <td>{{ colaborador.id_cargo.objectId }}</td>
-                  <td>{{ colaborador.id_departamento.objectId }}</td>
+                  {% if colaborador.id_cargo.objectId == 'nao definido' %}
+                    <td>Não possui</td>
+                  {% else %}
+                      {% for cargo in cargos %}
+                          {% if cargo.objectId == colaborador.id_cargo.objectId %}
+                            <td>{{ cargo.nome }}</td>
+                          {% endif %}
+                      {% endfor %}
+                  {% endif %}
+
+                  {% if colaborador.id_departamento.objectId == 'nao definido' %}
+                    <td>Não possui</td>
+                  {% else %}
+                      {% for departamento in departamentos %}
+                          {% if departamento.objectId == colaborador.id_departamento.objectId %}
+                              <td>{{ departamento.nome }}</td>
+                          {% endif %}
+                      {% endfor %}
+                  {% endif %}
                 </tr>
               {% endif %}
             {% endfor %}

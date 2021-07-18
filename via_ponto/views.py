@@ -566,7 +566,7 @@ def registro_ponto(request, token):
     usuario_id = usuario["objectId"]
     empresa_id = usuario["id_empresa"]["objectId"]
     departamento_id = usuario["id_departamento"]["objectId"]
-    DAYS = ["segunda", "terca", "quarta", "quinta", "sexta", "sabado", "domingo"]
+    DAYS = ["segunda-feira", "terça-feira", "quarta-feira", "quinta-feira", "sexta-feira", "sábado", "domingo"]
 
     if request.method == "POST":
         lat = request.POST["lat"]
@@ -615,7 +615,7 @@ def registro_ponto(request, token):
         segunda_saida = False
 
         for ponto in pontos:
-            if ponto["createdAt"] == data_do_dia:
+            if ponto["data"] == data_do_dia:
                 total_pontos += 1
                 if ponto["registro"] == "1ª Entrada":
                     primeira_entrada = True
@@ -658,12 +658,6 @@ def registro_ponto(request, token):
                         if hora <= turno["segunda_saida"] or hora >= turno["segunda_saida"]:
                             print("Segunda Saída", hora)
                             registro = "2ª Saída"
-
-        print("Data", data_do_dia)
-        print("Dia", weekday)
-        print("Registro", registro)
-        print("Horario", hora)
-        print("Total pontos", total_pontos)
 
         if total_pontos == 4:
             return redirect("fail_registro_ponto", token=token)
@@ -818,10 +812,7 @@ def dashboard(request, token):
         date = date.strftime("%d/%m/%Y")
         x["createdAt"] = date
 
-    data_atual = datetime.today()
-    data_do_dia = data_atual.strftime("%d/%m/%Y")
-
-    ponto_dia = [{"createdAt": x["createdAt"], "id_funcionario": {"objectId": x["id_funcionario"]["objectId"]}, "dia_da_semana": x["dia_da_semana"], "horario": x["horario"], "registro": x["registro"], "local_registro": x["local_registro"] } if str(x["createdAt"]) in data_do_dia else {"createdAt": "sem registro", "id_funcionario": {"objectId": "sem registro"}, "dia_da_semana": "sem registro", "horario": "sem registro", "registro": "sem registro", "local_registro": "sem registro" } for x in ponto]
+    ponto_dia = [{"data": x["data"], "id_funcionario": {"objectId": x["id_funcionario"]["objectId"]}, "dia_da_semana": x["dia_da_semana"], "horario": x["horario"], "registro": x["registro"], "local_registro": x["local_registro"] } if str(x["data"]) in data_do_dia else {"data": "sem registro", "id_funcionario": {"objectId": "sem registro"}, "dia_da_semana": "sem registro", "horario": "sem registro", "registro": "sem registro", "local_registro": "sem registro" } for x in ponto]
 
     total_prim_entrada = 0
     total_prim_saida = 0
@@ -829,7 +820,7 @@ def dashboard(request, token):
     total_seg_saida = 0
 
     for p in ponto_dia:
-        if p["createdAt"] != "sem registro":
+        if p["data"] != "sem registro":
             if p["registro"] == "1ª Entrada":
                 total_prim_entrada += 1
             if p["registro"] == "1ª Saída":
@@ -899,7 +890,7 @@ def total_registrados(request, token):
     data_atual = datetime.today()
     data_do_dia = data_atual.strftime("%d/%m/%Y")
 
-    ponto_dia = [{"createdAt": x["createdAt"], "id_funcionario": {"objectId": x["id_funcionario"]["objectId"]}, "dia_da_semana": x["dia_da_semana"], "horario": x["horario"], "registro": x["registro"], "local_registro": x["local_registro"] } if str(x["createdAt"]) in data_do_dia else {"createdAt": "sem registro", "id_funcionario": {"objectId": "sem registro"}, "dia_da_semana": "sem registro", "horario": "sem registro", "registro": "sem registro", "local_registro": "sem registro" } for x in ponto]
+    ponto_dia = [{"data": x["data"], "id_funcionario": {"objectId": x["id_funcionario"]["objectId"]}, "dia_da_semana": x["dia_da_semana"], "horario": x["horario"], "registro": x["registro"], "local_registro": x["local_registro"] } if str(x["data"]) in data_do_dia else {"data": "sem registro", "id_funcionario": {"objectId": "sem registro"}, "dia_da_semana": "sem registro", "horario": "sem registro", "registro": "sem registro", "local_registro": "sem registro" } for x in ponto]
 
     return render(request, "total_registrados.html", {"lista": key, "pontos": ponto_dia, "colaboradores": colab})
 
@@ -935,6 +926,28 @@ def total_pendentes(request, token):
     res_user = req_user.json()
     colab = [x for x in res_user["results"]]
 
+    req_cargo = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/Cargo?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    res_cargo = req_cargo.json()
+    cargo = [x for x in res_cargo["results"]]
+
+    req_dep = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/Departamento?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    res_dep = req_dep.json()
+    departamento = [x for x in res_dep["results"]]
+
     req_ponto = requests.api.request(
         "GET",
         f"https://parseapi.back4app.com/classes/Ponto?where=%7B%20%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
@@ -957,7 +970,7 @@ def total_pendentes(request, token):
     data_hora = datetime.now()
     data_do_dia = data_hora.strftime("%d/%m/%Y")
 
-    ponto_dia = [{"createdAt": x["createdAt"], "id_funcionario": {"objectId": x["id_funcionario"]["objectId"]}, "dia_da_semana": x["dia_da_semana"], "horario": x["horario"], "registro": x["registro"], "local_registro": x["local_registro"] } if str(x["createdAt"]) in data_do_dia else {"createdAt": "sem registro", "id_funcionario": {"objectId": "sem registro"}, "dia_da_semana": "sem registro", "horario": "sem registro", "registro": "sem registro", "local_registro": "sem registro" } for x in ponto]
+    ponto_dia = [{"data": x["data"], "id_funcionario": {"objectId": x["id_funcionario"]["objectId"]}, "dia_da_semana": x["dia_da_semana"], "horario": x["horario"], "registro": x["registro"], "local_registro": x["local_registro"] } if str(x["data"]) in data_do_dia else {"data": "sem registro", "id_funcionario": {"objectId": "sem registro"}, "dia_da_semana": "sem registro", "horario": "sem registro", "registro": "sem registro", "local_registro": "sem registro" } for x in ponto]
 
     pendentes_prim_entrada = []
     pendentes_prim_saida = []
@@ -1008,7 +1021,120 @@ def total_pendentes(request, token):
     if total_p4 == 0:
         pendentes_seg_saida = ""
 
-    return render(request, "total_pendentes.html", {"lista": key, "pontos": ponto_dia,"colaboradores": colab, "pendentes1": pendentes_prim_entrada, "pendentes2": pendentes_prim_saida, "pendentes3": pendentes_seg_entrada, "pendentes4": pendentes_seg_saida})
+    return render(request, "total_pendentes.html", {"lista": key, "pontos": ponto_dia,"colaboradores": colab, "pendentes1": pendentes_prim_entrada, "pendentes2": pendentes_prim_saida, "pendentes3": pendentes_seg_entrada, "pendentes4": pendentes_seg_saida, "cargos": cargo, "departamentos": departamento})
+
+
+def edit_ponto_pendente(request, token, id_colab, registro):
+    conexao = requests.api.request(
+        "GET",
+        "https://parseapi.back4app.com/users/me",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+            "X-Parse-Session-Token": f"{token}",
+        },
+    )
+    usuario = conexao.json()
+    if str(usuario["sessionToken"]) != f"{token}":
+        return redirect("login")
+    elif usuario["gestor"] == False:
+        return redirect("login")
+    elif usuario["admin"] == True:
+        return redirect("login")
+    else:
+        pass
+    key = [{"id": token, "user": usuario["username"]}]
+    empresa_id = usuario["id_empresa"]["objectId"]
+    DAYS = ["segunda-feira", "terça-feira", "quarta-feira", "quinta-feira", "sexta-feira", "sábado", "domingo"]
+
+    motivo = [
+        {
+            "id": 1,
+            "nome": "Falta"
+        },
+        {
+            "id": 2,
+            "nome": "Atestado"
+        },
+        {
+            "id": 3,
+            "nome": "Folga"
+        },
+        {
+            "id": 4,
+            "nome": "Feriado"
+        },
+        {
+            "id": 5,
+            "nome": "Liberado"
+        },
+        {
+            "id": 6,
+            "nome": "Esqueceu"
+        },
+        {
+            "id": 7,
+            "nome": "Recesso"
+        }
+    ]
+
+    req_user = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/_User/{id_colab}",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    colab = req_user.json()
+
+    # SALVAR A EDIÇAO DO PONTO PENDENTE NO BANCO
+    if request.method == "POST":
+        # PEGAR DO SERVIDOR
+        data_hora = datetime.now()
+        indice_week = data_hora.weekday()
+
+        # DADOS DO PONTO
+        data_do_dia = data_hora.strftime("%d/%m/%Y")
+        weekday = DAYS[indice_week]
+        local_registro = ""
+
+        motivo_pendente = request.POST["motivo_pendente"]
+
+        req_ponto = requests.api.request(
+            "POST",
+            f"https://parseapi.back4app.com/classes/Ponto",
+            headers={
+                "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                "Content-Type": "application/json",
+            },
+            json={
+                "registro": f"{registro}",
+                "data": f"{data_do_dia}",
+                "dia_da_semana": f"{weekday}",
+                "horario": f"{motivo_pendente}",
+                "local_registro": f"{local_registro}",
+                "id_empresa": {
+                    "__type": "Pointer",
+                    "className": "Empresa",
+                    "objectId": empresa_id,
+                },
+                "id_funcionario": {
+                    "__type": "Pointer",
+                    "className": "_User",
+                    "objectId": id_colab,
+                },
+            },
+        )
+
+        status = str(req_ponto.status_code)
+        if status == "201":
+            return redirect("total_pendentes", token=token)
+        else:
+            return redirect("fail_default", token=token)
+
+    return render(request, "edit_ponto_pendente.html", {"lista": key, "colaborador": colab, "motivos": motivo})
 
 
 # EMPREGADOR

@@ -29,22 +29,22 @@
     <div class="card shadow mb-5">
         <div class="card-header py-3 flex-container">
             <div id="faltas" class="table-responsive border div-flex">
-                <h1 class="title">Colaboradores</h1>
-                <h1>{{ total_colab }}</h1>
+                <h2 class="title">Colaboradores</h2>
+                <h2>{{ total_colab }}</h2>
             </div>
             
             <div id="hora-extras" class="table-responsive border div-flex">
-                <h1 class="title">Data</h1>
-                <h1>{{ data }}</h1>
+                <h2 class="title">Data</h2>
+                <h2>{{ data }}</h2>
             </div>
         </div>
 
         <div class="card-body">
-            <h1 class="title">Registros de hoje</h1>
+            <h2 class="title">Registros de hoje</h2>
             <div class="flex-container">
                 <div id="registros" class="table-responsive border">
                     <div class="div-flex mb-4">
-                        <h2 class="title">Total registrados</h2>
+                        <h3 class="title">Total registrados</h3>
                         {% for key in lista %}
                             <a href="{% url 'total_registrados' token=key.id %}">
                                 <button class="btn btn-info btn-lg" type="button">Todos Registros</button>
@@ -115,7 +115,7 @@
     
                 <div id="perfil" class="table-responsive border">
                     <div class="div-flex mb-4">
-                        <h2 class="title">Total pendentes</h2>
+                        <h3 class="title">Total pendentes</h3>
                         {% for key in lista %}
                             <a href="{% url 'total_pendentes' token=key.id %}">
                                 <button class="btn btn-info btn-lg" type="button">Todos Registros</button>

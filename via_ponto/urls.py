@@ -27,6 +27,7 @@ urlpatterns = [
     path('dashboard/<str:token>/', views.dashboard, name='dashboard'),
     path('total/registrados/<str:token>/', views.total_registrados, name='total_registrados'),
     path('total/pendentes/<str:token>/', views.total_pendentes, name='total_pendentes'),
+    path('total/pendentes/edit-ponto/<str:token>/<str:id_colab>/<str:registro>/', views.edit_ponto_pendente, name='edit_ponto_pendente'),
     # EMPREGADOR
     path('empresa/edit/<str:token>/', views.edit_empresa, name='edit_empresa'),
     path('empresa/success/<str:token>/', views.edit_empresa_success, name='edit_empresa_success'),

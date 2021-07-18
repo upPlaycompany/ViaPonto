@@ -53,7 +53,7 @@
 
         <tbody>
           {% for ponto in pontos %}
-            {% if ponto.createdAt != "sem registro" %}
+            {% if ponto.data != "sem registro" %}
               <tr>
                 {% for colaborador in colaboradores %}
                   {% if colaborador.objectId == ponto.id_funcionario.objectId %}
