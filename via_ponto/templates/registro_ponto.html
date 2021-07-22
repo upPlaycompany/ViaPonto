@@ -35,16 +35,6 @@
                 <div class="form-row">
                         <input
                             type="hidden"
-                            id="latId"
-                            name="lat"
-                        >
-                        <input
-                            type="hidden"
-                            id="longId"
-                            name="long"
-                        >
-                        <input
-                            type="hidden"
                             id="ruaId"
                             name="rua"
                         >
@@ -112,8 +102,6 @@
                         console.error("Não deu")
                     })
 
-                document.getElementById('latId').value = posicao.coords.latitude;
-                document.getElementById('longId').value = posicao.coords.longitude;
                 document.getElementById('cidadeId').value = cidade;
                 document.getElementById('ruaId').value = rua;
                 document.getElementById('bairroId').value= bairro;

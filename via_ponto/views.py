@@ -569,12 +569,12 @@ def registro_ponto(request, token):
     DAYS = ["segunda-feira", "terça-feira", "quarta-feira", "quinta-feira", "sexta-feira", "sábado", "domingo"]
 
     if request.method == "POST":
-        lat = request.POST["lat"]
-        long = request.POST["long"]
         rua = request.POST["rua"]
         bairro = request.POST["bairro"]
         cidade = request.POST["cidade"]
         estado = request.POST["estado"]
+
+        print('Cheguei no POST')
 
         if rua == "" or bairro == "" or cidade or estado == "":
             return redirect("fail_default_colaborador", token=token)
@@ -589,6 +589,11 @@ def registro_ponto(request, token):
         weekday = DAYS[indice_week]
         local_registro = f"{rua}" + ", " + f"{bairro}" + " - " + f"{cidade}" + " / " + f"{estado}"
         registro = ""
+
+        print("Data ", data_do_dia)
+        print("Hora ", hora)
+        print("Semana ", weekday)
+        print("Local ", local_registro)
 
         req_ponto = requests.api.request(
             "GET",
@@ -1877,7 +1882,7 @@ def cadastro_horario(request, token):
             },
             json={
                 "nome": f"{nome}",
-                "dia_da_semana": "segunda",
+                "dia_da_semana": "segunda-feira",
                 "primeira_entrada": f"{seg_primeira_entrada}",
                 "primeira_saida": f"{seg_primeira_saida}",
                 "segunda_entrada": f"{seg_segunda_entrada}",
@@ -1905,7 +1910,7 @@ def cadastro_horario(request, token):
             },
             json={
                 "nome": f"{nome}",
-                "dia_da_semana": "terca",
+                "dia_da_semana": "terça-feira",
                 "primeira_entrada": f"{ter_primeira_entrada}",
                 "primeira_saida": f"{ter_primeira_saida}",
                 "segunda_entrada": f"{ter_segunda_entrada}",
@@ -1933,7 +1938,7 @@ def cadastro_horario(request, token):
             },
             json={
                 "nome": f"{nome}",
-                "dia_da_semana": "quarta",
+                "dia_da_semana": "quarta-feira",
                 "primeira_entrada": f"{qua_primeira_entrada}",
                 "primeira_saida": f"{qua_primeira_saida}",
                 "segunda_entrada": f"{qua_segunda_entrada}",
@@ -1961,7 +1966,7 @@ def cadastro_horario(request, token):
             },
             json={
                 "nome": f"{nome}",
-                "dia_da_semana": "quinta",
+                "dia_da_semana": "quinta-feira",
                 "primeira_entrada": f"{qui_primeira_entrada}",
                 "primeira_saida": f"{qui_primeira_saida}",
                 "segunda_entrada": f"{qui_segunda_entrada}",
@@ -1989,7 +1994,7 @@ def cadastro_horario(request, token):
             },
             json={
                 "nome": f"{nome}",
-                "dia_da_semana": "sexta",
+                "dia_da_semana": "sexta-feira",
                 "primeira_entrada": f"{sex_primeira_entrada}",
                 "primeira_saida": f"{sex_primeira_saida}",
                 "segunda_entrada": f"{sex_segunda_entrada}",
@@ -2017,7 +2022,7 @@ def cadastro_horario(request, token):
             },
             json={
                 "nome": f"{nome}",
-                "dia_da_semana": "sabado",
+                "dia_da_semana": "sábado",
                 "primeira_entrada": f"{sab_primeira_entrada}",
                 "primeira_saida": f"{sab_primeira_saida}",
                 "segunda_entrada": f"{sab_segunda_entrada}",
@@ -3216,14 +3221,13 @@ def registros_ponto(request, token, id_user):
             )
             datas += datas2
 
-        ponto_date = [{"createdAt": x["createdAt"], "id_funcionario": {"objectId": x["id_funcionario"]["objectId"]}, "dia_da_semana": x["dia_da_semana"], "horario": x["horario"], "registro": x["registro"], "local_registro": x["local_registro"] } if str(x["createdAt"]) in datas else {"createdAt": "sem registro", "id_funcionario": {"objectId": "sem registro"}, "dia_da_semana": "sem registro", "horario": "sem registro", "registro": "sem registro", "local_registro": "sem registro" } for x in ponto]
+        ponto_date = [{"data": x["data"], "id_funcionario": {"objectId": x["id_funcionario"]["objectId"]}, "dia_da_semana": x["dia_da_semana"], "horario": x["horario"], "registro": x["registro"], "local_registro": x["local_registro"] } if str(x["data"]) in datas else {"data": "sem registro", "id_funcionario": {"objectId": "sem registro"}, "dia_da_semana": "sem registro", "horario": "sem registro", "registro": "sem registro", "local_registro": "sem registro" } for x in ponto]
     else:
         ponto_date = ponto
         start = "0"
         end = "0"
         start_data = ""
         end_data = ""
-    print(start, end)
 
     return render(request, "registros_ponto.html", {"lista": key, "colaborador": colab, "Id_user": id_user, "pontos": ponto_date, "start_data": start, "end_data": end, "start_date": start_data, "end_date": end_data})
 
@@ -3435,7 +3439,7 @@ def folha_ponto(request, token, id_user):
             ]
         )
 
-        ponto_mes = [{"createdAt": x["createdAt"], "id_funcionario": {"objectId": x["id_funcionario"]["objectId"]}, "dia_da_semana": x["dia_da_semana"], "horario": x["horario"], "registro": x["registro"], "local_registro": x["local_registro"] } if str(x["createdAt"]) in datas else {"createdAt": "sem registro", "id_funcionario": {"objectId": "sem registro"}, "dia_da_semana": "sem registro", "horario": "sem registro", "registro": "sem registro", "local_registro": "sem registro" } for x in ponto]
+        ponto_mes = [{"data": x["data"], "id_funcionario": {"objectId": x["id_funcionario"]["objectId"]}, "dia_da_semana": x["dia_da_semana"], "horario": x["horario"], "registro": x["registro"], "local_registro": x["local_registro"] } if str(x["data"]) in datas else {"data": "sem registro", "id_funcionario": {"objectId": "sem registro"}, "dia_da_semana": "sem registro", "horario": "sem registro", "registro": "sem registro", "local_registro": "sem registro" } for x in ponto]
     else:
         ponto_mes = ponto
 

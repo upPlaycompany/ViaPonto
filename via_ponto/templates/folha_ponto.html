@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %} VIA PONTO - Registros de Ponto {% endblock title %}
+{% block title %} VIA PONTO - Folha de Ponto {% endblock title %}
 
 {% block extra_style %}
 <style>
@@ -26,6 +26,22 @@
   .div-flex {
     display: flex;
     justify-content: space-between;
+  }
+
+  .td-1 {
+    width: 15%;
+  }
+  .td-2 {
+    width: 15%;
+  }
+  .td-3 {
+    width: 15%;
+  }
+  .td-4 {
+    width: 15%;
+  }
+  .td-5 {
+    width: 40%;
   }
 </style>
 {% endblock %}
@@ -83,13 +99,13 @@
 
         <tbody>
           {% for ponto in pontos %}
-            {% if ponto.createdAt != "sem registro" %}
+            {% if ponto.data != "sem registro" %}
               <tr>
-                <td>{{ ponto.createdAt }}</td>
-                <td>{{ ponto.dia_da_semana }}</td>
-                <td>{{ ponto.registro }}</td>
-                <td>{{ ponto.horario }}</td>
-                <td>{{ ponto.local_registro }}</td>
+                <td class="td-1">{{ ponto.data }}</td>
+                <td class="td-2">{{ ponto.dia_da_semana }}</td>
+                <td class="td-3">{{ ponto.registro }}</td>
+                <td class="td-4">{{ ponto.horario }}</td>
+                <td class="td-5">{{ ponto.local_registro }}</td>
               </tr>
             {% endif %}
           {% endfor %}

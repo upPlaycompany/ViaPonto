@@ -68,27 +68,29 @@
 
         <tbody>
           {% for colaborador in colaboradores %}
-            <tr>
-              {% for key in lista %}
-                <td>
-                  <a href="{% url 'registros_ponto' token=key.id id_user=colaborador.objectId %}">
-                    {{ colaborador.nome }}
-                  </a>
-                </td>
-              {% endfor %}
-              <td>{{ colaborador.cpf }}</td>
-              {% for cargo in cargos %}
-                {% if cargo.objectId == colaborador.id_cargo.objectId %}
-                  <td>{{ cargo.nome }}</td>
-                {% endif %}
-              {% endfor %}
+            {% if colaborador.gestor == False %}
+              <tr>
+                {% for key in lista %}
+                  <td>
+                    <a href="{% url 'registros_ponto' token=key.id id_user=colaborador.objectId %}">
+                      {{ colaborador.nome }}
+                    </a>
+                  </td>
+                {% endfor %}
+                <td>{{ colaborador.cpf }}</td>
+                {% for cargo in cargos %}
+                  {% if cargo.objectId == colaborador.id_cargo.objectId %}
+                    <td>{{ cargo.nome }}</td>
+                  {% endif %}
+                {% endfor %}
 
-              {% for departamento in departamentos %}
-                {% if departamento.objectId == colaborador.id_departamento.objectId %}
-                  <td>{{ departamento.nome }}</td>
-                {% endif %}
-              {% endfor %}
-            </tr>
+                {% for departamento in departamentos %}
+                  {% if departamento.objectId == colaborador.id_departamento.objectId %}
+                    <td>{{ departamento.nome }}</td>
+                  {% endif %}
+                {% endfor %}
+              </tr>
+            {% endif %}
           {% endfor %}
         </tbody>
       </table>
