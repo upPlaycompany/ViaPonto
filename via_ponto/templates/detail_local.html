@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %} VIA PONTO - Relatorio Local {% endblock title %}
+
+{% block extra_style %}
+    <style>
+      h4 {
+        font-size: 32px;
+      }
+      p {
+        font-size: 24px;
+      }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 flex-container">
+            <div>
+                <h3 class="title">LOCAL: {{ local.nome }}</h3>
+            </div>
+        </div>
+        <div class="card-body">
+            <p class="text">CEP: {{ local.cep }}</p>
+            <p class="text">UF: {{ local.uf }}</p>
+            <p class="text">Cidade: {{ local.cidade }}</p>
+            <p class="text">Logradouro: {{ local.logradouro }}</p>
+            <p class="text">Bairro: {{ local.bairro }}</p>
+            <p class="text">Número: {{ local.numero }}</p>
+        </div>
+    </div>
+{% endblock %}

@@ -2375,6 +2375,39 @@ def edit_local(request, token, id):
     return render(request, "edit_local.html", {"lista": key, "local": res_local, "departamentos": departamento})
 
 
+def detail_local(request, token, id):
+    conexao = requests.api.request(
+        "GET",
+        "https://parseapi.back4app.com/users/me",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+            "X-Parse-Session-Token": f"{token}",
+        },
+    )
+    response = conexao.json()
+    if str(response["sessionToken"]) != f"{token}":
+        return redirect("login")
+    elif response["gestor"] == False:
+        return redirect("login")
+    else:
+        pass
+    key = [{"id": token, "user": response["username"]}]
+    empresa_id = response["id_empresa"]["objectId"]
+
+    req_local = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/Local/{id}",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    res_local = req_local.json()
+
+    return render(request, "detail_local.html", {"lista": key, "local": res_local})
+
+
 def delete_local(request, token, id):
     conexao = requests.api.request(
         "GET",
@@ -2976,6 +3009,46 @@ def edit_colaborador(request, token, id):
             "lista": key,
             "cargos": cargo,
             "departamentos": departamento,
+            "colaborador": colab,
+        },
+    )
+
+
+def detail_colaborador(request, token, id):
+    conexao = requests.api.request(
+        "GET",
+        "https://parseapi.back4app.com/users/me",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+            "X-Parse-Session-Token": f"{token}",
+        },
+    )
+    response = conexao.json()
+    if str(response["sessionToken"]) != f"{token}":
+        return redirect("login")
+    elif response["gestor"] == False:
+        return redirect("login")
+    else:
+        pass
+    key = [{"id": token, "user": response["username"]}]
+    empresa_id = response["id_empresa"]["objectId"]
+
+    req_user_get = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/_User/{id}",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    colab = req_user_get.json()
+
+    return render(
+        request,
+        "detail_colaborador.html",
+        {
+            "lista": key,
             "colaborador": colab,
         },
     )
@@ -4139,14 +4212,14 @@ def gerar_folha_ponto(request, token, id_user, mes):
     res_ponto = req_ponto.json()
     ponto = [x for x in res_ponto["results"]]
 
-    for x in ponto:
-        data = x["createdAt"]
-        data = data[:10]
-        dia = data[:2]
-        date = datetime.strptime(data, "%Y-%m-%d").date()
-        date = date.strftime("%d/%m/%Y")
-        x["createdAt"] = date
-        x["data"] = dia
+    # for x in ponto:
+    #     data = x["createdAt"]
+    #     data = data[:10]
+    #     dia = data[:2]
+    #     date = datetime.strptime(data, "%Y-%m-%d").date()
+    #     date = date.strftime("%d/%m/%Y")
+    #     x["createdAt"] = date
+    #     x["data"] = dia
 
     mes_lista = [
         {
@@ -4235,10 +4308,12 @@ def gerar_folha_ponto(request, token, id_user, mes):
             ]
         )
 
-        ponto_mes = [{"createdAt": x["createdAt"], "id_funcionario": {"objectId": x["id_funcionario"]["objectId"]}, "dia": x["data"], "horario": x["horario"], "registro": x["registro"], "local_registro": x["local_registro"] } if str(x["createdAt"]) in datas else {"createdAt": "sem registro", "id_funcionario": {"objectId": "sem registro"}, "dia": "sem registro", "horario": "sem registro", "registro": "sem registro" } for x in ponto]
+        ponto_mes = [{"data": x["data"], "dia": int(f"{x['data'][:2]}"), "horario": x["horario"], "registro": x["registro"], "local_registro": x["local_registro"] } if str(x["data"]) in datas else {"data": "sem registro", "dia": "sem registro", "horario": "sem registro", "registro": "sem registro" } for x in ponto]
     else:
         ponto_mes = ponto
         return redirect("fail_default", token=token)
+
+    print(ponto_mes)
 
     return rendering.render_to_pdf_response(
         request=request,

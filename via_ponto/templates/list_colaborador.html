@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %} Lista dos Funcionários {% endblock title %}
+{% block title %} VIA PONTO - Relatorio Colaboradores {% endblock title %}
 
 {% block extra_style %}
     <style>
@@ -97,7 +97,7 @@
                                     {% endif %}
                                     <td class="td-5">
                                         {% for key in lista %}
-                                            <a href="">
+                                            <a href="{% url 'detail_colaborador' token=key.id id=colaborador.objectId %}">
                                                 <i style="color: #6bc9ca; font-size: 20px;" class="fas fa-eye"></i>
                                             </a>
                                         {% endfor %}

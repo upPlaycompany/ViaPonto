@@ -80,7 +80,7 @@
                                     {% endfor %}
                                     <td class="td-5">
                                         {% for key in lista %}
-                                            <a href="">
+                                            <a href="{% url 'detail_colaborador' token=key.id id=colaborador.objectId %}">
                                                 <i style="color: #6bc9ca; font-size: 20px;" class="fas fa-eye"></i>
                                             </a>
                                         {% endfor %}

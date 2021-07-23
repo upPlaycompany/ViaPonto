@@ -74,8 +74,13 @@
                                 {% endif %}
                                 <td class="td-3">
                                     {% for key in lista %}
+                                        <a href="{% url 'detail_local' token=key.id id=local.objectId %}">
+                                            <i style="color: #6bc9ca; font-size: 20px;" class="fas fa-eye"></i>
+                                        </a>
+                                    {% endfor %}
+                                    {% for key in lista %}
                                         <a href="{% url 'edit_local' token=key.id id=local.objectId %}">
-                                            <i style="color: #6bc9ca; font-size: 20px;" class="fas fa-pencil-alt"></i>
+                                            <i style="margin-left: 25px; color: #6bc9ca; font-size: 20px;" class="fas fa-pencil-alt"></i>
                                         </a>
                                     {% endfor %}
                                     {% for key in lista %}

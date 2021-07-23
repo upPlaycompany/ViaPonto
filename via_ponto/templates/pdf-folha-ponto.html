@@ -154,36 +154,36 @@
         <table class="rTable">
             <thead>
                 <tr style="background-color: #ddd;">
-                    <th>Dia</th>
-                    <th>1ª Entrada</th>
-                    <th>1ª Saída</th>
-                    <th>2ª Entrada</th>
-                    <th>2ª Saída</th>
-                    <th>OBS</th>
+                    <th class="tb-1">Dia</th>
+                    <th class="tb-2">1ª Entrada</th>
+                    <th class="tb-3">1ª Saída</th>
+                    <th class="tb-4">2ª Entrada</th>
+                    <th class="tb-5">2ª Saída</th>
+                    <th class="tb-6">OBS</th>
                 </tr>
             </thead>
             <tbody>
                 {% for dia in total_days %}
-                    {% if dia != "0" %}
+                    {% if dia != 0 %}
                         <tr id="td-center">
-                            <td class="tb-1">{{ dia }}</td>
+                            <td>{{ dia }}</td>
                             {% for ponto in pontos %}
                                 {% if ponto.dia == dia %}
                                     {% if ponto.registro == "1ª Entrada" %}
-                                        <td class="tb-2">{{ ponto.horario }}</td>
-                                    {% else %}
-                                        <td class="tb-2"> </td>
+                                        <td>{{ ponto.horario }}</td>
+                                    {% elif ponto.registro == "1ª Saída" %}
+                                        <td>{{ ponto.horario }}</td>
+                                    {% elif ponto.registro == "2ª Entrada" %}
+                                        <td>{{ ponto.horario }}</td>
+                                    {% elif ponto.registro == "2ª Saída" %}
+                                        <td>{{ ponto.horario }}</td>
                                     {% endif %}
-                                {% endif%}
+                                {% endif %}
                             {% endfor %}
+                            <td> </td>
                         </tr>
-                    {% endif%}
+                    {% endif %}
                 {% endfor %}
-
-                
-                
-                        
-                    
 
                 <tr>
                     <td colspan="6"><strong>Assinatura do colaborador:</strong> </td>

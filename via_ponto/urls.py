@@ -49,6 +49,7 @@ urlpatterns = [
     path('local/<str:token>/', views.list_local, name='list_local'),
     path('local/cadastro/<str:token>/', views.cadastro_local, name='cadastro_local'),
     path('local/edit/<str:token>/<str:id>/', views.edit_local, name='edit_local'),
+    path('local/detail/<str:token>/<str:id>/', views.detail_local, name='detail_local'),
     path('local/delete/<str:token>/<str:id>/', views.delete_local, name='delete_local'),
     # COLABORADOR
     path('cargo/<str:token>/', views.list_cargo, name='list_cargo'),
@@ -59,6 +60,7 @@ urlpatterns = [
     path('colaborador/cadastro/<str:token>/', views.cadastro_colaborador, name='cadastro_colaborador'),
     path('colaborador/cadastro/success/<str:token>/', views.cadastro_colaborador_success, name='cadastro_colaborador_success'),
     path('colaborador/demitir/<str:token>/<str:id>/', views.demitir_colaborador, name='demitir_colaborador'),
+    path('colaborador/detail/<str:token>/<str:id>/', views.detail_colaborador, name='detail_colaborador'),
     path('colaborador/edit/<str:token>/<str:id>/', views.edit_colaborador, name='edit_colaborador'),
     path('demitidos/<str:token>/', views.list_demitidos, name='list_demitidos'),
     # RELATORIOS

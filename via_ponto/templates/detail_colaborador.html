@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %} VIA PONTO - Relatorio Colaboradores {% endblock title %}
+
+{% block extra_style %}
+    <style>
+      h4 {
+        font-size: 32px;
+      }
+      p {
+        font-size: 24px;
+      }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 flex-container">
+            <div>
+                <h3 class="title">COLABORADOR: {{ colaborador.nome }}</h3>
+            </div>
+        </div>
+        <div class="card-body">
+            <p class="text">Usuário: {{ colaborador.username }}</p>
+            <p class="text">CPF: {{ colaborador.cpf }}</p>
+            <p class="text">Celular: {{ colaborador.celular }}</p>
+            <p class="text">E-mail: {{ colaborador.email_colab }}</p>
+            <p class="text">Data Nascimento: {{ colaborador.data_nasc }}</p>
+            <p class="text">Data Admissão: {{ colaborador.admissao }}</p>
+            <p class="text">PIS: {{ colaborador.pis }}</p>
+
+            <h4>Endereço</h4>
+            <p class="text">CEP: {{ colaborador.cep }}</p>
+            <p class="text">UF: {{ colaborador.uf }}</p>
+            <p class="text">Cidade: {{ colaborador.cidade }}</p>
+            <p class="text">Logradouro: {{ colaborador.logradouro }}</p>
+            <p class="text">Bairro: {{ colaborador.bairro }}</p>
+            <p class="text">Número: {{ colaborador.numero }}</p>
+        </div>
+    </div>
+{% endblock %}
