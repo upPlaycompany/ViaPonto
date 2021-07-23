@@ -63,11 +63,13 @@ urlpatterns = [
     path('demitidos/<str:token>/', views.list_demitidos, name='list_demitidos'),
     # RELATORIOS
     path('relatorio/pontos/<str:token>/', views.relatorio_pontos, name='relatorio_pontos'),
-    path('registros/ponto/<str:token>/<str:id_user>/', views.registros_ponto, name='registros_ponto'),
-    path('espelho/registros/<str:token>/', views.espelho_registros, name='espelho_registros'),
-    path('folha/ponto/<str:token>/<str:id_user>/', views.folha_ponto, name='folha_ponto'),
+    path('relatorio/pontos/colab/<str:token>/<str:id_user>/', views.rel_registros_ponto, name='rel_registros_ponto'),
+    path('relatorio/pontos-pendentes/<str:token>/', views.rel_pontos_pendentes, name='rel_pontos_pendentes'),
+    path('relatorio/pontos-pendentes/colab/<str:token>/<str:id_user>/', views.rel_pendentes_colab, name='rel_pendentes_colab'),
+    path('relatorio/espelho-registros/<str:token>/', views.rel_espelho_registros, name='rel_espelho_registros'),
+    path('relatorio/folha-ponto/<str:token>/<str:id_user>/', views.rel_folha_ponto, name='rel_folha_ponto'),
     # PDFs
-    path('folha/ponto/pdf/<str:token>/<str:id_user>/<str:mes>/', views.gerar_folha_ponto, name='gerar_folha_ponto'),
+    path('pdf/folha-ponto/<str:token>/<str:id_user>/<str:mes>/', views.gerar_folha_ponto, name='gerar_folha_ponto'),
     path('relatorio-func/<str:token>/', views.gerar_relatorio_func, name='gerar_relatorio_func'),
     path('relatorio-ponto/<str:token>/<str:id_user>/', views.gerar_relatorio_ponto, name='gerar_relatorio_ponto'),
 

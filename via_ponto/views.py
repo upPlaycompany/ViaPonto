@@ -3112,7 +3112,7 @@ def relatorio_pontos(request, token):
     return render(request, "relatorio_pontos.html", {"lista": key, "colaboradores": colaborador, "cargos": cargo, "departamentos": departamento})
 
 
-def registros_ponto(request, token, id_user):
+def rel_registros_ponto(request, token, id_user):
     conexao = requests.api.request(
         "GET",
         "https://parseapi.back4app.com/users/me",
@@ -3229,10 +3229,10 @@ def registros_ponto(request, token, id_user):
         start_data = ""
         end_data = ""
 
-    return render(request, "registros_ponto.html", {"lista": key, "colaborador": colab, "Id_user": id_user, "pontos": ponto_date, "start_data": start, "end_data": end, "start_date": start_data, "end_date": end_data})
+    return render(request, "rel_registros_ponto.html", {"lista": key, "colaborador": colab, "Id_user": id_user, "pontos": ponto_date, "start_data": start, "end_data": end, "start_date": start_data, "end_date": end_data})
 
 
-def espelho_registros(request, token):
+def rel_pontos_pendentes(request, token):
     conexao = requests.api.request(
         "GET",
         "https://parseapi.back4app.com/users/me",
@@ -3301,14 +3301,444 @@ def espelho_registros(request, token):
 
         status = str(res_user.status_code)
         if status == "200":
-            return redirect("espelho_registros.html", token=token)
+            return redirect("rel_pontos_pendentes.html", token=token)
         else:
             return redirect("fail_default", token=token)
 
-    return render(request, "espelho_registros.html", {"lista": key, "colaboradores": colaborador, "cargos": cargo, "departamentos": departamento})
+    return render(request, "rel_pontos_pendentes.html", {"lista": key, "colaboradores": colaborador, "cargos": cargo, "departamentos": departamento})
 
 
-def folha_ponto(request, token, id_user):
+def rel_pendentes_colab(request, token, id_user):
+    conexao = requests.api.request(
+        "GET",
+        "https://parseapi.back4app.com/users/me",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+            "X-Parse-Session-Token": f"{token}",
+        },
+    )
+    response = conexao.json()
+    if str(response["sessionToken"]) != f"{token}":
+        return redirect("login")
+    elif response["gestor"] == False:
+        return redirect("login")
+    else:
+        pass
+    key = [{"id": token, "user": response["username"]}]
+    empresa_id = response["id_empresa"]["objectId"]
+    motivo = [
+        {
+            "id": 1,
+            "nome": "Falta"
+        },
+        {
+            "id": 2,
+            "nome": "Atestado"
+        },
+        {
+            "id": 3,
+            "nome": "Folga"
+        },
+        {
+            "id": 4,
+            "nome": "Feriado"
+        },
+        {
+            "id": 5,
+            "nome": "Liberado"
+        },
+        {
+            "id": 6,
+            "nome": "Esqueceu"
+        },
+        {
+            "id": 7,
+            "nome": "Recesso"
+        }
+    ]
+    mes_lista = [
+        {
+            "num": "01",
+            "nome": "Janeiro",
+        },
+        {
+            "num": "02",
+            "nome": "Fevereiro",
+        },
+        {
+            "num": "03",
+            "nome": "Março",
+        },
+        {
+            "num": "04",
+            "nome": "Abril",
+        },
+        {
+            "num": "05",
+            "nome": "Maio",
+        },
+        {
+            "num": "06",
+            "nome": "Junho",
+        },
+        {
+            "num": "07",
+            "nome": "Julho",
+        },
+        {
+            "num": "08",
+            "nome": "Agosto",
+        },
+        {
+            "num": "09",
+            "nome": "Setembro",
+        },
+        {
+            "num": "10",
+            "nome": "Outubro",
+        },
+        {
+            "num": "11",
+            "nome": "Novembro",
+        },
+        {
+            "num": "12",
+            "nome": "Dezembro",
+        },
+    ]
+    DAYS = ["segunda-feira", "terça-feira", "quarta-feira", "quinta-feira", "sexta-feira", "sábado", "domingo"]
+
+    req_user = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/_User/{id_user}",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    colab = req_user.json()
+
+    req_ponto = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/Ponto?where=%7B%20%22id_funcionario%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22_User%22%2C%20%22objectId%22%3A%20%22{id_user}%22%20%7D%20%7D",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    res_ponto = req_ponto.json()
+    ponto = [x for x in res_ponto["results"]]
+
+    mes_select = request.GET.get("mes")
+
+    if mes_select:
+        data_atual = datetime.today()
+        
+        ano = data_atual.year
+        mes_atual = data_atual.month
+        dia_atual = data_atual.day
+        dias_mes = ""
+        datas = ""
+
+        if mes_atual < 10:
+            mes_atual = f"0{mes_atual}"
+        if dia_atual < 10:
+            dia_atual = f"0{dia_atual}"
+
+        date_admissao = colab["admissao"]
+        data_admissao = datetime.strptime(date_admissao, "%Y-%m-%d").date()
+        
+        dia_admissao = data_admissao.day
+        mes_admissao = data_admissao.month
+        ano_admissao = data_admissao.year
+
+        if mes_admissao < 10:
+            mes_admissao = f"0{mes_admissao}"
+        if dia_admissao < 10:
+            dia_admissao = f"0{dia_admissao}"
+
+        print("Mes", mes_atual)
+        print("Dia", dia_atual)
+
+        if mes_select == mes_atual:
+            if mes_select == mes_admissao:
+                dias = list(range(int(dia_admissao), dia_atual + 1))
+                total_dias = len(dias)
+
+                datas = tuple(
+                    [
+                        f"0{dias[x]}" + "/" + f"{mes_select}" + "/" + f"{ano}"
+                        if dias[x] < 10
+                        else f"{dias[x]}" + "/" + f"{mes_select}" + "/" + f"{ano}"
+                        for x in range(total_dias)
+                    ]
+                )
+            else:
+                dias = list(range(1, dia_atual + 1))
+                total_dias = len(dias)
+
+                datas = tuple(
+                    [
+                        f"0{dias[x]}" + "/" + f"{mes_select}" + "/" + f"{ano}"
+                        if dias[x] < 10
+                        else f"{dias[x]}" + "/" + f"{mes_select}" + "/" + f"{ano}"
+                        for x in range(total_dias)
+                    ]
+                )
+        elif int(mes_select) < int(mes_atual):
+            if int(ano) == int(ano_admissao):
+                if int(mes_select) == int(mes_admissao):
+                    if mes_select == "01" or mes_select == "03" or mes_select == "05" or mes_select == "07" or mes_select == "08" or mes_select == "10" or mes_select == "12":
+                        dias_mes = 31
+                    elif mes_select == "02":
+                        if ano % 100 != 0 and ano % 4 == 0 or ano % 400 == 0:
+                            # É UM ANO BISSEXTO
+                            dias_mes = 29
+                        else:
+                            # NÃO É UM ANO BISSEXTO
+                            dias_mes = 28
+                    elif mes_select == "04" or mes_select == "06" or mes_select == "09" or mes_select == "11":
+                        dias_mes = 30
+
+                    dias = list(range(int(dia_admissao), dias_mes + 1))
+                    total_dias = len(dias)
+
+                    datas = tuple(
+                        [
+                            f"0{dias[x]}" + "/" + f"{mes_select}" + "/" + f"{ano}"
+                            if dias[x] < 10
+                            else f"{dias[x]}" + "/" + f"{mes_select}" + "/" + f"{ano}"
+                            for x in range(total_dias)
+                        ]
+                    )
+                elif int(mes_select) > int(mes_admissao):
+                    if mes_select == "01" or mes_select == "03" or mes_select == "05" or mes_select == "07" or mes_select == "08" or mes_select == "10" or mes_select == "12":
+                        dias_mes = 31
+                    elif mes_select == "02":
+                        if ano % 100 != 0 and ano % 4 == 0 or ano % 400 == 0:
+                            # É UM ANO BISSEXTO
+                            dias_mes = 29
+                        else:
+                            # NÃO É UM ANO BISSEXTO
+                            dias_mes = 28
+                    elif mes_select == "04" or mes_select == "06" or mes_select == "09" or mes_select == "11":
+                        dias_mes = 30
+
+                    dias = list(range(1, dias_mes + 1))
+                    total_dias = len(dias)
+
+                    datas = tuple(
+                        [
+                            f"0{dias[x]}" + "/" + f"{mes_select}" + "/" + f"{ano}"
+                            if dias[x] < 10
+                            else f"{dias[x]}" + "/" + f"{mes_select}" + "/" + f"{ano}"
+                            for x in range(total_dias)
+                        ]
+                    )
+            elif int(ano) > int(ano_admissao):
+                if mes_select == "01" or mes_select == "03" or mes_select == "05" or mes_select == "07" or mes_select == "08" or mes_select == "10" or mes_select == "12":
+                    dias_mes = 31
+                elif mes_select == "02":
+                    if ano % 100 != 0 and ano % 4 == 0 or ano % 400 == 0:
+                        # É UM ANO BISSEXTO
+                        dias_mes = 29
+                    else:
+                        # NÃO É UM ANO BISSEXTO
+                        dias_mes = 28
+                elif mes_select == "04" or mes_select == "06" or mes_select == "09" or mes_select == "11":
+                    dias_mes = 30
+
+                dias = list(range(1, dias_mes + 1))
+                total_dias = len(dias)
+
+                datas = tuple(
+                    [
+                        f"0{dias[x]}" + "/" + f"{mes_select}" + "/" + f"{ano}"
+                        if dias[x] < 10
+                        else f"{dias[x]}" + "/" + f"{mes_select}" + "/" + f"{ano}"
+                        for x in range(total_dias)
+                    ]
+                )
+
+        if datas != "":
+            ponto_mes = [{"data": x["data"], "id_funcionario": {"objectId": x["id_funcionario"]["objectId"]}, "dia_da_semana": x["dia_da_semana"], "horario": x["horario"], "registro": x["registro"], "local_registro": x["local_registro"] } if str(x["data"]) in datas else {"data": "sem registro", "id_funcionario": {"objectId": "sem registro"}, "dia_da_semana": "sem registro", "horario": "sem registro", "registro": "sem registro", "local_registro": "sem registro" } for x in ponto]
+        
+            prim_entrada = []
+            prim_saida = []
+            seg_entrada = []
+            seg_saida = []
+
+            for data in datas:
+                primeira_entrada = False
+                primeira_saida = False
+                segunda_entrada = False
+                total_pontos = 0
+
+                for ponto in ponto_mes:
+                    if ponto["data"] == data:
+                        total_pontos += 1
+                        if ponto["registro"] == "1ª Entrada":
+                            primeira_entrada = True
+                        if ponto["registro"] == "1ª Saída":
+                            primeira_saida = True
+                        if ponto["registro"] == "2ª Entrada":
+                            segunda_entrada = True
+
+                if total_pontos == 0:
+                    prim_entrada.append(data)
+                elif total_pontos == 1 and primeira_entrada == True:
+                    prim_saida.append(data)
+                elif total_pontos == 2 and primeira_saida == True:
+                    seg_entrada.append(data)
+                elif total_pontos == 3 and segunda_entrada == True:
+                    seg_saida.append(data)
+            if len(prim_entrada) == 0:
+                prim_entrada = ""
+            if len(prim_saida) == 0:
+                prim_saida = ""
+            if len(seg_entrada) == 0:
+                seg_entrada = ""
+            if len(seg_saida) == 0:
+                seg_saida = ""
+            
+            mes_select2 = "success"
+        else:
+            mes_select2 = ""
+            prim_entrada = ""
+            prim_saida = ""
+            seg_entrada = ""
+            seg_saida = ""
+    else:
+        mes_select2 = "default"
+        prim_entrada = ""
+        prim_saida = ""
+        seg_entrada = ""
+        seg_saida = ""
+
+    if request.method == "POST":
+        motivo_pendente = request.POST["motivo_pendente"]
+        data_input = request.POST["data"]
+        registro = request.POST["registro"]
+
+        data_week = datetime.strptime(data_input, "%d/%m/%Y").date()
+        indice_week = data_week.weekday()
+        weekday = DAYS[indice_week]
+        local_registro = ""
+
+        req_ponto = requests.api.request(
+            "POST",
+            f"https://parseapi.back4app.com/classes/Ponto",
+            headers={
+                "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+                "Content-Type": "application/json",
+            },
+            json={
+                "registro": f"{registro}",
+                "data": f"{data_input}",
+                "dia_da_semana": f"{weekday}",
+                "horario": f"{motivo_pendente}",
+                "local_registro": f"{local_registro}",
+                "id_empresa": {
+                    "__type": "Pointer",
+                    "className": "Empresa",
+                    "objectId": empresa_id,
+                },
+                "id_funcionario": {
+                    "__type": "Pointer",
+                    "className": "_User",
+                    "objectId": id_user,
+                },
+            },
+        )
+
+        status = str(req_ponto.status_code)
+        if status == "201":
+            return redirect("rel_pendentes_colab", token=token, id_user=id_user)
+        else:
+            return redirect("fail_default", token=token)
+
+    return render(request, "rel_pendentes_colab.html", {"lista": key, "colaborador": colab, "Id_user": id_user, "lista1": prim_entrada, "lista2": prim_saida, "lista3": seg_entrada, "lista4": seg_saida, "mes_sel": mes_select, "mes_sel2": mes_select2, "meses": mes_lista, "motivos": motivo})
+
+
+def rel_espelho_registros(request, token):
+    conexao = requests.api.request(
+        "GET",
+        "https://parseapi.back4app.com/users/me",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+            "X-Parse-Session-Token": f"{token}",
+        },
+    )
+    response = conexao.json()
+    if str(response["sessionToken"]) != f"{token}":
+        return redirect("login")
+    elif response["gestor"] == False:
+        return redirect("login")
+    else:
+        pass
+    key = [{"id": token, "user": response["username"]}]
+    empresa_id = response["id_empresa"]["objectId"]
+
+    req_user = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/_User?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    res_user = req_user.json()
+    colaborador = [x for x in res_user["results"]]
+
+    req_cargo = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/Cargo?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    res_cargo = req_cargo.json()
+    cargo = [x for x in res_cargo["results"]]
+
+    req_dep = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/Departamento?where=%7B%22id_empresa%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Empresa%22%2C%20%22objectId%22%3A%20%22{empresa_id}%22%20%7D%20%7D",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    res_dep = req_dep.json()
+    departamento = [x for x in res_dep["results"]]
+
+    if request.method == "POST":
+        departamento_id = request.POST["departamento"]
+
+        req_user = requests.api.request(
+            "GET",
+            f"https://parseapi.back4app.com/classes/_User?where=%7B%22id_departamento%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Departamento%22%2C%20%22objectId%22%3A%20%22{departamento_id}%22%20%7D%20%7D",
+            headers={
+                "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+            },
+        )
+        res_user = req_user.json()
+        colaborador = [x for x in res_user["results"]]
+
+        status = str(res_user.status_code)
+        if status == "200":
+            return redirect("rel_espelho_registros.html", token=token)
+        else:
+            return redirect("fail_default", token=token)
+
+    return render(request, "rel_espelho_registros.html", {"lista": key, "colaboradores": colaborador, "cargos": cargo, "departamentos": departamento})
+
+
+def rel_folha_ponto(request, token, id_user):
     conexao = requests.api.request(
         "GET",
         "https://parseapi.back4app.com/users/me",
@@ -3443,7 +3873,7 @@ def folha_ponto(request, token, id_user):
     else:
         ponto_mes = ponto
 
-    return render(request, "folha_ponto.html", {"lista": key, "colaborador": colab, "Id_user": id_user, "pontos": ponto_mes, "mes_sel": mes_select, "meses": mes_lista})
+    return render(request, "rel_folha_ponto.html", {"lista": key, "colaborador": colab, "Id_user": id_user, "pontos": ponto_mes, "mes_sel": mes_select, "meses": mes_lista})
 
 
 # GERAR PDF

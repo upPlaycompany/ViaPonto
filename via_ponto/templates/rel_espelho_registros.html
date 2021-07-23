@@ -72,7 +72,7 @@
               <tr>
                 {% for key in lista %}
                   <td>
-                    <a href="{% url 'folha_ponto' token=key.id id_user=colaborador.objectId %}">
+                    <a href="{% url 'rel_folha_ponto' token=key.id id_user=colaborador.objectId %}">
                       {{ colaborador.nome }}
                     </a>
                   </td>

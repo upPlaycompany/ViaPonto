@@ -1,0 +1,221 @@
+{% extends 'base.html' %}
+
+{% block title %} VIA PONTO - Pontos Pendente {% endblock title %}
+
+{% block extra_style %}
+<style>
+  .card-body .row {
+    margin-bottom: 30px;
+  }
+
+  .rTable {
+    text-align: center;
+  }
+
+  .rTable thead {
+    background-color: #20953B;
+    font-weight: bold;
+    color: white;
+    font-size: 1em;
+  }
+
+  .rTable tbody tr:nth-child(2n) {
+    background: #98FB98;
+  }
+
+  .div-flex {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .td-1 {
+    width: 33%;
+  }
+  .td-2 {
+    width: 33%;
+  }
+  .td-3 {
+    width: 33%;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="card shadow mb-4">
+  <div class="card-header py-3 div-flex">
+    <div>
+      <h1 class="title">Pontos Pendente</h1>
+      <h3 class="text">Nome: {{ colaborador.nome }}</h3>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div class="row">
+      <div class="div-flex ml-3">
+        <div class="input-group">
+          <form class="form-inline my-2 my-lg-0 pull-right">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="mes">Mês</label>
+            </div>
+            <select class="custom-select" name="mes" id="mes">
+              {% for m in meses %}
+                  {% if m.num != mes_sel %}
+                      <option value="{{m.num}}">{{ m.nome }}</option>
+                  {% else %}
+                      <option value="{{m.num}}" selected>{{ m.nome }}</option>
+                  {% endif %}
+              {% endfor %}
+            </select>
+            <button class="btn btn-primary my-2 ml-3 my-sm-0" type="submit">Atualizar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% if mes_sel2 == "default" %}
+      <h2 class="text text-center">Selecione um mês</h2>
+    {% elif mes_sel2 != "" %}
+      {% if lista1 != "" %}
+        <div class="table-responsive">
+          <h2 class="text">1ª Entrada</h2>
+          <table class="rTable table table-bordered" id="dataTable" width="100%" cellspacing="0">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Motivo</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {% for data in lista1 %}
+                <tr>
+                  <td class="td-1">{{ data }}</td>
+                  <form method="POST"  enctype="multipart/form-data"> {% csrf_token %}
+                    <td class="td-2">
+                      <input type="hidden" name="data" value="{{data}}">
+                      <input type="hidden" name="registro" value="1ª Entrada">
+                      <select class="custom-select" name="motivo_pendente" id="motivo_pendente">
+                        {% for motivo in motivos %}
+                          <option value="{{motivo.nome}}">{{ motivo.nome }}</option>
+                        {% endfor %}
+                      </select>
+                    </td>
+                    <td class="td-3"><button type="submit" class="btn btn-info">SALVAR</button></td>
+                  </form>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% endif %}
+
+      {% if lista2 != "" %}
+        <div class="table-responsive">
+          <h2 class="text">1ª Saída</h2>
+          <table class="rTable table table-bordered" id="dataTable" width="100%" cellspacing="0">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Motivo</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {% for data in lista2 %}
+                <tr>
+                  <td class="td-1">{{ data }}</td>
+                  <form method="POST" enctype="multipart/form-data"> {% csrf_token %}
+                    <td class="td-2">
+                      <input type="hidden" name="data" value="{{data}}">
+                      <input type="hidden" name="registro" value="1ª Saída">
+                      <select class="custom-select" name="motivo_pendente" id="motivo_pendente">
+                        {% for motivo in motivos %}
+                          <option value="{{motivo.nome}}">{{ motivo.nome }}</option>
+                        {% endfor %}
+                      </select>
+                    </td>
+                    <td class="td-3"><button type="submit" class="btn btn-info">SALVAR</button></td>
+                  </form>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% endif %}
+
+      {% if lista3 != "" %}
+        <div class="table-responsive">
+          <h2 class="text">2ª Entrada</h2>
+          <table class="rTable table table-bordered" id="dataTable" width="100%" cellspacing="0">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Motivo</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {% for data in lista3 %}
+                <tr>
+                  <td class="td-1">{{ data }}</td>
+                  <form method="POST"  enctype="multipart/form-data"> {% csrf_token %}
+                    <td class="td-2">
+                      <input type="hidden" name="data" value="{{data}}">
+                      <input type="hidden" name="registro" value="2ª Entrada">
+                      <select class="custom-select" name="motivo_pendente" id="motivo_pendente">
+                        {% for motivo in motivos %}
+                          <option value="{{motivo.nome}}">{{ motivo.nome }}</option>
+                        {% endfor %}
+                      </select>
+                    </td>
+                    <td class="td-3"><button type="submit" class="btn btn-info">SALVAR</button></td>
+                  </form>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% endif %}
+
+      {% if lista4 != "" %}
+        <div class="table-responsive">
+          <h2 class="text">2ª Saída</h2>
+          <table class="rTable table table-bordered" id="dataTable" width="100%" cellspacing="0">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Motivo</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {% for data in lista4 %}
+                <tr>
+                  <td class="td-1">{{ data }}</td>
+                  <form method="POST"  enctype="multipart/form-data"> {% csrf_token %}
+                    <td class="td-2">
+                      <input type="hidden" name="data" value="{{data}}">
+                      <input type="hidden" name="registro" value="2ª Saída">
+                      <select class="custom-select" name="motivo_pendente" id="motivo_pendente">
+                        {% for motivo in motivos %}
+                          <option value="{{motivo.nome}}">{{ motivo.nome }}</option>
+                        {% endfor %}
+                      </select>
+                    </td>
+                    <td class="td-3"><button type="submit" class="btn btn-info">SALVAR</button></td>
+                  </form>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% endif %}
+    {% else %}
+      <h3 class="text text-center">Não possui pontos pendentes no mês selecionado</h3>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

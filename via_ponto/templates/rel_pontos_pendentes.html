@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}VIA PONTO - Relatorio de Pontos {% endblock title %}
+{% block title %}VIA PONTO - Pontos Pendentes{% endblock title %}
 
 {% block extra_style %}
 <style>
@@ -36,7 +36,7 @@
 {% block content %}
 <div class="card shadow mb-4">
   <div class="card-header py-3 div-flex">
-    <h1 class="title">RELATÓRIO DE PONTOS</h1>
+    <h1 class="title">PONTOS PENDENTES</h1>
     <div class="">
       <div class="input-group">
         <form class="form-inline my-2 my-lg-0 pull-right">
@@ -72,7 +72,7 @@
               <tr>
                 {% for key in lista %}
                   <td>
-                    <a href="{% url 'rel_registros_ponto' token=key.id id_user=colaborador.objectId %}">
+                    <a href="{% url 'rel_pendentes_colab' token=key.id id_user=colaborador.objectId %}">
                       {{ colaborador.nome }}
                     </a>
                   </td>

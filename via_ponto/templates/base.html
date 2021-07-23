@@ -156,7 +156,10 @@
                             <a class="collapse-item" href="{% url 'relatorio_pontos' token=key.id %}">Relatório de Pontos</a>
                         {% endfor %}
                         {% for key in lista %}
-                            <a class="collapse-item" href="{% url 'espelho_registros' token=key.id %}">Espelho de Registros</a>
+                            <a class="collapse-item" href="{% url 'rel_pontos_pendentes' token=key.id %}">Pontos Pendentes</a>
+                        {% endfor %}
+                        {% for key in lista %}
+                            <a class="collapse-item" href="{% url 'rel_espelho_registros' token=key.id %}">Espelho de Registros</a>
                         {% endfor %}
                     </div>
                 </div>
