@@ -1,84 +1,338 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %} VIA PONTO - Horário {% endblock title %}
+
 {% block content %}
-    <h3 class="title">EDITAR TURNO: {{ horario.nome }}</h3>
+    <h3 class="title">EDITAR TURNO: {{ nome_turno }}</h3>
     
     <form method="POST" class="mb-7" enctype="multipart/form-data"> {% csrf_token %}
-        <h6 class="subtitle">Fique a vontade para alterar seus dados</h6>
-
-        <h3 class="text">{{ horario.dia_da_semana }}</h3>
+        <h4 class="subtitle my-3">Informe os dados de expediente</h4>
         <div class="form-row">
-            <div class="form-group col-md-3">
-                <label>Primeira Entrada</label>
-                {% if horario.primeira_entrada != "nao definido" %}
-                    <input
-                        type="time"
-                        class="form-control"
-                        name="primeira_entrada"
-                        value="{{horario.primeira_entrada}}"
-                    >
-                {% else %}
-                    <input
-                        type="time"
-                        class="form-control"
-                        name="primeira_entrada"
-                    >
-                {% endif %}
+            <div class="form-group col-md-6">
+                <label>Nome do Turno</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    name="nome_turno"
+                    value="{{ nome_turno }}"
+                    required
+                >
             </div>
-            <div class="form-group col-md-3">
-                <label>Primeira Saída</label>
-                {% if horario.primeira_saida != "nao definido" %}
-                    <input
-                        type="time"
-                        class="form-control"
-                        name="primeira_saida"
-                        value="{{horario.primeira_saida}}"
-                    >
-                {% else %}
-                    <input
-                        type="time"
-                        class="form-control"
-                        name="primeira_saida"
-                    >
-                {% endif %}
-            </div>
-
-            <div class="form-group col-md-3">
-                <label>Segunda Entrada</label>
-                {% if horario.segunda_entrada != "nao definido" %}
-                    <input
-                        type="time"
-                        class="form-control"
-                        name="segunda_entrada"
-                        value="{{horario.segunda_entrada}}"
-                    >
-                {% else %}
-                    <input
-                        type="time"
-                        class="form-control"
-                        name="segunda_entrada"
-                    >
-                {% endif %}
-            </div>
-            <div class="form-group col-md-3">
-                <label>Segunda Saída</label>
-                {% if horario.segunda_saida != "nao definido" %}
-                    <input
-                        type="time"
-                        class="form-control"
-                        name="segunda_saida"
-                        value="{{horario.segunda_saida}}"
-                    >
-                {% else %}
-                    <input
-                        type="time"
-                        class="form-control"
-                        name="segunda_saida"
-                    >
-                {% endif %}
+            <div class="form-group col-md-6">
+                <div class="input-group" style="margin-top: 30px;">
+                    <div class="input-group-prepend">
+                      <label class="input-group-text" for="departamento">Departamento</label>
+                    </div>
+                    <select class="custom-select" name="departamento" id="departamento">
+                        {% for departamento in departamentos %}
+                            {% if departamento.objectId != id_departamento %}
+                                <option value="{{departamento.objectId}}">{{ departamento.nome }}</option>
+                            
+                            {% else %}
+                                <option value="{{departamento.objectId}}" selected>{{ departamento.nome }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
             </div>
         </div>
+        {% for horario in horarios %}
+            {% if horario.dia_da_semana == "segunda-feira" %}
+                <h3 class="text">Segunda</h3>
+                <input type="hidden" name="seg_id" value="{{ horario.objectId }}">
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label>Primeira Entrada</label>
+                        <input
+                            type="time"
+                            class="form-control"
+                            name="seg_primeira_entrada"
+                            value="{{ horario.primeira_entrada }}"
+                        >
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Primeira Saída</label>
+                        <input
+                            type="time"
+                            class="form-control"
+                            name="seg_primeira_saida"
+                            value="{{ horario.primeira_saida }}"
+                        >
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Segunda Entrada</label>
+                        <input
+                            type="time"
+                            class="form-control"
+                            name="seg_segunda_entrada"
+                            value="{{ horario.segunda_entrada }}"
+                        >
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Segunda Saída</label>
+                        <input
+                            type="time"
+                            class="form-control"
+                            name="seg_segunda_saida"
+                            value="{{ horario.segunda_saida }}"
+                        >
+                    </div>
+                </div>
+            {% endif %}
+            {% if horario.dia_da_semana == "terça-feira" %}
+                <h3 class="text">Terça</h3>
+                <input type="hidden" name="ter_id" value="{{ horario.objectId }}">
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label>Primeira Entrada</label>
+                        <input
+                            type="time"
+                            class="form-control"
+                            name="ter_primeira_entrada"
+                            value="{{ horario.primeira_entrada }}"
+                        >
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Primeira Saída</label>
+                        <input
+                            type="time"
+                            class="form-control"
+                            name="ter_primeira_saida"
+                            value="{{ horario.primeira_saida }}"
+                        >
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Segunda Entrada</label>
+                        <input
+                            type="time"
+                            class="form-control"
+                            name="ter_segunda_entrada"
+                            value="{{ horario.segunda_entrada }}"
+                        >
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Segunda Saída</label>
+                        <input
+                            type="time"
+                            class="form-control"
+                            name="ter_segunda_saida"
+                            value="{{ horario.segunda_saida }}"
+                        >
+                    </div>
+                </div>
+            {% endif %}
+            {% if horario.dia_da_semana == "quarta-feira" %}
+                <h3 class="text">Quarta</h3>
+                <input type="hidden" name="qua_id" value="{{ horario.objectId }}">
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label>Primeira Entrada</label>
+                        <input
+                            type="time"
+                            class="form-control"
+                            name="qua_primeira_entrada"
+                            value="{{ horario.primeira_entrada }}"
+                        >
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Primeira Saída</label>
+                        <input
+                            type="time"
+                            class="form-control"
+                            name="qua_primeira_saida"
+                            value="{{ horario.primeira_saida }}"
+                        >
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Segunda Entrada</label>
+                        <input
+                            type="time"
+                            class="form-control"
+                            name="qua_segunda_entrada"
+                            value="{{ horario.segunda_entrada }}"
+                        >
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Segunda Saída</label>
+                        <input
+                            type="time"
+                            class="form-control"
+                            name="qua_segunda_saida"
+                            value="{{ horario.segunda_saida }}"
+                        >
+                    </div>
+                </div>
+            {% endif %}
+            {% if horario.dia_da_semana == "quinta-feira" %}
+                <h3 class="text">Quinta</h3>
+                <input type="hidden" name="qui_id" value="{{ horario.objectId }}">
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label>Primeira Entrada</label>
+                        <input
+                            type="time"
+                            class="form-control"
+                            name="qui_primeira_entrada"
+                            value="{{ horario.primeira_entrada }}"
+                        >
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Primeira Saída</label>
+                        <input
+                            type="time"
+                            class="form-control"
+                            name="qui_primeira_saida"
+                            value="{{ horario.primeira_saida }}"
+                        >
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Segunda Entrada</label>
+                        <input
+                            type="time"
+                            class="form-control"
+                            name="qui_segunda_entrada"
+                            value="{{ horario.segunda_entrada }}"
+                        >
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Segunda Saída</label>
+                        <input
+                            type="time"
+                            class="form-control"
+                            name="qui_segunda_saida"
+                            value="{{ horario.segunda_saida }}"
+                        >
+                    </div>
+                </div>
+            {% endif %}
+            {% if horario.dia_da_semana == "sexta-feira" %}
+                <h3 class="text">Sexta</h3>
+                <input type="hidden" name="sex_id" value="{{ horario.objectId }}">
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label>Primeira Entrada</label>
+                        <input
+                            type="time"
+                            class="form-control"
+                            name="sex_primeira_entrada"
+                            value="{{ horario.primeira_entrada }}"
+                        >
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Primeira Saída</label>
+                        <input
+                            type="time"
+                            class="form-control"
+                            name="sex_primeira_saida"
+                            value="{{ horario.primeira_saida }}"
+                        >
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Segunda Entrada</label>
+                        <input
+                            type="time"
+                            class="form-control"
+                            name="sex_segunda_entrada"
+                            value="{{ horario.segunda_entrada }}"
+                        >
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Segunda Saída</label>
+                        <input
+                            type="time"
+                            class="form-control"
+                            name="sex_segunda_saida"
+                            value="{{ horario.segunda_saida }}"
+                        >
+                    </div>
+                </div>
+            {% endif %}
+            {% if horario.dia_da_semana == "sábado" %}
+                <h3 class="text">Sábado</h3>
+                <input type="hidden" name="sab_id" value="{{ horario.objectId }}">
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label>Primeira Entrada</label>
+                        <input
+                            type="time"
+                            class="form-control"
+                            name="sab_primeira_entrada"
+                            value="{{ horario.primeira_entrada }}"
+                        >
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Primeira Saída</label>
+                        <input
+                            type="time"
+                            class="form-control"
+                            name="sab_primeira_saida"
+                            value="{{ horario.primeira_saida }}"
+                        >
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Segunda Entrada</label>
+                        <input
+                            type="time"
+                            class="form-control"
+                            name="sab_segunda_entrada"
+                            value="{{ horario.segunda_entrada }}"
+                        >
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Segunda Saída</label>
+                        <input
+                            type="time"
+                            class="form-control"
+                            name="sab_segunda_saida"
+                            value="{{ horario.segunda_saida }}"
+                        >
+                    </div>
+                </div>
+            {% endif %}
+            {% if horario.dia_da_semana == "domingo" %}
+                <h3 class="text">Domingo</h3>
+                <input type="hidden" name="dom_id" value="{{ horario.objectId }}">
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label>Primeira Entrada</label>
+                        <input
+                            type="time"
+                            class="form-control"
+                            name="dom_primeira_entrada"
+                            value="{{ horario.primeira_entrada }}"
+                        >
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Primeira Saída</label>
+                        <input
+                            type="time"
+                            class="form-control"
+                            name="dom_primeira_saida"
+                            value="{{ horario.primeira_saida }}"
+                        >
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Segunda Entrada</label>
+                        <input
+                            type="time"
+                            class="form-control"
+                            name="dom_segunda_entrada"
+                            value="{{ horario.segunda_entrada }}"
+                        >
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Segunda Saída</label>
+                        <input
+                            type="time"
+                            class="form-control"
+                            name="dom_segunda_saida"
+                            value="{{ horario.segunda_saida }}"
+                        >
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
 
         <button type="submit" id="btnSubmit" class="btn btn-info btn-lg">SALVAR</button>
     </form>

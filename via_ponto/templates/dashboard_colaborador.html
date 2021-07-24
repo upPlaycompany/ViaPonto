@@ -89,7 +89,7 @@
 
                     <tbody>
                         {% for ponto in pontos %}
-                            {% if ponto.createdAt == data %}
+                            {% if ponto.data == data %}
                                 <tr>
                                     <td class="td-1">{{ponto.registro}}</td>
                                     <td class="td-2">{{ponto.horario}}</td>
@@ -131,7 +131,7 @@
 
                     <tbody>
                         {% for horario in horarios %}
-                            {% if horario.dia_da_semana == "segunda" %}
+                            {% if horario.dia_da_semana == "segunda-feira" %}
                                 <tr>
                                     <td>Segunda</td>
                                     <td>{{horario.primeira_entrada}}</td>
@@ -141,7 +141,7 @@
                                 </tr>
                             {% endif %}
 
-                            {% if horario.dia_da_semana == "terca" %}
+                            {% if horario.dia_da_semana == "terça-feira" %}
                                 <tr>
                                     <td>Terça</td>
                                     <td>{{horario.primeira_entrada}}</td>
@@ -150,7 +150,7 @@
                                     <td>{{horario.segunda_saida}}</td>
                                 </tr>
                             {% endif %}
-                            {% if horario.dia_da_semana == "quarta" %}
+                            {% if horario.dia_da_semana == "quarta-feira" %}
                                 <tr>
                                     <td>Quarta</td>
                                     <td>{{horario.primeira_entrada}}</td>
@@ -159,7 +159,7 @@
                                     <td>{{horario.segunda_saida}}</td>
                                 </tr>
                             {% endif %}
-                            {% if horario.dia_da_semana == "quinta" %}
+                            {% if horario.dia_da_semana == "quinta-feira" %}
                                 <tr>
                                     <td>Quinta</td>
                                     <td>{{horario.primeira_entrada}}</td>
@@ -168,7 +168,7 @@
                                     <td>{{horario.segunda_saida}}</td>
                                 </tr>
                             {% endif %}
-                            {% if horario.dia_da_semana == "sexta" %}
+                            {% if horario.dia_da_semana == "sexta-feira" %}
                                 <tr>
                                     <td>Sexta</td>
                                     <td>{{horario.primeira_entrada}}</td>
@@ -177,7 +177,7 @@
                                     <td>{{horario.segunda_saida}}</td>
                                 </tr>
                             {% endif %}
-                            {% if horario.dia_da_semana == "sabado" %}
+                            {% if horario.dia_da_semana == "sábado" %}
                                 <tr>
                                     <td>Sábado</td>
                                     <td>{{horario.primeira_entrada}}</td>

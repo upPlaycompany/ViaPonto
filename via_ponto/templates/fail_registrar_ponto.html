@@ -1,0 +1,29 @@
+{% extends 'base_colaborador.html' %}
+
+{% block title %}Erro Registro - VIA PONTO{% endblock title %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-xl-5 col-lg-12 col-md-9">
+            <div class="card o-hidden border-0 shadow-lg my-5">
+                <div class="card-body p-0">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="p-5">
+                                <div class="text-center">
+                                    <h1 class="h2 text-gray-900 mb-2">Infelizmente houve um erro no registro do ponto,
+                                      verifique se está no horário conforme está definido
+                                      em seu departamento ou se possui pontos pendentes de hoje <strong>e tente novamente.</strong></h1>
+                                    <br>
+                                    {% for key in lista %}
+                                        <a href="{% url 'dashboard_colaborador' token=key.id %}"><button class="btn btn-success">Clique para voltar a Página Inicial</button></a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

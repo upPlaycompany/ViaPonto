@@ -20,7 +20,10 @@ urlpatterns = [
     path('perfil/colaborador/edit/<str:token>/', views.edit_perfil, name='edit_perfil'),
     path('ponto/colaborador/list/<str:token>/', views.list_ponto, name='list_ponto'),
     path('ponto/colaborador/registrar/<str:token>/', views.registro_ponto, name='registro_ponto'),
+    path('ponto/colaborador/fail-localizacao/<str:token>/', views.fail_localizacao_ponto, name='fail_localizacao_ponto'),
     path('ponto/colaborador/fail/<str:token>/', views.fail_registro_ponto, name='fail_registro_ponto'),
+    path('ponto/colaborador/fail-registrar/<str:token>/', views.fail_registrar_ponto, name='fail_registrar_ponto'),
+    path('ponto/colaborador/fail-salvar/<str:token>/', views.fail_salvar_ponto, name='fail_salvar_ponto'),
 
     # GESTOR DASHBOARD
     path('login/gestor/', views.login_gestor, name='login_gestor'),
@@ -43,7 +46,8 @@ urlpatterns = [
     # HORÁRIO
     path('horario/<str:token>/', views.list_horario, name='list_horario'),
     path('horario/cadastro/<str:token>/', views.cadastro_horario, name='cadastro_horario'),
-    path('horario/edit/<str:token>/<str:id>/', views.edit_horario, name='edit_horario'),
+    path('horario/edit/<str:token>/<str:id>/<str:nome>/', views.edit_horario, name='edit_horario'),
+    path('horario/detail/<str:token>/<str:id>/<str:nome>/', views.detail_horario, name='detail_horario'),
     path('horario/delete/<str:token>/<str:id>/', views.delete_horario, name='delete_horario'),
     # LOCAL
     path('local/<str:token>/', views.list_local, name='list_local'),

@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% block title %} VIA PONTO - Horário {% endblock title %}
+
 {% block extra_style %}
     <style>
         .card-body .row {
@@ -22,28 +24,13 @@
         }
 
         .td-1 {
-            width: 17%;
+            width: 33%;
         }
         .td-2 {
-            width: 15%;
+            width: 33%;
         }
         .td-3 {
-            width: 10%;
-        }
-        .td-4 {
-            width: 12%;
-        }
-        .td-5 {
-            width: 12%;
-        }
-        .td-6 {
-            width: 12%;
-        }
-        .td-7 {
-            width: 12%;
-        }
-        .td-8 {
-            width: 10%;
+            width: 33%;
         }
     </style>
 {% endblock %}
@@ -61,13 +48,8 @@
                 <table class="rTable table table-bordered" id="dataTable" width="100%" cellspacing="0" >
                     <thead>
                         <tr>
+                            <th>NOME</th>
                             <th>DEPARTAMENTO</th>
-                            <th>TURNO</th>
-                            <th>DIA</th>
-                            <th>1ª ENTRADA</th>
-                            <th>1ª SAIDA</th>
-                            <th>2ª ENTRADA</th>
-                            <th>2ª SAIDA</th>
                             <th>AÇÕES</th>
                         </tr>
                     </thead>
@@ -75,182 +57,31 @@
                     <tbody>
                         {% for departamento in departamentos %}
                             {% for turno in turnos %}
-                                <tr>
                                 {% if turno.id_departamento.objectId == departamento.objectId %}
-                                    {% if turno.dia_da_semana == "segunda" %}
-                                        <td class="td-1">{{ departamento.nome }}</td>
-                                        <td class="td-2">{{ turno.nome }}</td>
-                                        <td class="td-3">Segunda</td>
-                                        <td class="td-4">{{ turno.primeira_entrada }}</td>
-                                        <td class="td-5">{{ turno.primeira_saida }}</td>
-                                        <td class="td-6">{{ turno.segunda_entrada }}</td>
-                                        <td class="td-7">{{ turno.segunda_saida }}</td>
-                                        
-                                        <td class="td-8">
-                                            {% for key in lista %}
-                                                <a href="{% url 'edit_horario' token=key.id id=turno.objectId %}">
-                                                    <i style="color: #6bc9ca; font-size: 20px;" class="fas fa-pencil-alt"></i>
-                                                </a>
-                                            {% endfor %}
-                                            {% for key in lista %}
-                                                <a href="{% url 'delete_horario' token=key.id id=turno.objectId %}">
-                                                    <i style="margin-left: 25px; color: red; font-size: 20px;" class="far fa-trash-alt"></i>
-                                                </a>
-                                            {% endfor %}
-                                        </td>
+                                    {% if turno.dia_da_semana == "segunda-feira"%}
+                                        <tr>
+                                            <td class="td-1">{{ turno.nome }}</td>
+                                            <td class="td-2">{{ departamento.nome }}</td>
+                                            <td class="td-3">
+                                                {% for key in lista %}
+                                                    <a href="{% url 'detail_horario' token=key.id id=turno.id_departamento.objectId nome=turno.nome %}">
+                                                        <i style="color: #6bc9ca; font-size: 20px;" class="fas fa-eye"></i>
+                                                    </a>
+                                                {% endfor %}
+                                                {% for key in lista %}
+                                                    <a href="{% url 'edit_horario' token=key.id id=turno.id_departamento.objectId nome=turno.nome %}">
+                                                        <i style="margin-left: 25px; color: #6bc9ca; font-size: 20px;" class="fas fa-pencil-alt"></i>
+                                                    </a>
+                                                {% endfor %}
+                                                {% for key in lista %}
+                                                    <a href="{% url 'delete_horario' token=key.id id=turno.id_departamento.objectId %}">
+                                                        <i style="margin-left: 25px; color: red; font-size: 20px;" class="far fa-trash-alt"></i>
+                                                    </a>
+                                                {% endfor %}
+                                            </td>
+                                        </tr>
                                     {% endif %}
                                 {% endif %}
-
-                                {% if turno.id_departamento.objectId == departamento.objectId %}
-                                    {% if turno.dia_da_semana == "terca" %}
-                                        <td class="td-1">{{ departamento.nome }}</td>
-                                        <td class="td-2">{{ turno.nome }}</td>
-                                        <td class="td-3">Terça</td>
-                                        <td class="td-4">{{ turno.primeira_entrada }}</td>
-                                        <td class="td-5">{{ turno.primeira_saida }}</td>
-                                        <td class="td-6">{{ turno.segunda_entrada }}</td>
-                                        <td class="td-7">{{ turno.segunda_saida }}</td>
-                                        
-                                        <td class="td-8">
-                                            {% for key in lista %}
-                                                <a href="{% url 'edit_horario' token=key.id id=turno.objectId %}">
-                                                    <i style="color: #6bc9ca; font-size: 20px;" class="fas fa-pencil-alt"></i>
-                                                </a>
-                                            {% endfor %}
-                                            {% for key in lista %}
-                                                <a href="{% url 'delete_horario' token=key.id id=turno.objectId %}">
-                                                    <i style="margin-left: 25px; color: red; font-size: 20px;" class="far fa-trash-alt"></i>
-                                                </a>
-                                            {% endfor %}
-                                        </td>
-                                    {% endif %}
-                                {% endif %}
-
-                                {% if turno.id_departamento.objectId == departamento.objectId %}
-                                    {% if turno.dia_da_semana == "quarta" %}
-                                        <td class="td-1">{{ departamento.nome }}</td>
-                                        <td class="td-2">{{ turno.nome }}</td>
-                                        <td class="td-3">Quarta</td>
-                                        <td class="td-4">{{ turno.primeira_entrada }}</td>
-                                        <td class="td-5">{{ turno.primeira_saida }}</td>
-                                        <td class="td-6">{{ turno.segunda_entrada }}</td>
-                                        <td class="td-7">{{ turno.segunda_saida }}</td>
-                                        
-                                        <td class="td-8">
-                                            {% for key in lista %}
-                                                <a href="{% url 'edit_horario' token=key.id id=turno.objectId %}">
-                                                    <i style="color: #6bc9ca; font-size: 20px;" class="fas fa-pencil-alt"></i>
-                                                </a>
-                                            {% endfor %}
-                                            {% for key in lista %}
-                                                <a href="{% url 'delete_horario' token=key.id id=turno.objectId %}">
-                                                    <i style="margin-left: 25px; color: red; font-size: 20px;" class="far fa-trash-alt"></i>
-                                                </a>
-                                            {% endfor %}
-                                        </td>
-                                    {% endif %}
-                                {% endif %}
-
-                                {% if turno.id_departamento.objectId == departamento.objectId %}
-                                    {% if turno.dia_da_semana == "quinta" %}
-                                        <td class="td-1">{{ departamento.nome }}</td>
-                                        <td class="td-2">{{ turno.nome }}</td>
-                                        <td class="td-3">Quinta</td>
-                                        <td class="td-4">{{ turno.primeira_entrada }}</td>
-                                        <td class="td-5">{{ turno.primeira_saida }}</td>
-                                        <td class="td-6">{{ turno.segunda_entrada }}</td>
-                                        <td class="td-7">{{ turno.segunda_saida }}</td>
-                                        
-                                        <td class="td-8">
-                                            {% for key in lista %}
-                                                <a href="{% url 'edit_horario' token=key.id id=turno.objectId %}">
-                                                    <i style="color: #6bc9ca; font-size: 20px;" class="fas fa-pencil-alt"></i>
-                                                </a>
-                                            {% endfor %}
-                                            {% for key in lista %}
-                                                <a href="{% url 'delete_horario' token=key.id id=turno.objectId %}">
-                                                    <i style="margin-left: 25px; color: red; font-size: 20px;" class="far fa-trash-alt"></i>
-                                                </a>
-                                            {% endfor %}
-                                        </td>
-                                    {% endif %}
-                                {% endif %}
-
-                                {% if turno.id_departamento.objectId == departamento.objectId %}
-                                    {% if turno.dia_da_semana == "sexta" %}
-                                        <td class="td-1">{{ departamento.nome }}</td>
-                                        <td class="td-2">{{ turno.nome }}</td>
-                                        <td class="td-3">Sexta</td>
-                                        <td class="td-4">{{ turno.primeira_entrada }}</td>
-                                        <td class="td-5">{{ turno.primeira_saida }}</td>
-                                        <td class="td-6">{{ turno.segunda_entrada }}</td>
-                                        <td class="td-7">{{ turno.segunda_saida }}</td>
-                                        
-                                        <td class="td-8">
-                                            {% for key in lista %}
-                                                <a href="{% url 'edit_horario' token=key.id id=turno.objectId %}">
-                                                    <i style="color: #6bc9ca; font-size: 20px;" class="fas fa-pencil-alt"></i>
-                                                </a>
-                                            {% endfor %}
-                                            {% for key in lista %}
-                                                <a href="{% url 'delete_horario' token=key.id id=turno.objectId %}">
-                                                    <i style="margin-left: 25px; color: red; font-size: 20px;" class="far fa-trash-alt"></i>
-                                                </a>
-                                            {% endfor %}
-                                        </td>
-                                    {% endif %}
-                                {% endif %}
-
-                                {% if turno.id_departamento.objectId == departamento.objectId %}
-                                    {% if turno.dia_da_semana == "sabado" %}
-                                        <td class="td-1">{{ departamento.nome }}</td>
-                                        <td class="td-2">{{ turno.nome }}</td>
-                                        <td class="td-3">Sábado</td>
-                                        <td class="td-4">{{ turno.primeira_entrada }}</td>
-                                        <td class="td-5">{{ turno.primeira_saida }}</td>
-                                        <td class="td-6">{{ turno.segunda_entrada }}</td>
-                                        <td class="td-7">{{ turno.segunda_saida }}</td>
-                                        
-                                        <td class="td-8">
-                                            {% for key in lista %}
-                                                <a href="{% url 'edit_horario' token=key.id id=turno.objectId %}">
-                                                    <i style="color: #6bc9ca; font-size: 20px;" class="fas fa-pencil-alt"></i>
-                                                </a>
-                                            {% endfor %}
-                                            {% for key in lista %}
-                                                <a href="{% url 'delete_horario' token=key.id id=turno.objectId %}">
-                                                    <i style="margin-left: 25px; color: red; font-size: 20px;" class="far fa-trash-alt"></i>
-                                                </a>
-                                            {% endfor %}
-                                        </td>
-                                    {% endif %}
-                                {% endif %}
-
-                                {% if turno.id_departamento.objectId == departamento.objectId %}
-                                    {% if turno.dia_da_semana == "domingo" %}
-                                        <td class="td-1">{{ departamento.nome }}</td>
-                                        <td class="td-2">{{ turno.nome }}</td>
-                                        <td class="td-3">Domingo</td>
-                                        <td class="td-4">{{ turno.primeira_entrada }}</td>
-                                        <td class="td-5">{{ turno.primeira_saida }}</td>
-                                        <td class="td-6">{{ turno.segunda_entrada }}</td>
-                                        <td class="td-7">{{ turno.segunda_saida }}</td>
-                                        
-                                        <td class="td-8">
-                                            {% for key in lista %}
-                                                <a href="{% url 'edit_horario' token=key.id id=turno.objectId %}">
-                                                    <i style="color: #6bc9ca; font-size: 20px;" class="fas fa-pencil-alt"></i>
-                                                </a>
-                                            {% endfor %}
-                                            {% for key in lista %}
-                                                <a href="{% url 'delete_horario' token=key.id id=turno.objectId %}">
-                                                    <i style="margin-left: 25px; color: red; font-size: 20px;" class="far fa-trash-alt"></i>
-                                                </a>
-                                            {% endfor %}
-                                        </td>
-                                    {% endif %}
-                                {% endif %}
-                                </tr>
                             {% endfor %}
                         {% endfor %}
                     </tbody>

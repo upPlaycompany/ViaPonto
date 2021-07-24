@@ -85,33 +85,37 @@
         </div>
       </div>
     </div>
-    <div class="table-responsive">
-      <table class="rTable table table-bordered" id="dataTable" width="100%" cellspacing="0">
-        <thead>
-          <tr>
-            <th>Data</th>
-            <th>Dia da Semana</th>
-            <th>Registro</th>
-            <th>Horas</th>
-            <th>Local do Registro</th>
-          </tr>
-        </thead>
+    {% if mes_sel == "default" %}
+      <h2 class="text text-center">Selecione um mês</h2>
+    {% else %}
+      <div class="table-responsive">
+        <table class="rTable table table-bordered" id="dataTable" width="100%" cellspacing="0">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Dia da Semana</th>
+              <th>Registro</th>
+              <th>Horas</th>
+              <th>Local do Registro</th>
+            </tr>
+          </thead>
 
-        <tbody>
-          {% for ponto in pontos %}
-            {% if ponto.data != "sem registro" %}
-              <tr>
-                <td class="td-1">{{ ponto.data }}</td>
-                <td class="td-2">{{ ponto.dia_da_semana }}</td>
-                <td class="td-3">{{ ponto.registro }}</td>
-                <td class="td-4">{{ ponto.horario }}</td>
-                <td class="td-5">{{ ponto.local_registro }}</td>
-              </tr>
-            {% endif %}
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
+          <tbody>
+            {% for ponto in pontos %}
+              {% if ponto.data != "sem registro" %}
+                <tr>
+                  <td class="td-1">{{ ponto.data }}</td>
+                  <td class="td-2">{{ ponto.dia_da_semana }}</td>
+                  <td class="td-3">{{ ponto.registro }}</td>
+                  <td class="td-4">{{ ponto.horario }}</td>
+                  <td class="td-5">{{ ponto.local_registro }}</td>
+                </tr>
+              {% endif %}
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
   </div>
 </div>
 {% endblock %}

@@ -64,28 +64,6 @@
 
 {% block scripts %}
     <script>
-        var week = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
-
-        // Função para formatar 1 em 01
-        const zeroFill = n => {
-            return ('0' + n).slice(-2);
-        }
-
-        // Cria intervalo
-        const interval = setInterval(() => {
-            // Pega o horário atual
-            const now = new Date();
-            const weekday = week[now.getDay()];
-
-            // Formata a data conforme dd/mm/aaaa hh:ii:ss
-            const dataHora = zeroFill(now.getUTCDate()) + '/' + zeroFill((now.getMonth() + 1)) + '/' + now.getFullYear() + ' ' + zeroFill(now.getHours()) + ':' + zeroFill(now.getMinutes()) + ':' + zeroFill(now.getSeconds());
-
-            document.getElementById('weekday').innerHTML = weekday;
-            // Exibe na tela usando a div#data-hora
-            document.getElementById('data-hora').innerHTML = dataHora;
-        }, 1000);
-    </script>
-    <script>
         navigator.geolocation.getCurrentPosition(function(posicao) {
             var url = "https://nominatim.openstreetmap.org/reverse.php?lat="+posicao.coords.latitude+"&lon="+posicao.coords.longitude+"&zoom=16&format=jsonv2";
             
@@ -107,9 +85,30 @@
                 document.getElementById('bairroId').value= bairro;
                 document.getElementById('estadoId').value = estado;
             }
-            
+
             getLocation();
         });
+    </script>
+    <script>
+        var week = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
 
+        // Função para formatar 1 em 01
+        const zeroFill = n => {
+            return ('0' + n).slice(-2);
+        }
+
+        // Cria intervalo
+        const interval = setInterval(() => {
+            // Pega o horário atual
+            const now = new Date();
+            const weekday = week[now.getDay()];
+
+            // Formata a data conforme dd/mm/aaaa hh:ii:ss
+            const dataHora = zeroFill(now.getDate()) + '/' + zeroFill((now.getMonth() + 1)) + '/' + now.getFullYear() + ' ' + zeroFill(now.getHours()) + ':' + zeroFill(now.getMinutes()) + ':' + zeroFill(now.getSeconds());
+
+            document.getElementById('weekday').innerHTML = weekday;
+            // Exibe na tela usando a div#data-hora
+            document.getElementById('data-hora').innerHTML = dataHora;
+        }, 1000);
     </script>
 {% endblock %}
