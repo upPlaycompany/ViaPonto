@@ -9,7 +9,7 @@
     <form method="POST" class="mb-7" enctype="multipart/form-data"> {% csrf_token %}
         <h4 class="subtitle my-3">Informe os dados de expediente</h4>
         <div class="form-row">
-            <div class="form-group col-md-6">
+            <div class="form-group col-md-3">
                 <label>Nome do Turno</label>
                 <input
                     type="text"
@@ -19,7 +19,24 @@
                     required
                 >
             </div>
-            <div class="form-group col-md-6">
+            <div class="form-group col-md-4">
+                <label>Fuso horário</label>
+                <select class="custom-select" name="fuso_horario" id="fuso_horario">
+                    {% for horario in horarios %}
+                        {% if horario.dia_da_semana == "segunda-feira" %}
+                            {% for fuso in fusos %}
+                                {% if fuso.zona != horario.fuso_horario %}
+                                    <option value="{{fuso.zona}}">{{ fuso.nome }}</option>
+                                
+                                {% else %}
+                                    <option value="{{fuso.zona}}" selected>{{ fuso.nome }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group col-md-5">
                 <div class="input-group" style="margin-top: 30px;">
                     <div class="input-group-prepend">
                       <label class="input-group-text" for="departamento">Departamento</label>

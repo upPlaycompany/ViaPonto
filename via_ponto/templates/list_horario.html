@@ -24,13 +24,16 @@
         }
 
         .td-1 {
-            width: 33%;
+            width: 25%;
         }
         .td-2 {
-            width: 33%;
+            width: 25%;
         }
         .td-3 {
-            width: 33%;
+            width: 25%;
+        }
+        .td-4 {
+            width: 25%;
         }
     </style>
 {% endblock %}
@@ -49,6 +52,7 @@
                     <thead>
                         <tr>
                             <th>NOME</th>
+                            <th>FUSO HORÁRIO</th>
                             <th>DEPARTAMENTO</th>
                             <th>AÇÕES</th>
                         </tr>
@@ -61,8 +65,9 @@
                                     {% if turno.dia_da_semana == "segunda-feira"%}
                                         <tr>
                                             <td class="td-1">{{ turno.nome }}</td>
-                                            <td class="td-2">{{ departamento.nome }}</td>
-                                            <td class="td-3">
+                                            <td class="td-2">{{ turno.fuso_horario }}</td>
+                                            <td class="td-3">{{ departamento.nome }}</td>
+                                            <td class="td-4">
                                                 {% for key in lista %}
                                                     <a href="{% url 'detail_horario' token=key.id id=turno.id_departamento.objectId nome=turno.nome %}">
                                                         <i style="color: #6bc9ca; font-size: 20px;" class="fas fa-eye"></i>

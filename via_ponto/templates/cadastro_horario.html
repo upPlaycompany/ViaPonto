@@ -9,7 +9,7 @@
     <form method="POST" class="mb-7" enctype="multipart/form-data"> {% csrf_token %}
         <h4 class="subtitle my-3">Informe os dados de expediente</h4>
         <div class="form-row">
-            <div class="form-group col-md-6">
+            <div class="form-group col-md-3">
                 <label>Nome do Turno</label>
                 <input
                     type="text"
@@ -18,13 +18,22 @@
                     required
                 >
             </div>
-            <div class="form-group col-md-6">
+            <div class="form-group col-md-4">
+                <label>Fuso horário</label>
+                <select class="custom-select" name="fuso_horario" id="fuso_horario">
+                    <option selected>Selecione um fuso horário</option>
+                    {% for fuso in fusos %}
+                        <option value="{{fuso.zona}}">{{ fuso.nome }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group col-md-5">
                 <div class="input-group" style="margin-top: 30px;">
                     <div class="input-group-prepend">
                       <label class="input-group-text" for="departamento">Departamento</label>
                     </div>
                     <select class="custom-select" name="departamento" id="departamento">
-                        <option selected>Selecione um departamento</option>
+                        <option value="nao definido" selected>Selecione um departamento</option>
                         {% for departamento in departamentos %}
                             <option value="{{departamento.objectId}}">{{ departamento.nome }}</option>
                         {% endfor %}

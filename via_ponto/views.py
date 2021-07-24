@@ -7,6 +7,7 @@ from easy_pdf import rendering
 from django.utils.six import BytesIO
 import requests
 import urllib3
+from pytz import timezone
 
 
 def home(request):
@@ -564,14 +565,24 @@ def registro_ponto(request, token):
 
         if rua == "" or rua == "undefined":
             return redirect("fail_localizacao_ponto", token=token)
+
+        req_turno = requests.api.request('GET', f"https://parseapi.back4app.com/classes/Turno?where=%7B%22id_departamento%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Departamento%22%2C%20%22objectId%22%3A%20%22{departamento_id}%22%20%7D%20%7D",
+                                        headers={
+                                            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                                            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
+        res_turno = req_turno.json()
+        turnos = [x for x in res_turno['results']]
+        zone = turnos[0]["fuso_horario"]
+        print(zone)
         
         # PEGAR DO SERVIDOR
         data_hora = datetime.now()
         indice_week = data_hora.weekday()
+        data_hora_timezone = data_hora.astimezone(timezone(zone))
 
         # DADOS DO PONTO
-        data_do_dia = data_hora.strftime("%d/%m/%Y")
-        hora = data_hora.strftime("%H:%M")
+        data_do_dia = data_hora_timezone.strftime("%d/%m/%Y")
+        hora = data_hora_timezone.strftime("%H:%M")
         weekday = DAYS[indice_week]
         local_registro = f"{rua}" + ", " + f"{bairro}" + " - " + f"{cidade}" + " / " + f"{estado}"
         registro = ""
@@ -609,13 +620,6 @@ def registro_ponto(request, token):
                     segunda_entrada = True
                 if ponto["registro"] == "2ª Saída":
                     segunda_saida = True
-
-        req_turno = requests.api.request('GET', f"https://parseapi.back4app.com/classes/Turno?where=%7B%22id_departamento%22%3A%20%7B%20%22__type%22%3A%20%22Pointer%22%2C%20%22className%22%3A%20%22Departamento%22%2C%20%22objectId%22%3A%20%22{departamento_id}%22%20%7D%20%7D",
-                                        headers={
-                                            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
-                                            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9"})
-        res_turno = req_turno.json()
-        turnos = [x for x in res_turno['results']]
 
         for turno in turnos:
             if turno["dia_da_semana"] == weekday:
@@ -675,8 +679,6 @@ def registro_ponto(request, token):
                 },
             )
             res_ponto = req_ponto.json()
-            # departamento = [x for x in res_ponto["results"]]
-            print(res_ponto)
             ponto_id = res_ponto["objectId"]
 
             status = str(req_ponto.status_code)
@@ -1824,6 +1826,28 @@ def cadastro_horario(request, token):
         pass
     key = [{"id": token, "user": response["username"]}]
     empresa_id = response["id_empresa"]["objectId"]
+    timezone = [
+        {
+            "id": "1",
+            "nome": "Horário Padrão de Fernando de Noronha",
+            "zona": "America/Noronha"
+        },
+        {
+            "id": "2",
+            "nome": "Horário Padrão de Brasília",
+            "zona": "America/Sao_Paulo"
+        },
+        {
+            "id": "3",
+            "nome": "Horário Padrão do Amazonas",
+            "zona": "America/Porto_Velho"
+        },
+        {
+            "id": "4",
+            "nome": "Horário Padrão do Acre",
+            "zona": "America/Rio_Branco"
+        },
+    ]
 
     req_dep = requests.api.request(
         "GET",
@@ -1839,6 +1863,7 @@ def cadastro_horario(request, token):
     if request.method == "POST":
         nome = request.POST["nome_turno"]
         departamento_id = request.POST["departamento"]
+        fuso_horario = request.POST["fuso_horario"]
 
         seg_primeira_entrada = request.POST["seg_primeira_entrada"]
         if seg_primeira_entrada == "":
@@ -1968,6 +1993,7 @@ def cadastro_horario(request, token):
                 "segunda_entrada": f"{seg_segunda_entrada}",
                 "segunda_saida": f"{seg_segunda_saida}",
                 "departamento": f"{departamento_id}",
+                "fuso_horario": f"{fuso_horario}",
                 "id_empresa": {
                     "__type": "Pointer",
                     "className": "Empresa",
@@ -1997,6 +2023,7 @@ def cadastro_horario(request, token):
                 "segunda_entrada": f"{ter_segunda_entrada}",
                 "segunda_saida": f"{ter_segunda_saida}",
                 "departamento": f"{departamento_id}",
+                "fuso_horario": f"{fuso_horario}",
                 "id_empresa": {
                     "__type": "Pointer",
                     "className": "Empresa",
@@ -2026,6 +2053,7 @@ def cadastro_horario(request, token):
                 "segunda_entrada": f"{qua_segunda_entrada}",
                 "segunda_saida": f"{qua_segunda_saida}",
                 "departamento": f"{departamento_id}",
+                "fuso_horario": f"{fuso_horario}",
                 "id_empresa": {
                     "__type": "Pointer",
                     "className": "Empresa",
@@ -2055,6 +2083,7 @@ def cadastro_horario(request, token):
                 "segunda_entrada": f"{qui_segunda_entrada}",
                 "segunda_saida": f"{qui_segunda_saida}",
                 "departamento": f"{departamento_id}",
+                "fuso_horario": f"{fuso_horario}",
                 "id_empresa": {
                     "__type": "Pointer",
                     "className": "Empresa",
@@ -2084,6 +2113,7 @@ def cadastro_horario(request, token):
                 "segunda_entrada": f"{sex_segunda_entrada}",
                 "segunda_saida": f"{sex_segunda_saida}",
                 "departamento": f"{departamento_id}",
+                "fuso_horario": f"{fuso_horario}",
                 "id_empresa": {
                     "__type": "Pointer",
                     "className": "Empresa",
@@ -2113,6 +2143,7 @@ def cadastro_horario(request, token):
                 "segunda_entrada": f"{sab_segunda_entrada}",
                 "segunda_saida": f"{sab_segunda_saida}",
                 "departamento": f"{departamento_id}",
+                "fuso_horario": f"{fuso_horario}",
                 "id_empresa": {
                     "__type": "Pointer",
                     "className": "Empresa",
@@ -2142,6 +2173,7 @@ def cadastro_horario(request, token):
                 "segunda_entrada": f"{dom_segunda_entrada}",
                 "segunda_saida": f"{dom_segunda_saida}",
                 "departamento": f"{departamento_id}",
+                "fuso_horario": f"{fuso_horario}",
                 "id_empresa": {
                     "__type": "Pointer",
                     "className": "Empresa",
@@ -2158,7 +2190,7 @@ def cadastro_horario(request, token):
         return redirect("list_horario", token=token)
 
     return render(
-        request, "cadastro_horario.html", {"lista": key, "departamentos": departamento}
+        request, "cadastro_horario.html", {"lista": key, "departamentos": departamento, "fusos": timezone}
     )
 
 
@@ -2181,6 +2213,28 @@ def edit_horario(request, token, id, nome):
         pass
     key = [{"id": token, "user": response["username"]}]
     empresa_id = response["id_empresa"]["objectId"]
+    timezone = [
+        {
+            "id": "1",
+            "nome": "Horário Padrão de Fernando de Noronha",
+            "zona": "America/Noronha"
+        },
+        {
+            "id": "2",
+            "nome": "Horário Padrão de Brasília",
+            "zona": "America/Sao_Paulo"
+        },
+        {
+            "id": "3",
+            "nome": "Horário Padrão do Amazonas",
+            "zona": "America/Porto_Velho"
+        },
+        {
+            "id": "4",
+            "nome": "Horário Padrão do Acre",
+            "zona": "America/Rio_Branco"
+        }
+    ]
 
     req_dep = requests.api.request(
         "GET",
@@ -2207,6 +2261,7 @@ def edit_horario(request, token, id, nome):
     if request.method == "POST":
         nome = request.POST["nome_turno"]
         departamento_id = request.POST["departamento"]
+        fuso_horario = request.POST["fuso_horario"]
 
         seg_id = request.POST["seg_id"]
         seg_primeira_entrada = request.POST["seg_primeira_entrada"]
@@ -2343,6 +2398,7 @@ def edit_horario(request, token, id, nome):
                 "segunda_entrada": f"{seg_segunda_entrada}",
                 "segunda_saida": f"{seg_segunda_saida}",
                 "departamento": f"{departamento_id}",
+                "fuso_horario": f"{fuso_horario}",
                 "id_empresa": {
                     "__type": "Pointer",
                     "className": "Empresa",
@@ -2372,6 +2428,7 @@ def edit_horario(request, token, id, nome):
                 "segunda_entrada": f"{ter_segunda_entrada}",
                 "segunda_saida": f"{ter_segunda_saida}",
                 "departamento": f"{departamento_id}",
+                "fuso_horario": f"{fuso_horario}",
                 "id_empresa": {
                     "__type": "Pointer",
                     "className": "Empresa",
@@ -2401,6 +2458,7 @@ def edit_horario(request, token, id, nome):
                 "segunda_entrada": f"{qua_segunda_entrada}",
                 "segunda_saida": f"{qua_segunda_saida}",
                 "departamento": f"{departamento_id}",
+                "fuso_horario": f"{fuso_horario}",
                 "id_empresa": {
                     "__type": "Pointer",
                     "className": "Empresa",
@@ -2430,6 +2488,7 @@ def edit_horario(request, token, id, nome):
                 "segunda_entrada": f"{qui_segunda_entrada}",
                 "segunda_saida": f"{qui_segunda_saida}",
                 "departamento": f"{departamento_id}",
+                "fuso_horario": f"{fuso_horario}",
                 "id_empresa": {
                     "__type": "Pointer",
                     "className": "Empresa",
@@ -2459,6 +2518,7 @@ def edit_horario(request, token, id, nome):
                 "segunda_entrada": f"{sex_segunda_entrada}",
                 "segunda_saida": f"{sex_segunda_saida}",
                 "departamento": f"{departamento_id}",
+                "fuso_horario": f"{fuso_horario}",
                 "id_empresa": {
                     "__type": "Pointer",
                     "className": "Empresa",
@@ -2488,6 +2548,7 @@ def edit_horario(request, token, id, nome):
                 "segunda_entrada": f"{sab_segunda_entrada}",
                 "segunda_saida": f"{sab_segunda_saida}",
                 "departamento": f"{departamento_id}",
+                "fuso_horario": f"{fuso_horario}",
                 "id_empresa": {
                     "__type": "Pointer",
                     "className": "Empresa",
@@ -2517,6 +2578,7 @@ def edit_horario(request, token, id, nome):
                 "segunda_entrada": f"{dom_segunda_entrada}",
                 "segunda_saida": f"{dom_segunda_saida}",
                 "departamento": f"{departamento_id}",
+                "fuso_horario": f"{fuso_horario}",
                 "id_empresa": {
                     "__type": "Pointer",
                     "className": "Empresa",
@@ -2532,7 +2594,7 @@ def edit_horario(request, token, id, nome):
 
         return redirect("list_horario", token=token)
 
-    return render(request, "edit_horario.html", {"lista": key, "horarios": turno, "nome_turno": nome, "departamentos": departamento, "id_departamento": id })
+    return render(request, "edit_horario.html", {"lista": key, "horarios": turno, "nome_turno": nome, "departamentos": departamento, "id_departamento": id, "fusos": timezone })
 
 
 def detail_horario(request, token, id, nome):
