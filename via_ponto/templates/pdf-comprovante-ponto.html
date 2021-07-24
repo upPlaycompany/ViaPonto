@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprovante Registro de Ponto</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 16px;
+        }
+        
+        .title {
+            margin-bottom: 2px;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .content {
+            width: 400px;
+            display: block;
+            margin: auto;
+        }
+
+        p {
+          text-align: center;
+        }
+
+        @media print {
+            body {-webkit-print-color-adjust: exact;}
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content">
+        <h1 class="title">COMPROVANTE DE REGISTRO DE PONTO DO TRABALHADOR</h1>
+
+        <p>EMPREGADOR: {{ empresa.razaosocial }}</p>
+        <p>CNPJ: {{ empresa.cnpj }}</p>
+        <p>LOCAL: {{ empresa.logradouro }}, {{ empresa.numero }} / {{ empresa.cidade }}</p>
+
+        <p>NOME: {{ colaborador.nome }}</p>
+        <p>PIS: {{ colaborador.pis }}</p>
+
+        <p>{{ ponto.data }} - {{ ponto.horario }}</p>
+        <p>ID {{ ponto.objectId }}</p>
+    </div>
+</body>
+</html>

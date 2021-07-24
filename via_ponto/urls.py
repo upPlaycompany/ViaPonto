@@ -21,6 +21,7 @@ urlpatterns = [
     path('ponto/colaborador/list/<str:token>/', views.list_ponto, name='list_ponto'),
     path('ponto/colaborador/registrar/<str:token>/', views.registro_ponto, name='registro_ponto'),
     path('ponto/colaborador/fail-localizacao/<str:token>/', views.fail_localizacao_ponto, name='fail_localizacao_ponto'),
+    path('ponto/colaborador/success/<str:token>/<str:id_ponto>/', views.success_registro_ponto, name='success_registro_ponto'),
     path('ponto/colaborador/fail/<str:token>/', views.fail_registro_ponto, name='fail_registro_ponto'),
     path('ponto/colaborador/fail-registrar/<str:token>/', views.fail_registrar_ponto, name='fail_registrar_ponto'),
     path('ponto/colaborador/fail-salvar/<str:token>/', views.fail_salvar_ponto, name='fail_salvar_ponto'),
@@ -76,6 +77,7 @@ urlpatterns = [
     path('relatorio/folha-ponto/<str:token>/<str:id_user>/', views.rel_folha_ponto, name='rel_folha_ponto'),
     # PDFs
     path('pdf/folha-ponto/<str:token>/<str:id_user>/<str:mes>/', views.gerar_folha_ponto, name='gerar_folha_ponto'),
+    path('pdf/comprovante-ponto/<str:token>/<str:id_ponto>/', views.gerar_comprovante_ponto, name='gerar_comprovante_ponto'),
     path('relatorio-func/<str:token>/', views.gerar_relatorio_func, name='gerar_relatorio_func'),
     path('relatorio-ponto/<str:token>/<str:id_user>/', views.gerar_relatorio_ponto, name='gerar_relatorio_ponto'),
 

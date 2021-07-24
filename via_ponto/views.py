@@ -562,7 +562,7 @@ def registro_ponto(request, token):
 
         print('Cheguei no POST')
 
-        if rua == "":
+        if rua == "" or rua == "undefined":
             return redirect("fail_localizacao_ponto", token=token)
         
         # PEGAR DO SERVIDOR
@@ -674,15 +674,44 @@ def registro_ponto(request, token):
                     },
                 },
             )
+            res_ponto = req_ponto.json()
+            # departamento = [x for x in res_ponto["results"]]
+            print(res_ponto)
+            ponto_id = res_ponto["objectId"]
+
             status = str(req_ponto.status_code)
             if status == "201":
-                return redirect("dashboard_colaborador", token=token)
+                return redirect("success_registro_ponto", token=token, id_ponto=ponto_id)
             else:
                 return redirect("fail_salvar_ponto", token=token)
 
         return redirect("fail_registrar_ponto", token=token)
 
     return render(request, "registro_ponto.html", {"lista": key})
+
+
+def success_registro_ponto(request, token, id_ponto):
+    conexao = requests.api.request(
+        "GET",
+        "https://parseapi.back4app.com/users/me",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+            "X-Parse-Session-Token": f"{token}",
+        },
+    )
+    usuario = conexao.json()
+    if str(usuario["sessionToken"]) != f"{token}":
+        return redirect("login")
+    elif usuario["gestor"] == True:
+        return redirect("login")
+    elif usuario["admin"] == True:
+        return redirect("login")
+    else:
+        pass
+    key = [{"id": token, "user": usuario["username"]}]
+
+    return render(request, "success_registro_ponto.html", {"lista": key, "ponto_id": id_ponto})
 
 
 def fail_localizacao_ponto(request, token):
@@ -4634,15 +4663,6 @@ def gerar_folha_ponto(request, token, id_user, mes):
     res_ponto = req_ponto.json()
     ponto = [x for x in res_ponto["results"]]
 
-    # for x in ponto:
-    #     data = x["createdAt"]
-    #     data = data[:10]
-    #     dia = data[:2]
-    #     date = datetime.strptime(data, "%Y-%m-%d").date()
-    #     date = date.strftime("%d/%m/%Y")
-    #     x["createdAt"] = date
-    #     x["data"] = dia
-
     mes_lista = [
         {
             "num": "01",
@@ -4735,8 +4755,6 @@ def gerar_folha_ponto(request, token, id_user, mes):
         ponto_mes = ponto
         return redirect("fail_default", token=token)
 
-    print(ponto_mes)
-
     return rendering.render_to_pdf_response(
         request=request,
         context={
@@ -4752,6 +4770,70 @@ def gerar_folha_ponto(request, token, id_user, mes):
             "total_days": range(total_dias + 1),
         },
         template="pdf-folha-ponto.html",
+        encoding="utf-8",
+    )
+
+
+def gerar_comprovante_ponto(request, token, id_ponto):
+    conexao = requests.api.request(
+        "GET",
+        "https://parseapi.back4app.com/users/me",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+            "X-Parse-Session-Token": f"{token}",
+        },
+    )
+    usuario = conexao.json()
+    if str(usuario["sessionToken"]) != f"{token}":
+        return redirect("login")
+    elif usuario["gestor"] == True:
+        return redirect("login")
+    elif usuario["admin"] == True:
+        return redirect("login")
+    else:
+        pass
+    empresa_id = usuario["id_empresa"]["objectId"]
+    usuario_id = usuario["objectId"]
+
+    req_emp = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/Empresa/{empresa_id}",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    emp = req_emp.json()
+
+    req_user = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/_User/{usuario_id}",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    colab = req_user.json()
+
+    req_ponto = requests.api.request(
+        "GET",
+        f"https://parseapi.back4app.com/classes/Ponto/{id_ponto}",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+        },
+    )
+    res_ponto = req_ponto.json()
+
+    return rendering.render_to_pdf_response(
+        request=request,
+        context={
+            "empresa": emp,
+            "colaborador": colab,
+            "ponto": res_ponto,
+        },
+        template="pdf-comprovante-ponto.html",
         encoding="utf-8",
     )
 
