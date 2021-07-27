@@ -13,10 +13,12 @@
                     <thead>
                         <tr>
                             <th>Nome</th>
-                            <th>CNPJ</th>
+                            <th>CNPJ/CPF</th>
                             <th>CEP</th>
                             <th>Celular</th>
                             <th>Email</th>
+                            <th>Status</th>
+                            <th>Ações</th>
                         </tr>
                     </thead>
 
@@ -34,6 +36,25 @@
                                 <td>{{ empresa.cep }}</td>
                                 <td>{{ empresa.celular_empresa }}</td>
                                 <td>{{ empresa.email_empresa }}</td>
+
+                                {% if empresa.bloqueado == True %}
+                                    <td>Bloqueado</td>
+                                {% else %}
+                                    <td>Ativo</td>
+                                {% endif %}
+
+                                <td>
+                                    {% for key in lista %}
+                                        <a href="{% url 'desbloquear_empresa' token=key.id id=empresa.objectId %}">
+                                            <i style="margin-left: 25px; color: green; font-size: 20px;" class="fas fa-lock-open"></i>
+                                        </a>
+                                    {% endfor %}
+                                    {% for key in lista %}
+                                        <a href="{% url 'bloquear_empresa' token=key.id id=empresa.objectId %}">
+                                            <i style="margin-left: 25px; color: red; font-size: 20px;" class="fas fa-user-lock"></i>
+                                        </a>
+                                    {% endfor %}
+                                </td>
                             </tr>
                         {% endfor %}
                     </tbody>

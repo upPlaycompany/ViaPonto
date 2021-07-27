@@ -112,6 +112,7 @@ def register(request):
                 "numero": f"{numero}",
                 "cidade": f"{cidade}",
                 "bairro": f"{bairro}",
+                "bloqueado": bool(False),
             },
         )
         status_emp = str(req_emp.status_code)
@@ -221,10 +222,26 @@ def login_colaborador(request):
             },
         )
         response = conexao.json()
+        empresa_id = response["id_empresa"]["objectId"]
+
+        req_emp = requests.api.request(
+            "GET",
+            f"https://parseapi.back4app.com/classes/Empresa/{empresa_id}",
+            headers={
+                "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+            },
+        )
+        emp = req_emp.json()
+
         status = str(conexao.status_code)
 
         if status == "200" and response["admin"] == True:
             return redirect("admin_dashboard", token=response["sessionToken"])
+        elif status == "200" and response["demitido"] == True:
+            return redirect("login_fail")
+        elif status == "200" and emp["bloqueado"] == True:
+            return redirect("login_fail")
         elif status == "200" and response["gestor"] == False:
             return redirect("dashboard_colaborador", token=response["sessionToken"])
         else:
@@ -827,10 +844,24 @@ def login_gestor(request):
             },
         )
         response = conexao.json()
+        empresa_id = response["id_empresa"]["objectId"]
+
+        req_emp = requests.api.request(
+            "GET",
+            f"https://parseapi.back4app.com/classes/Empresa/{empresa_id}",
+            headers={
+                "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+                "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+            },
+        )
+        emp = req_emp.json()
+
         status = str(conexao.status_code)
 
         if status == "200" and response["admin"] == True:
             return redirect("admin_dashboard", token=response["sessionToken"])
+        elif status == "200" and emp["bloqueado"] == True:
+            return redirect("login_fail")
         elif status == "200" and response["gestor"] == True:
             return redirect("dashboard", token=response["sessionToken"])
         else:
@@ -5018,3 +5049,81 @@ def detail_empresa(request, token, id):
     res_emp = req_emp.json()
 
     return render(request, "detail_empresa.html", {"lista": key, "empresa": res_emp})
+
+
+def desbloquear_empresa(request, token, id):
+    conexao = requests.api.request(
+        "GET",
+        "https://parseapi.back4app.com/users/me",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+            "X-Parse-Session-Token": f"{token}",
+        },
+    )
+    response = conexao.json()
+    if str(response["sessionToken"]) != f"{token}":
+        return redirect("login")
+    elif response["admin"] == False:
+        return redirect("login")
+    else:
+        pass
+    key = [{"id": token, "user": response["username"]}]
+
+    req_emp = requests.api.request(
+        "PUT",
+        f"https://parseapi.back4app.com/classes/Empresa/{id}",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+            "Content-Type": "application/json",
+        },
+        json={
+            "bloqueado": bool(False),
+        },
+    )
+
+    status = str(req_emp.status_code)
+    if status == "200":
+        return redirect("list_empresa", token=token)
+    else:
+        return redirect("fail_admin", token=token)
+
+
+def bloquear_empresa(request, token, id):
+    conexao = requests.api.request(
+        "GET",
+        "https://parseapi.back4app.com/users/me",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+            "X-Parse-Session-Token": f"{token}",
+        },
+    )
+    response = conexao.json()
+    if str(response["sessionToken"]) != f"{token}":
+        return redirect("login")
+    elif response["admin"] == False:
+        return redirect("login")
+    else:
+        pass
+    key = [{"id": token, "user": response["username"]}]
+
+    req_emp = requests.api.request(
+        "PUT",
+        f"https://parseapi.back4app.com/classes/Empresa/{id}",
+        headers={
+            "X-Parse-Application-Id": "Sgx1E183pBATq8APs006w2ACmAPqpkk33jJwRGC6",
+            "X-Parse-REST-API-Key": "lA1fgtFCTA2A5o0ebhuQM8T7DSAErYCPMF4jQtp9",
+            "Content-Type": "application/json",
+        },
+        json={
+            "bloqueado": bool(True),
+        },
+    )
+
+    status = str(req_emp.status_code)
+    if status == "200":
+        return redirect("list_empresa", token=token)
+    else:
+        return redirect("fail_admin", token=token)

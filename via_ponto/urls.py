@@ -85,5 +85,7 @@ urlpatterns = [
     # ÁREA ADMINSTRATIVA
     path('admin/dashboard/<str:token>/', views.admin_dashboard, name='admin_dashboard'),
     path('empresa/<str:token>/', views.list_empresa, name='list_empresa'),
-    path('detail-empresa/<str:token>/<str:id>/', views.detail_empresa, name='detail_empresa'),
+    path('empresa/detail/<str:token>/<str:id>/', views.detail_empresa, name='detail_empresa'),
+    path('empresa/desbloquear/<str:token>/<str:id>/', views.desbloquear_empresa, name='desbloquear_empresa'),
+    path('empresa/bloquear/<str:token>/<str:id>/', views.bloquear_empresa, name='bloquear_empresa'),
 ]
