@@ -1,7 +1,4 @@
 
-var maskCNPJ = IMask(document.getElementById('id_cnpj'), {
-    mask: '00.000.000/0000-00'
-})
 
 var maskPostalCode = IMask(document.getElementById('id_postal_code'), {
     mask: '00000-000'
